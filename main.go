@@ -1,0 +1,122 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"log/slog"
+	"os"
+	"strings"
+
+	// "github.com/hashicorp/hcl/v2/hcled"
+
+	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/lmittmann/tint"
+	"github.com/loczek/nomad-ls/internal/lsp"
+	"github.com/loczek/nomad-ls/internal/schema"
+	"go.lsp.dev/jsonrpc2"
+	"go.lsp.dev/protocol"
+)
+
+func main() {
+	w := os.Stderr
+
+	handler := tint.NewHandler(w, nil)
+	if isBuilt() {
+		handler = slog.NewTextHandler(w, nil)
+	}
+
+	logger := slog.New(handler)
+
+	stream := jsonrpc2.NewStream(&rwc{os.Stdin, os.Stdout})
+	con := jsonrpc2.NewConn(stream)
+
+	lsp := lsp.New(con, *logger)
+
+	parser := hclparse.NewParser()
+
+	file, err := os.ReadFile("./loki.nomad.hcl")
+	if err != nil {
+		panic(err)
+	}
+
+	parser.ParseHCL(file, "loki")
+
+	body := parser.Files()["loki"].Body
+	file_bytes := parser.Files()["loki"].Bytes
+
+	content, err := body.Content(schema.JobConfigSchema)
+	if err.Error() != "no diagnostics" {
+		panic(err)
+	}
+
+	logger.Info(fmt.Sprintf(string(file_bytes)))
+	logger.Info(fmt.Sprintf("%#v", body))
+	logger.Info(fmt.Sprintf("%#v", content))
+
+	for _, block := range content.Blocks {
+		logger.Info(fmt.Sprintf("block: %#v", block))
+		logger.Info(fmt.Sprintf("block body: %#v", block.Body))
+	}
+
+	// x := decoder.Decoder{}
+	// decoder.NewDecoder(lang.Path{
+	// 	Path: "",
+	// 	LanguageID: "nomad",
+	// })
+
+	con.Go(context.Background(), func(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) error {
+		go func() {
+			if req.Method() == protocol.MethodInitialize {
+				logger.Info("initialized")
+			} else if req.Method() == protocol.MethodTextDocumentHover {
+				logger.Info("hover")
+			} else if req.Method() == protocol.MethodTextDocumentDidOpen {
+				logger.Info("open")
+			}
+			lsp.Handle(ctx, reply, req)
+		}()
+		return nil
+	})
+
+	logger.Info("starting")
+
+	<-con.Done()
+
+	logger.Info("exited")
+}
+
+type rwc struct {
+	r io.ReadCloser
+	w io.WriteCloser
+}
+
+func (rwc *rwc) Read(b []byte) (int, error)  { return rwc.r.Read(b) }
+func (rwc *rwc) Write(b []byte) (int, error) { return rwc.w.Write(b) }
+func (rwc *rwc) Close() error {
+	rwc.r.Close()
+	return rwc.w.Close()
+}
+
+// type State struct {
+// 	context context.Context
+// 	paths []lang.Path
+// }
+
+// func (s *State) Paths(ctx context.Context) []lang.Path {
+// 		return s.paths
+// }
+
+// func (s *State) PathContext(path lang.Path) (*decoder.PathContext, error) {
+
+// }
+
+func isBuilt() bool {
+	entrypoint := string(os.Args[0])
+
+	if strings.HasPrefix(entrypoint, os.TempDir()) {
+		return false
+	}
+
+	return true
+}
