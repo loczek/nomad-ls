@@ -77,14 +77,6 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 
 		s.logger.Info(fmt.Sprintf("arr: %v", x))
 
-		// y := int32(x.Position.Line);
-
-		// x := hcl.Pos{
-		// 	Line:   0,
-		// 	Column: 0,
-		// 	Byte:   0,
-		// }
-
 		if len(x) == 0 {
 			reply(ctx, nil, nil)
 			return
