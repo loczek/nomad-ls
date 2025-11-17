@@ -104,3 +104,32 @@ func TestBasicBlockCollect(t *testing.T) {
 		t.Errorf("blocks empty")
 	}
 }
+
+func TestBlockCompletion(t *testing.T) {
+	parser := hclparse.NewParser()
+
+	file, err := os.ReadFile("./testdata/loki.nomad.hcl")
+	if err != nil {
+		panic(err)
+	}
+
+	parser.ParseHCL(file, "loki")
+
+	hclFile := parser.Files()["loki"]
+
+	pos := protocol.Position{Line: 14, Character: 0}
+
+	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
+
+	blocks := CollectCompletions(hclFile.Body, hcl.Pos{
+		Line:   int(pos.Line),
+		Column: int(pos.Character),
+		Byte:   int(predictedCount),
+	}, schema.SchemaMapBetter)
+
+	t.Logf("blocks: %v", blocks)
+
+	if len(blocks) == 0 {
+		t.Errorf("blocks empty")
+	}
+}
