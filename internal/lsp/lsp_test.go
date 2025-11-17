@@ -86,7 +86,7 @@ func TestBasicBlockCollect(t *testing.T) {
 
 	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
 
-	blocks := CollectBlockTypes(hclFile.Body, hcl.Pos{
+	blocks := CollectHoverInfo(hclFile.Body, hcl.Pos{
 		Line:   int(pos.Line),
 		Column: int(pos.Character),
 		Byte:   int(predictedCount),

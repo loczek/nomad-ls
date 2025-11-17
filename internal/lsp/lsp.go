@@ -69,7 +69,7 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 		pos := hcl.InitialPos
 		pos.Byte = int(byteOffset)
 
-		x := CollectBlockTypes(body, hcl.Pos{
+		x := CollectHoverInfo(body, hcl.Pos{
 			Line:   int(params.Position.Line),
 			Column: int(params.Position.Character),
 			Byte:   pos.Byte,
@@ -196,7 +196,7 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 	}
 }
 
-func CollectBlockTypes(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []string {
+func CollectHoverInfo(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []string {
 	var blockTypes []string
 
 	dfs(body, schemaMap, &blockTypes, pos, schema.SchemaMapBetter["root"], &schema.RootBodySchema)
