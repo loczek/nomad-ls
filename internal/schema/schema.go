@@ -18,73 +18,29 @@ const (
 	localsAccessor         = "local"
 )
 
-var JobConfigSchema = &hcl.BodySchema{
-	Blocks: []hcl.BlockHeaderSchema{
-		{Type: variablesLabel},
-		{Type: variableLabel, LabelNames: []string{"name"}},
-		{Type: localsLabel},
-		{Type: "job", LabelNames: []string{"name"}},
-	},
-}
-
-var JobSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
-		{Name: "region"},
-		{Name: "datacenter"},
-		{Name: "type"},
-	},
-	Blocks: []hcl.BlockHeaderSchema{
-		{Type: "group", LabelNames: []string{"name"}},
-	},
-}
-
-var JobGroupSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
-		{Name: "count"},
-	},
-	Blocks: []hcl.BlockHeaderSchema{
-		{Type: "ephemeral_disk"},
-		{Type: "service"},
-	},
-}
-
-var JobGroupEphemeralDiskSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
-		{Name: "migrate"},
-		{Name: "size"},
-		{Name: "sticky"},
-	},
-}
-
-var JobGroupServiceSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
-		{Name: "name"},
-		{Name: "port"},
-		{Name: "provider"},
-	},
-}
-
-var SchemaMap map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
-	"job":            JobSchema,
-	"group":          JobGroupSchema,
-	"ephemeral_disk": JobGroupEphemeralDiskSchema,
-	"service":        JobGroupServiceSchema,
+var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
+	"root":  RootBodySchema.Copy().ToHCLSchema(),
+	"job":   JobSchemaBetter.Copy().ToHCLSchema(),
+	"group": GroupSchema.Copy().ToHCLSchema(),
+	// "ephemeral_disk": ephemera,
+	"spread": SpreadSchema.Copy().ToHCLSchema(),
+	"target": TargetSchema.Copy().ToHCLSchema(),
+	"update": UpdateSchema.Copy().ToHCLSchema(),
 }
 
 var RootBodySchema = schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		variablesLabel: {},
+		variableLabel:  {},
+		localsLabel:    {},
+	},
 	Blocks: map[string]*schema.BlockSchema{
 		"job": {
-			Type:        schema.BlockTypeObject,
-			Description: lang.PlainText("test"),
+			Description: lang.Markdown("## h2\ntest"),
+			Labels: []*schema.LabelSchema{
+				{Name: "name"},
+			},
+			Body: JobSchemaBetter,
 		},
 	},
 }
-
-// var JobConfigSchema = &hcl.BodySchema{
-// 	Blocks: []hcl.BlockHeaderSchema{
-// 		{Type: variablesLabel},
-// 		{Type: variableLabel, LabelNames: []string{"name"}},
-// 		{Type: localsLabel},
-// 		{Type: "job", LabelNames: []string{"name"}},
-// 	},
-// }
