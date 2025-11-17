@@ -114,7 +114,12 @@ func (rwc *rwc) Close() error {
 func isBuilt() bool {
 	entrypoint := string(os.Args[0])
 
-	if strings.HasPrefix(entrypoint, os.TempDir()) {
+	userCacheDir, err := os.UserCacheDir()
+	if err != nil {
+		panic(err)
+	}
+
+	if strings.HasPrefix(entrypoint, os.TempDir()) || strings.HasPrefix(entrypoint, userCacheDir) {
 		return false
 	}
 
