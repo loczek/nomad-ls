@@ -69,13 +69,6 @@ func main() {
 		go func() {
 			logger.Info(fmt.Sprintf("recieved method: %s", req.Method()))
 
-			if req.Method() == protocol.MethodInitialize {
-				logger.Info("initialized")
-			} else if req.Method() == protocol.MethodTextDocumentHover {
-				logger.Info("hover")
-			} else if req.Method() == protocol.MethodTextDocumentDidOpen {
-				logger.Info("open")
-			}
 			lsp.Handle(ctx, reply, req)
 		}()
 		return nil
