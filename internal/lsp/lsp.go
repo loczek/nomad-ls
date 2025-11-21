@@ -34,158 +34,66 @@ func New(con jsonrpc2.Conn, logger slog.Logger) Service {
 	}
 }
 
-func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) {
+func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) (any, error) {
 	switch req.Method() {
 	case protocol.MethodInitialize:
-		reply(ctx, protocol.InitializeResult{
-			ServerInfo: &protocol.ServerInfo{
-				Name:    "nomad-ls",
-				Version: "0.0.1",
-			},
-			Capabilities: protocol.ServerCapabilities{
-				CompletionProvider: &protocol.CompletionOptions{},
-				HoverProvider:      &protocol.HoverOptions{},
-				TextDocumentSync: &protocol.TextDocumentSyncOptions{
-					Change: protocol.TextDocumentSyncKindFull,
-				},
-			},
-		}, nil)
+		params := protocol.InitializedParams{}
+		err := json.Unmarshal(req.Params(), &params)
+		if err != nil {
+			return nil, err
+		}
+
+		return s.HandleInitialize(ctx, &params)
 	case protocol.MethodTextDocumentHover:
 		params := protocol.HoverParams{}
 		err := json.Unmarshal(req.Params(), &params)
 		if err != nil {
-			reply(ctx, nil, err)
-			return
+			return nil, err
 		}
 
 		s.logger.Info(fmt.Sprintf("%+v", params))
 
-		file := s.parser.Files()[params.TextDocument.URI.Filename()]
-
-		body := file.Body
-
-		byteOffset := CalculateByteOffset(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
-
-		pos := hcl.InitialPos
-		pos.Byte = int(byteOffset)
-
-		x := CollectHoverInfo(body, hcl.Pos{
-			Line:   int(params.Position.Line),
-			Column: int(params.Position.Character),
-			Byte:   pos.Byte,
-		}, s.schemaMap)
-
-		s.logger.Info(fmt.Sprintf("arr: %v", x))
-
-		if len(x) == 0 {
-			reply(ctx, nil, nil)
-			return
-		}
-
-		reply(ctx, protocol.Hover{
-			Contents: protocol.MarkupContent{
-				Kind:  protocol.PlainText,
-				Value: fmt.Sprintf("%s", x[len(x)-1]),
-			},
-			// Range: &protocol.Range{Start: protocol.Position{Line: 0, Character: 0}, End: protocol.Position{Line: 0, Character: 0}},
-		}, nil)
+		return s.HandleTextDocumentHover(ctx, &params)
 	case protocol.MethodTextDocumentCompletion:
 		params := protocol.CompletionParams{}
 		err := json.Unmarshal(req.Params(), &params)
 		if err != nil {
-			reply(ctx, nil, err)
-			return
+			return nil, err
 		}
 
 		s.logger.Info(fmt.Sprintf("%+v", params))
 
-		file := s.parser.Files()[params.TextDocument.URI.Filename()]
-
-		body := file.Body
-
-		byteOffset := CalculateByteOffset(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
-
-		pos := hcl.InitialPos
-		pos.Byte = int(byteOffset)
-
-		completions := CollectCompletions(body, hcl.Pos{
-			Line:   int(params.Position.Line),
-			Column: int(params.Position.Character),
-			Byte:   pos.Byte,
-		}, s.schemaMap)
-
-		// completionItems := make([]protocol.CompletionItem, 0)
-
-		// for _, comp := range completions {
-		// 	completionItems = append(completionItems, protocol.CompletionItem{
-		// 		Label:      comp,
-		// 		Kind:       protocol.CompletionItemKindClass,
-		// 		InsertText: fmt.Sprintf("%s {\n$0\n}", comp),
-		// 	})
-		// }
-
-		reply(ctx, protocol.CompletionList{
-			IsIncomplete: false,
-			Items:        completions,
-		}, nil)
+		return s.HandleTextDocumentCompletion(ctx, &params)
 	case protocol.MethodTextDocumentDidOpen:
-		s.logger.Info("did open")
-
 		params := protocol.DidOpenTextDocumentParams{}
 		err := json.Unmarshal(req.Params(), &params)
 		if err != nil {
-			reply(ctx, nil, err)
-			return
+			return nil, err
 		}
 
-		s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
-
-		s.logger.Info(fmt.Sprintf("%+v", params))
-
-		reply(ctx, nil, nil)
+		return nil, s.HandleTextDocumentDidOpen(ctx, &params)
 	case protocol.MethodTextDocumentDidChange:
-		s.logger.Info("did change")
-
 		params := protocol.DidChangeTextDocumentParams{}
 		err := json.Unmarshal(req.Params(), &params)
 		if err != nil {
-			reply(ctx, nil, err)
-			return
+			return nil, err
 		}
 
-		changesCount := len(params.ContentChanges)
-
-		if changesCount > 0 {
-			// s.logger.Info(fmt.Sprintf("%s", params.ContentChanges[changesCount-1].Text))
-
-			delete(s.parser.Files(), params.TextDocument.URI.Filename())
-
-			s.parser.ParseHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
-
-			s.logger.Info(fmt.Sprintf("%+v", params))
-		}
-
-		reply(ctx, nil, nil)
+		return nil, s.HandleTextDocumentDidChange(ctx, &params)
 	case protocol.MethodTextDocumentDidClose:
-		s.logger.Info("did close")
-
 		params := protocol.DidCloseTextDocumentParams{}
 		err := json.Unmarshal(req.Params(), &params)
 		if err != nil {
-			reply(ctx, nil, err)
-			return
+			return nil, err
 		}
 
-		delete(s.parser.Files(), params.TextDocument.URI.Filename())
-
-		s.logger.Info(fmt.Sprintf("%+v", s.parser.Files()))
-
-		s.logger.Info(fmt.Sprintf("%+v", params))
-
-		reply(ctx, nil, nil)
+		return nil, s.HandleTextDocumentDidClose(ctx, &params)
 	case protocol.MethodShutdown:
 		ctx.Done()
+		return nil, nil
 	}
+
+	return nil, nil
 }
 
 func CollectHoverInfo(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []string {
@@ -236,32 +144,6 @@ func dfs(body hcl.Body, schemaMap map[string]*hcl.BodySchema, arr *[]string, pos
 
 	// for _, block := range bodyContent.Blocks {
 	// }
-}
-
-func CalculateByteOffset(pos protocol.Position, src []byte) uint {
-	runes := []rune(string(src))
-
-	var runeIndex uint
-	var line uint
-	var bytesCount uint
-
-	for line < uint(pos.Line) && runeIndex < uint(len(runes)) {
-		if runes[runeIndex] == '\n' {
-			line += 1
-		}
-		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
-		runeIndex += 1
-	}
-
-	var j uint
-
-	for j < uint(pos.Character) && runeIndex < uint(len(runes)) {
-		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
-		runeIndex += 1
-		j += 1
-	}
-
-	return bytesCount
 }
 
 func CollectCompletions(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []protocol.CompletionItem {
@@ -333,29 +215,35 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 			switch z.Value.Type() {
 			case cty.String:
 				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-					Label:            k,
-					InsertText:       fmt.Sprintf("%s = \"$0\"", k),
-					Kind:             protocol.CompletionItemKindVariable,
-					Detail:           v.Description.Value,
-					Documentation:    v.Description.Value,
+					Label:      k,
+					InsertText: fmt.Sprintf("%s = \"$0\"", k),
+					Kind:       protocol.CompletionItemKindVariable,
+					Documentation: protocol.MarkupContent{
+						Kind:  protocol.Markdown,
+						Value: v.Description.Value,
+					},
 					InsertTextFormat: protocol.InsertTextFormatSnippet,
 				})
 			case cty.List(cty.String):
 				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-					Label:            k,
-					InsertText:       fmt.Sprintf("%s = [\"$0\"]", k),
-					Kind:             protocol.CompletionItemKindVariable,
-					Detail:           v.Description.Value,
-					Documentation:    v.Description.Value,
+					Label:      k,
+					InsertText: fmt.Sprintf("%s = [\"$0\"]", k),
+					Kind:       protocol.CompletionItemKindVariable,
+					Documentation: protocol.MarkupContent{
+						Kind:  protocol.Markdown,
+						Value: v.Description.Value,
+					},
 					InsertTextFormat: protocol.InsertTextFormatSnippet,
 				})
 			default:
 				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-					Label:            k,
-					InsertText:       fmt.Sprintf("%s = ", k),
-					Kind:             protocol.CompletionItemKindVariable,
-					Detail:           v.Description.Value,
-					Documentation:    v.Description.Value,
+					Label:      k,
+					InsertText: fmt.Sprintf("%s = ", k),
+					Kind:       protocol.CompletionItemKindVariable,
+					Documentation: protocol.MarkupContent{
+						Kind:  protocol.Markdown,
+						Value: v.Description.Value,
+					},
 					InsertTextFormat: protocol.InsertTextFormatSnippet,
 				})
 			}
@@ -374,4 +262,30 @@ func asBlock(name string) string {
 
 func asAnonymousBlock(name string) string {
 	return fmt.Sprintf("%s {\n\t$0\n}", name)
+}
+
+func CalculateByteOffset(pos protocol.Position, src []byte) uint {
+	runes := []rune(string(src))
+
+	var runeIndex uint
+	var line uint
+	var bytesCount uint
+
+	for line < uint(pos.Line) && runeIndex < uint(len(runes)) {
+		if runes[runeIndex] == '\n' {
+			line += 1
+		}
+		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
+		runeIndex += 1
+	}
+
+	var j uint
+
+	for j < uint(pos.Character) && runeIndex < uint(len(runes)) {
+		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
+		runeIndex += 1
+		j += 1
+	}
+
+	return bytesCount
 }
