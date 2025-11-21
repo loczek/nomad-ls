@@ -66,7 +66,15 @@ func main() {
 		go func() {
 			logger.Info(fmt.Sprintf("recieved method: %s", req.Method()))
 
-			lsp.Handle(ctx, reply, req)
+			resp, err := lsp.Handle(ctx, reply, req)
+
+			logger.Info("response: %#v", resp)
+
+			reply(ctx, resp, err)
+
+			if err != nil {
+				logger.Info("recieved error from handler: %s", err)
+			}
 		}()
 		return nil
 	})
