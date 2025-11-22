@@ -97,53 +97,49 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 }
 
 func CollectHoverInfo(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []string {
-	var blockTypes []string
-
-	dfs(body, schemaMap, &blockTypes, pos, schema.SchemaMapBetter["root"], &schema.RootBodySchema)
-
-	return blockTypes
+	return []string{dfs(body, schemaMap, pos, schema.SchemaMapBetter["root"], &schema.RootBodySchema)}
 }
 
-func dfs(body hcl.Body, schemaMap map[string]*hcl.BodySchema, arr *[]string, pos hcl.Pos, currSchema *hcl.BodySchema, nonHCLSchema *hclschema.BodySchema) {
-	log.Printf("body: %+v", body)
+func dfs(
+	body hcl.Body,
+	schemaMap map[string]*hcl.BodySchema,
+	pos hcl.Pos,
+	currSchema *hcl.BodySchema,
+	nonHCLSchema *hclschema.BodySchema,
+) string {
 	if currSchema == nil {
-		return
+		return ""
 	}
 
-	// bodyRange := body.(*hclsyntax.Body).SrcRange
 	bodyContent, _ := body.Content(currSchema)
 	blocksByType := bodyContent.Blocks.ByType()
-	log.Printf("block by type: %#v", blocksByType)
+
+	ans := ""
 
 	for k, v := range blocksByType {
 		for _, b := range v {
 			blockRange := b.Body.(*hclsyntax.Body).SrcRange
 			if !blockRange.ContainsPos(pos) {
+				blockRange := b.TypeRange
+				if blockRange.ContainsPos(pos) {
+					return nonHCLSchema.Blocks[k].Description.Value
+				}
 				continue
 			}
-			log.Printf("block '%s': %+v", k, b)
-			// log.Printf("block '%s' body: %+v", k, b.Body)
 
-			*arr = append(*arr, k)
-			// *arr = append(*arr, nonHCLSchema.Description.Value)
 			if nonHCLSchema.Blocks[k] != nil && nonHCLSchema.Blocks[k].Body != nil {
-				*arr = append(*arr, nonHCLSchema.Blocks[k].Description.Value)
-				// log.Printf("%+v", nonHCLSchema.Blocks[k].Body)
-				// *arr = append(*arr, nonHCLSchema.Blocks[k].Description.Value)
-				dfs(b.Body, schemaMap, arr, pos, schemaMap[k], nonHCLSchema.Blocks[k].Body)
+				ans = dfs(b.Body, schemaMap, pos, schemaMap[k], nonHCLSchema.Blocks[k].Body)
 			}
 		}
 	}
 
-	// attr, _ := body.JustAttributes()
+	for k, v := range bodyContent.Attributes {
+		if v.NameRange.ContainsPos(pos) {
+			return nonHCLSchema.Attributes[k].Description.Value
+		}
+	}
 
-	// log.Printf("attr: %#v", attr)
-	// log.Printf("body: %+v", body)
-	// log.Printf("body content: %+v", bodyContent)
-	// log.Printf("body content blocks: %+v", bodyContent.Blocks)
-
-	// for _, block := range bodyContent.Blocks {
-	// }
+	return ans
 }
 
 func CollectCompletions(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []protocol.CompletionItem {
