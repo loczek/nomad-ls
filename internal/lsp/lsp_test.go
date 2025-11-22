@@ -12,22 +12,18 @@ import (
 	"go.lsp.dev/protocol"
 )
 
+const (
+	LOKI_NOMAD_FILE_PATH = "./testdata/loki.nomad.hcl"
+)
+
 func TestByteCount(t *testing.T) {
-	parser := hclparse.NewParser()
+	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
 
-	file, err := os.ReadFile("./testdata/loki.nomad.hcl")
-	if err != nil {
-		panic(err)
-	}
-
-	parser.ParseHCL(file, "loki")
-
-	bodyBytes := parser.Files()["loki"].Bytes
-	actuallCount := len(bodyBytes)
+	actuallCount := len(hclFile.Bytes)
 
 	pos := protocol.Position{Line: 100, Character: 0}
 
-	predictedCount := CalculateByteOffset(pos, bodyBytes)
+	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
 
 	if actuallCount != int(predictedCount) {
 		t.Errorf("expected: %d, recieved: %d", actuallCount, predictedCount)
@@ -35,22 +31,13 @@ func TestByteCount(t *testing.T) {
 }
 
 func TestSimpleParse(t *testing.T) {
-	parser := hclparse.NewParser()
+	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
 
-	file, err := os.ReadFile("../../loki.nomad.hcl")
-	if err != nil {
-		panic(err)
-	}
-
-	parser.ParseHCL(file, "loki")
-
-	body := parser.Files()["loki"].Body
-
-	bc, _ := body.Content(schema.SchemaMapBetter["root"])
+	bc, _ := hclFile.Body.Content(schema.SchemaMapBetter["root"])
 	// t.Logf("%+v", bc.Blocks.ByType())
 	// t.Logf("ed: %+v", bc)
 
-	x := body.(*hclsyntax.Body)
+	x := hclFile.Body.(*hclsyntax.Body)
 	// t.Logf("body syntax cast: %#v", x.SrcRange.)
 
 	t.Logf("body range: %d:%d to %d:%d", x.SrcRange.Start.Line, x.SrcRange.Start.Column, x.SrcRange.End.Line, x.SrcRange.End.Column)
@@ -72,16 +59,7 @@ func TestSimpleParse(t *testing.T) {
 }
 
 func TestServiceBlockHoverInformation(t *testing.T) {
-	parser := hclparse.NewParser()
-
-	file, err := os.ReadFile("./testdata/loki.nomad.hcl")
-	if err != nil {
-		panic(err)
-	}
-
-	parser.ParseHCL(file, "loki")
-
-	hclFile := parser.Files()["loki"]
+	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
 
 	pos := protocol.Position{Line: 28, Character: 5}
 
@@ -103,16 +81,7 @@ func TestServiceBlockHoverInformation(t *testing.T) {
 }
 
 func TestBlockCompletion(t *testing.T) {
-	parser := hclparse.NewParser()
-
-	file, err := os.ReadFile("./testdata/loki.nomad.hcl")
-	if err != nil {
-		panic(err)
-	}
-
-	parser.ParseHCL(file, "loki")
-
-	hclFile := parser.Files()["loki"]
+	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
 
 	pos := protocol.Position{Line: 14, Character: 0}
 
@@ -129,4 +98,19 @@ func TestBlockCompletion(t *testing.T) {
 	if len(blocks) == 0 {
 		t.Errorf("blocks empty")
 	}
+}
+
+func LoadSampleFile(path string) *hcl.File {
+	parser := hclparse.NewParser()
+
+	file, err := os.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	parser.ParseHCL(file, "loki")
+
+	hclFile := parser.Files()["loki"]
+
+	return hclFile
 }
