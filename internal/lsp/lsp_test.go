@@ -2,6 +2,7 @@ package lsp
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/hcl/v2"
@@ -70,7 +71,7 @@ func TestSimpleParse(t *testing.T) {
 	// t.Logf("blocks: %v", blocks)
 }
 
-func TestBasicBlockCollect(t *testing.T) {
+func TestServiceBlockHoverInformation(t *testing.T) {
 	parser := hclparse.NewParser()
 
 	file, err := os.ReadFile("./testdata/loki.nomad.hcl")
@@ -82,7 +83,7 @@ func TestBasicBlockCollect(t *testing.T) {
 
 	hclFile := parser.Files()["loki"]
 
-	pos := protocol.Position{Line: 71, Character: 7}
+	pos := protocol.Position{Line: 28, Character: 5}
 
 	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
 
@@ -94,8 +95,10 @@ func TestBasicBlockCollect(t *testing.T) {
 
 	t.Logf("blocks: %v", blocks)
 
-	if len(blocks) == 0 {
-		t.Errorf("blocks empty")
+	x := blocks[len(blocks)-1]
+
+	if !strings.HasPrefix(x, "Specifies integrations with Noma") {
+		t.Errorf("wrong hover information %s", x)
 	}
 }
 
