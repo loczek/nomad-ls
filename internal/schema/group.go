@@ -50,6 +50,7 @@ var GroupSchema = &schema.BodySchema{
 		},
 		"migrate": {
 			Description: lang.PlainText("Specifies the group strategy for migrating off of draining nodes. Only service jobs with a count greater than 1 support migrate blocks."),
+			Body:        MigrateSchema,
 		},
 		// TODO: there is no way to make the label optional so it had to be removed
 		"network": {

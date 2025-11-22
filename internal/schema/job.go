@@ -98,6 +98,7 @@ var JobSchemaBetter = &schema.BodySchema{
 		},
 		"migrate": {
 			Description: lang.PlainText("Specifies the groups strategy for migrating off of draining nodes. If omitted, a default migration strategy is applied. Only service jobs with a count greater than 1 support migrate blocks."),
+			Body:        MigrateSchema,
 		},
 		"parameterized": {
 			Description: lang.PlainText("Specifies the job as a parameterized job such that it can be dispatched against."),
