@@ -10,8 +10,8 @@ import (
 
 	hclschema "github.com/hashicorp/hcl-lang/schema"
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
+	"github.com/loczek/nomad-ls/internal/parser"
 	"github.com/loczek/nomad-ls/internal/schema"
 	"github.com/zclconf/go-cty/cty"
 	"go.lsp.dev/jsonrpc2"
@@ -20,7 +20,7 @@ import (
 
 type Service struct {
 	con       jsonrpc2.Conn
-	parser    hclparse.Parser
+	parser    parser.Parser
 	schemaMap map[string]*hcl.BodySchema
 	logger    slog.Logger
 }
@@ -28,7 +28,7 @@ type Service struct {
 func New(con jsonrpc2.Conn, logger slog.Logger) Service {
 	return Service{
 		con:       con,
-		parser:    *hclparse.NewParser(),
+		parser:    *parser.NewParser(),
 		schemaMap: schema.SchemaMapBetter,
 		logger:    logger,
 	}

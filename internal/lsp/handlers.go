@@ -93,9 +93,7 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 	changesCount := len(params.ContentChanges)
 
 	if changesCount > 0 {
-		delete(s.parser.Files(), params.TextDocument.URI.Filename())
-
-		s.parser.ParseHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
+		s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
 
 		s.logger.Info(fmt.Sprintf("%+v", params))
 	}
@@ -104,7 +102,7 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 }
 
 func (s *Service) HandleTextDocumentDidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) error {
-	delete(s.parser.Files(), params.TextDocument.URI.Filename())
+	s.parser.RemoveHCL(params.TextDocument.URI.Filename())
 
 	s.logger.Info(fmt.Sprintf("%+v", s.parser.Files()))
 
