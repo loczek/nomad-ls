@@ -15,7 +15,7 @@ var GroupSchema = &schema.BodySchema{
 			},
 		},
 		"shutdown_delay": {
-			Description: lang.PlainText(" Specifies the duration to wait when stopping a group's tasks. The delay occurs between Consul or Nomad service deregistration and sending each task a shutdown signal. Ideally, services would fail health checks once they receive a shutdown signal. Alternatively, shutdown_delay may be set to give in-flight requests time to complete before shutting down. A group level shutdown_delay will run regardless if there are any defined group services and only applies to these services. In addition, tasks may have their own shutdown_delay which waits between de-registering task services and stopping the task."),
+			Description: lang.PlainText("Specifies the duration to wait when stopping a group's tasks. The delay occurs between Consul or Nomad service deregistration and sending each task a shutdown signal. Ideally, services would fail health checks once they receive a shutdown signal. Alternatively, shutdown_delay may be set to give in-flight requests time to complete before shutting down. A group level shutdown_delay will run regardless if there are any defined group services and only applies to these services. In addition, tasks may have their own shutdown_delay which waits between de-registering task services and stopping the task."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.StringVal("0s"),
 			},
