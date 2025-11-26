@@ -105,7 +105,7 @@ func dfs(
 	schemaMap map[string]*hcl.BodySchema,
 	pos hcl.Pos,
 	currSchema *hcl.BodySchema,
-	nonHCLSchema *hclschema.BodySchema,
+	langSchema *hclschema.BodySchema,
 ) string {
 	if currSchema == nil {
 		return ""
@@ -122,20 +122,20 @@ func dfs(
 			if !blockRange.ContainsPos(pos) {
 				blockRange := b.TypeRange
 				if blockRange.ContainsPos(pos) {
-					return nonHCLSchema.Blocks[k].Description.Value
+					return langSchema.Blocks[k].Description.Value
 				}
 				continue
 			}
 
-			if nonHCLSchema.Blocks[k] != nil && nonHCLSchema.Blocks[k].Body != nil {
-				ans = dfs(b.Body, schemaMap, pos, schemaMap[k], nonHCLSchema.Blocks[k].Body)
+			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
+				ans = dfs(b.Body, schemaMap, pos, schemaMap[k], langSchema.Blocks[k].Body)
 			}
 		}
 	}
 
 	for k, v := range bodyContent.Attributes {
 		if v.NameRange.ContainsPos(pos) {
-			return nonHCLSchema.Attributes[k].Description.Value
+			return langSchema.Attributes[k].Description.Value
 		}
 	}
 
