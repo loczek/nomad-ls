@@ -5,6 +5,4 @@ import (
 )
 
 // TODO: this should be a key value pair map
-var MetaSchema = &schema.BodySchema{
-	Attributes: map[string]*schema.AttributeSchema{},
-}
+var MetaSchema = &schema.BodySchema{}

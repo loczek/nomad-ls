@@ -66,14 +66,17 @@ var PortSchema = &schema.BodySchema{
 		"static": {
 			Description: lang.Markdown("Specifies the static TCP/UDP port to allocate. If omitted, a dynamic port is chosen. We do not recommend using static ports, except for system or specialized jobs like load balancers."),
 			Constraint:  &schema.LiteralType{Type: cty.Number},
+			IsOptional:  true,
 		},
 		"to": {
 			Description: lang.Markdown("Applicable when using \"bridge\" mode to configure port to map to inside the task's network namespace. Omitting this field or setting it to `-1` sets the mapped port equal to the dynamic port allocated by the scheduler. The `NOMAD_PORT_<label>` environment variable will contain the `to` value."),
 			Constraint:  &schema.LiteralType{Type: cty.Number},
+			IsOptional:  true,
 		},
 		"host_network": {
 			Description: lang.Markdown("Designates the host network name to use when allocating the port. When port mapping the host port will only forward traffic to the matched host network address."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
 		},
 		"ignore_collision ": {
 			Description: lang.Markdown("A time duration that controls how long Nomad will wait before cancelling an in-progress pull of the Docker image as specified in `image`. Defaults to `\"5m\"`."),
@@ -81,6 +84,7 @@ var PortSchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: &schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 	},
 }

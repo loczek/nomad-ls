@@ -14,6 +14,7 @@ var ConstraintSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: &schema.LiteralType{Type: cty.String},
+			IsRequired: true,
 		},
 		// TODO: update docs
 		"operator": {
@@ -22,6 +23,7 @@ var ConstraintSchema = &schema.BodySchema{
 				Value: cty.StringVal("="),
 			},
 			Constraint: &schema.LiteralType{Type: cty.String},
+			IsRequired: true,
 		},
 		"value": {
 			Description: lang.Markdown("Specifies the value to compare the attribute against using the specified operation. This can be a literal value, another attribute, or any [Nomad interpolated values](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation#interpreted_node_vars). The value field is required except for when using the `is_set`, `is_not_set`, `distinct_hosts`, or `distinct_property` operators."),
@@ -29,6 +31,7 @@ var ConstraintSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: &schema.LiteralType{Type: cty.String},
+			IsRequired: true,
 		},
 	},
 }

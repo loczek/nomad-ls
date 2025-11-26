@@ -3,18 +3,12 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/schema/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var TaskSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
-		"config": {
-			Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
-			DefaultValue: &schema.DefaultValue{
-				Value: cty.MapValEmpty(cty.String),
-			},
-			Constraint: &schema.LiteralType{Type: cty.Map(cty.String)},
-		},
 		"driver": {
 			Description: lang.Markdown("Specifies the task driver that should be used to run the task. See the [driver documentation](https://developer.hashicorp.com/nomad/docs/job-declare/task-driver) for what is available. Examples include `docker`, `qemu`, `java` and `exec`."),
 			DefaultValue: &schema.DefaultValue{
@@ -69,6 +63,16 @@ var TaskSchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		"config": {
+			Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
+			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
+				"docker":   drivers.DockerDriverSchema,
+				"exec":     drivers.ExecDriverSchema,
+				"raw_exec": drivers.RawExecDriverSchema,
+				"java":     drivers.JavaDriverSchema,
+				"qemu":     drivers.QemuDriverSchema,
+			},
+		},
 		"artifact": {
 			Description: lang.PlainText("Defines an artifact to download before running the task. This may be specified multiple times to download multiple artifacts."),
 			Body:        ArtifactSchema,
@@ -118,6 +122,7 @@ var TaskSchema = &schema.BodySchema{
 		},
 		"template": {
 			Description: lang.PlainText("Specifies the set of templates to render for the task. Templates can be used to inject both static and dynamic configuration with data populated from environment variables, Consul and Vault."),
+			Body:        TemplateSchema,
 		},
 		"vault": {
 			Description: lang.PlainText("Specifies the set of Vault policies required by the task. This overrides any `vault` block set at the `group` or `job` level."),
