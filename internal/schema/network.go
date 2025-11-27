@@ -32,7 +32,7 @@ var NetworkSchema = &schema.BodySchema{
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsDeprecated: true,
 		},
-		"image_pull_timeout ": {
+		"image_pull_timeout": {
 			Description: lang.Markdown("A time duration that controls how long Nomad will wait before cancelling an in-progress pull of the Docker image as specified in `image`. Defaults to `\"5m\"`."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.StringVal("5m"),
@@ -78,7 +78,7 @@ var PortSchema = &schema.BodySchema{
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
-		"ignore_collision ": {
+		"ignore_collision": {
 			Description: lang.Markdown("A time duration that controls how long Nomad will wait before cancelling an in-progress pull of the Docker image as specified in `image`. Defaults to `\"5m\"`."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.BoolVal(false),

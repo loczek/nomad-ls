@@ -14,7 +14,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsRequired:   true,
 		},
-		"image_pull_timeout ": {
+		"image_pull_timeout": {
 			Description:  lang.Markdown("A time duration that controls how long Nomad will wait before cancelling an in-progress pull of the Docker image as specified in `image`. Defaults to `\"5m\"`."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("5m")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
