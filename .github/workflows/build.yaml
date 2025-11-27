@@ -30,13 +30,13 @@ jobs:
 
       - name: Move binaries
         run: |
-          mkdir -p ./dist/${{ matrix.os }}_${{ matrix.arch }}
-          mv ./bin/${{ matrix.os }}_${{ matrix.arch }}/* ./dist/${{ matrix.os }}_${{ matrix.arch }}/
+          mkdir -p ./temp/${{ matrix.os }}_${{ matrix.arch }}
+          mv ./bin/${{ matrix.os }}_${{ matrix.arch }}/* ./temp/${{ matrix.os }}_${{ matrix.arch }}/
 
       - name: Package files
         run: |
           mkdir -p ./release
-          tar -czf ./release/nomad-ls_${{ matrix.os }}_${{ matrix.arch }}.tar.gz -C ./dist/${{ matrix.os }}_${{ matrix.arch }} .
+          tar -czf ./release/nomad-ls_${{ matrix.os }}_${{ matrix.arch }}.tar.gz -C ./temp/${{ matrix.os }}_${{ matrix.arch }} .
 
       - name: Release
         uses: softprops/action-gh-release@v2
