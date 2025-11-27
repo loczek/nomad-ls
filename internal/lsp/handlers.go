@@ -89,16 +89,28 @@ func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protoco
 	return nil
 }
 
-func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) error {
+func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*hcl.Diagnostics, error) {
 	changesCount := len(params.ContentChanges)
 
 	if changesCount > 0 {
-		s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
+		_, diag := s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
 
-		s.logger.Info(fmt.Sprintf("%+v", params))
+		s.logger.Info(fmt.Sprintf("text: %+v", params))
+
+		file := s.parser.Files()[params.TextDocument.URI.Filename()]
+
+		body := file.Body
+
+		schemaDiags := CollectDiagnistics(body, s.schemaMap)
+
+		allDiags := diag.Extend(*schemaDiags)
+
+		s.logger.Info(fmt.Sprintf("diags: %+v", allDiags))
+
+		return &allDiags, nil
 	}
 
-	return nil
+	return nil, nil
 }
 
 func (s *Service) HandleTextDocumentDidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) error {

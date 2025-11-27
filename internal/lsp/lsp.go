@@ -79,7 +79,37 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 			return nil, err
 		}
 
-		return nil, s.HandleTextDocumentDidChange(ctx, &params)
+		diag, err := s.HandleTextDocumentDidChange(ctx, &params)
+
+		if diag != nil {
+			protocolDiagnostics := []protocol.Diagnostic{}
+
+			for _, v := range *diag {
+				protocolDiagnostics = append(protocolDiagnostics, protocol.Diagnostic{
+					Source: "nomad-ls",
+					Range: protocol.Range{
+						Start: protocol.Position{
+							Line:      uint32(v.Subject.Start.Line - 1),
+							Character: uint32(v.Subject.Start.Column - 1),
+						},
+						End: protocol.Position{
+							Line:      uint32(v.Subject.End.Line - 1),
+							Character: uint32(v.Subject.End.Column - 1),
+						},
+					},
+					Message: v.Detail,
+				})
+			}
+
+			log.Printf("diagnostics: %+v", protocolDiagnostics)
+			s.con.Notify(context.Background(), "textDocument/publishDiagnostics", protocol.PublishDiagnosticsParams{
+				URI:         params.TextDocument.URI,
+				Version:     uint32(params.TextDocument.Version),
+				Diagnostics: protocolDiagnostics,
+			})
+		}
+
+		return nil, err
 	case protocol.MethodTextDocumentDidClose:
 		params := protocol.DidCloseTextDocumentParams{}
 		err := json.Unmarshal(req.Params(), &params)
@@ -157,7 +187,6 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 
 	bodyContent, _ := body.Content(currSchema)
 	blocksByType := bodyContent.Blocks.ByType()
-	log.Printf("block by type: %#v", blocksByType)
 
 	var matchingBlocks uint
 
@@ -170,14 +199,6 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 
 			matchingBlocks += 1
 
-			// if langSchema.Blocks[k].Body != nil {
-
-			// 	// for _, z := range langSchema.Blocks {
-			// 	// 	arr = append(arr, )
-			// 	// }
-			// 	arr = append(arr, langSchema.BlockTypes()...)
-			// }
-
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
 				dfs2(b.Body, blocks, schemaMap, pos, schemaMap[k], langSchema.Blocks[k].Body)
 			}
@@ -187,28 +208,45 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 	if matchingBlocks == 0 {
 		var blocksByTypeArr []protocol.CompletionItem
 
-		for k := range langSchema.Blocks {
-			blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-				Label:      k,
-				InsertText: asAnonymousBlock(k),
-				Kind:       protocol.CompletionItemKindInterface,
-				// Kind:       protocol.CompletionItemKindClass,
-				InsertTextFormat: protocol.InsertTextFormatSnippet,
-			})
+		for k, v := range langSchema.Blocks {
+			if len(v.Labels) != 0 {
+				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
+					Label:      k,
+					InsertText: asBlock(k),
+					Kind:       protocol.CompletionItemKindInterface,
+					// Kind:       protocol.CompletionItemKindClass,
+					InsertTextFormat: protocol.InsertTextFormatSnippet,
+				})
+			} else {
+				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
+					Label:      k,
+					InsertText: asAnonymousBlock(k),
+					Kind:       protocol.CompletionItemKindInterface,
+					// Kind:       protocol.CompletionItemKindClass,
+					InsertTextFormat: protocol.InsertTextFormatSnippet,
+				})
+			}
 		}
 
 		for k, v := range langSchema.Attributes {
-			if v.DefaultValue == nil {
+			if v.Constraint == nil {
 				continue
 			}
 
-			z := v.DefaultValue.(*hclschema.DefaultValue)
+			h := v.Constraint.(*hclschema.LiteralType)
 
-			if z == nil {
+			if h == nil {
 				continue
 			}
 
-			switch z.Value.Type() {
+			log.Printf("attr: %s", k)
+			log.Printf("%+v", bodyContent.Attributes)
+
+			if bodyContent.Attributes[k] != nil {
+				continue
+			}
+
+			switch h.Type {
 			case cty.String:
 				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
 					Label:      k,
@@ -245,7 +283,6 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 			}
 		}
 
-		// *blocks = append(*blocks, langSchema.AttributeNames()...)
 		*blocks = append(*blocks, blocksByTypeArr...)
 	}
 
@@ -284,4 +321,46 @@ func CalculateByteOffset(pos protocol.Position, src []byte) uint {
 	}
 
 	return bytesCount
+}
+
+func CollectDiagnistics(body hcl.Body, schemaMap map[string]*hcl.BodySchema) *hcl.Diagnostics {
+	var diags hcl.Diagnostics
+
+	diags = diags.Extend(dfs3(body, &diags, schemaMap, schema.SchemaMapBetter["root"], &schema.RootBodySchema))
+
+	return &diags
+}
+
+func dfs3(body hcl.Body, diags *hcl.Diagnostics, schemaMap map[string]*hcl.BodySchema, currSchema *hcl.BodySchema, langSchema *hclschema.BodySchema) hcl.Diagnostics {
+	if currSchema == nil {
+		return make(hcl.Diagnostics, 0)
+	}
+
+	bodyContent, allDiags := body.Content(currSchema)
+	blocksByType := bodyContent.Blocks.ByType()
+
+	for k, v := range blocksByType {
+		for _, b := range v {
+			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
+				allDiags = allDiags.Extend(dfs3(b.Body, diags, schemaMap, schemaMap[k], langSchema.Blocks[k].Body))
+			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
+				log.Printf("found config!")
+				if bodyContent.Attributes["driver"] != nil {
+					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
+
+					log.Printf("driver: %s", driver.AsString())
+
+					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
+
+					log.Printf("map key: %s", schemaMapDependentKey)
+
+					// log.Printf("driver: %+v", bodyContent.Attributes["xd"].)
+					// langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(bodyContent.Attributes["driver"].Name)]
+					allDiags = allDiags.Extend(dfs3(b.Body, diags, schemaMap, schemaMap[schemaMapDependentKey], langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())]))
+				}
+			}
+		}
+	}
+
+	return allDiags
 }
