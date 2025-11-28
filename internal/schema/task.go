@@ -119,6 +119,7 @@ var TaskSchema = &schema.BodySchema{
 		},
 		"service": {
 			Description: lang.Markdown("Specifies integrations with Nomad or [Consul](https://www.consul.io/) for service discovery. Nomad automatically registers when a task is started and de-registers it when the task dies."),
+			Body:        ServiceSchema,
 		},
 		"template": {
 			Description: lang.PlainText("Specifies the set of templates to render for the task. Templates can be used to inject both static and dynamic configuration with data populated from environment variables, Consul and Vault."),
@@ -129,6 +130,7 @@ var TaskSchema = &schema.BodySchema{
 		},
 		"volume_mount": {
 			Description: lang.PlainText("Specifies where a group volume should be mounted."),
+			Body:        VolumeMountSchema,
 		},
 	},
 }

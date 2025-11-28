@@ -68,6 +68,7 @@ var GroupSchema = &schema.BodySchema{
 		},
 		"service": {
 			Description: lang.Markdown("Specifies integrations with Nomad or [Consul](https://developer.hashicorp.com/nomad/docs/configuration/consul) for service discovery. Nomad automatically registers each service when an allocation is started and de-registers them when the allocation is destroyed."),
+			Body:        ServiceSchema,
 		},
 		// TODO: make it required
 		"task": {
