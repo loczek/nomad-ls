@@ -41,7 +41,7 @@ jobs:
           mkdir -p ./temp/${{ matrix.os }}_${{ matrix.arch }}
           mv ./bin/${{ matrix.os }}_${{ matrix.arch }}/* ./temp/${{ matrix.os }}_${{ matrix.arch }}/
 
-      - name: Package files for linux
+      - name: Package files for linux/darwin
         if: ${{ matrix.os == 'linux' || matrix.os == 'darwin' }}
         run: |
           mkdir -p ./release
