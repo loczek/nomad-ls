@@ -42,7 +42,7 @@ jobs:
           mv ./bin/${{ matrix.os }}_${{ matrix.arch }}/* ./temp/${{ matrix.os }}_${{ matrix.arch }}/
 
       - name: Package files for linux
-        if: ${{ matrix.os == 'linux' }}
+        if: ${{ matrix.os == 'linux' || matrix.os == 'darwin' }}
         run: |
           mkdir -p ./release
           cd ./temp/${{ matrix.os }}_${{ matrix.arch }}
