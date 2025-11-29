@@ -81,19 +81,23 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 	}, nil
 }
 
-func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) error {
-	s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
+func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
+	file, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
+
+	schemaDiags := CollectDiagnistics(file.Body, s.schemaMap)
+
+	allDiags := diags.Extend(*schemaDiags)
 
 	s.logger.Info(fmt.Sprintf("%+v", params))
 
-	return nil
+	return &allDiags, nil
 }
 
 func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*hcl.Diagnostics, error) {
 	changesCount := len(params.ContentChanges)
 
 	if changesCount > 0 {
-		_, diag := s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
+		_, diags := s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
 
 		s.logger.Info(fmt.Sprintf("text: %+v", params))
 
@@ -103,7 +107,7 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 
 		schemaDiags := CollectDiagnistics(body, s.schemaMap)
 
-		allDiags := diag.Extend(*schemaDiags)
+		allDiags := diags.Extend(*schemaDiags)
 
 		s.logger.Info(fmt.Sprintf("diags: %+v", allDiags))
 
