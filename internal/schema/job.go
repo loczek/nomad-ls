@@ -113,6 +113,12 @@ var JobSchemaBetter = &schema.BodySchema{
 		},
 		"vault": {
 			Description: lang.PlainText("Specifies the set of Vault policies required by all tasks in this job."),
+			Body:        VaultSchema,
+		},
+		// TODO: update docs
+		"secret": {
+			Description: lang.PlainText("secret docs"),
+			Body:        SecretSchema,
 		},
 	},
 	Description: lang.PlainText("job schema docs"),

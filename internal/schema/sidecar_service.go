@@ -72,6 +72,7 @@ var ProxySchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		// TODO: this can also be set to `true` or the `ExposeSchema`
 		"expose": {
 			Description: lang.Markdown("Used to configure expose path configuration for Envoy. See Consul's [Expose Paths Configuration Reference](/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for more information."),
 			Body:        ExposeSchema,
@@ -86,7 +87,6 @@ var ProxySchema = &schema.BodySchema{
 		},
 	},
 }
-
 var ExposeSchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"path": {

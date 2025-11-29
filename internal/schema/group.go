@@ -70,6 +70,16 @@ var GroupSchema = &schema.BodySchema{
 			Description: lang.Markdown("Specifies integrations with Nomad or [Consul](https://developer.hashicorp.com/nomad/docs/configuration/consul) for service discovery. Nomad automatically registers each service when an allocation is started and de-registers them when the allocation is destroyed."),
 			Body:        ServiceSchema,
 		},
+		// TODO: add docs
+		"scaling": {
+			Description: lang.Markdown("scaling docs"),
+			Body:        ScalingSchema,
+		},
+		// TODO: add docs
+		"secret": {
+			Description: lang.PlainText("secret docs"),
+			Body:        SecretSchema,
+		},
 		// TODO: make it required
 		"task": {
 			Description: lang.PlainText("Specifies one or more tasks to run within this group. This can be specified multiple times, to add a task as part of the group."),
@@ -86,6 +96,7 @@ var GroupSchema = &schema.BodySchema{
 		},
 		"vault": {
 			Description: lang.PlainText("Specifies the set of Vault policies required by all tasks in this group. Overrides a `vault` block set at the `job` level."),
+			Body:        VaultSchema,
 		},
 		"volume": {
 			Description: lang.PlainText("Specifies the volumes that are required by tasks within the group."),

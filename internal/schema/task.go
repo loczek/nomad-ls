@@ -85,6 +85,10 @@ var TaskSchema = &schema.BodySchema{
 			Description: lang.PlainText("Specifies user-defined constraints on the task. This can be provided multiple times to define additional constraints."),
 			Body:        ConstraintSchema,
 		},
+		"csi_plugin": {
+			Description: lang.PlainText("Specifies user-defined constraints on the task. This can be provided multiple times to define additional constraints."),
+			Body:        CsiPluginSchema,
+		},
 		"affinity": {
 			Description: lang.PlainText("This can be provided multiple times to define preferred placement criteria."),
 			Body:        AffinitySchema,
@@ -95,7 +99,7 @@ var TaskSchema = &schema.BodySchema{
 		},
 		"env": {
 			Description: lang.PlainText("Specifies environment variables that will be passed to the running process."),
-			Body:        EnvSchema,
+			Type:        schema.BlockTypeMap,
 		},
 		"identity": {
 			Description: lang.PlainText("Expose [Workload Identity](https://developer.hashicorp.com/nomad/docs/concepts/workload-identity) to the task."),
@@ -117,9 +121,23 @@ var TaskSchema = &schema.BodySchema{
 			Description: lang.PlainText("Specifies the minimum resource requirements such as RAM, CPU and devices."),
 			Body:        ResourcesSchema,
 		},
+		"restart": {
+			Description: lang.PlainText("Specifies the restart policy for all tasks in this group. If omitted, a default policy exists for each job type, which can be found in the [restart block documentation](https://developer.hashicorp.com/nomad/docs/job-specification/restart)."),
+			Body:        RestartSchema,
+		},
 		"service": {
 			Description: lang.Markdown("Specifies integrations with Nomad or [Consul](https://www.consul.io/) for service discovery. Nomad automatically registers when a task is started and de-registers it when the task dies."),
 			Body:        ServiceSchema,
+		},
+		// TODO: add docs
+		"scaling": {
+			Description: lang.Markdown("scaling docs"),
+			Body:        ScalingSchema,
+		},
+		// TODO: add docs
+		"secret": {
+			Description: lang.PlainText("secret docs"),
+			Body:        SecretSchema,
 		},
 		"template": {
 			Description: lang.PlainText("Specifies the set of templates to render for the task. Templates can be used to inject both static and dynamic configuration with data populated from environment variables, Consul and Vault."),
@@ -127,6 +145,7 @@ var TaskSchema = &schema.BodySchema{
 		},
 		"vault": {
 			Description: lang.PlainText("Specifies the set of Vault policies required by the task. This overrides any `vault` block set at the `group` or `job` level."),
+			Body:        VaultSchema,
 		},
 		"volume_mount": {
 			Description: lang.PlainText("Specifies where a group volume should be mounted."),

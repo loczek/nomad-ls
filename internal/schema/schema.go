@@ -7,18 +7,6 @@ import (
 	"github.com/loczek/nomad-ls/internal/schema/drivers"
 )
 
-const (
-	variablesLabel = "variables"
-	variableLabel  = "variable"
-	localsLabel    = "locals"
-	vaultLabel     = "vault"
-	taskLabel      = "task"
-	secretLabel    = "secret"
-
-	inputVariablesAccessor = "var"
-	localsAccessor         = "local"
-)
-
 var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"root": RootBodySchema.Copy().ToHCLSchema(),
 
@@ -33,9 +21,9 @@ var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"connect":          ConnectSchema.Copy().ToHCLSchema(),
 	"constraint":       ConstraintSchema.Copy().ToHCLSchema(),
 	"consul":           ConsulSchema.Copy().ToHCLSchema(),
+	"csi_plugin":       CsiPluginSchema.Copy().ToHCLSchema(),
 	"dispatch_payload": DispatchPayloadSchema.Copy().ToHCLSchema(),
 	"dns":              DnsSchema.Copy().ToHCLSchema(),
-	"env":              EnvSchema.Copy().ToHCLSchema(),
 	"ephemeral_disk":   EphemeralDiskSchema.Copy().ToHCLSchema(),
 	"expose":           ExposeSchema.Copy().ToHCLSchema(),
 	"group":            GroupSchema.Copy().ToHCLSchema(),
@@ -56,6 +44,8 @@ var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"reschedule":       RescheduleSchema.Copy().ToHCLSchema(),
 	"resources":        ResourcesSchema.Copy().ToHCLSchema(),
 	"restart":          RestartSchema.Copy().ToHCLSchema(),
+	"scaling":          ScalingSchema.Copy().ToHCLSchema(),
+	"secret":           SecretSchema.Copy().ToHCLSchema(),
 	"service":          ServiceSchema.Copy().ToHCLSchema(),
 	"sidecar_service":  SidecarServiceSchema.Copy().ToHCLSchema(),
 	"sidecar_task":     SidecarTaskSchema.Copy().ToHCLSchema(),
@@ -65,6 +55,7 @@ var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"template":         TemplateSchema.Copy().ToHCLSchema(),
 	"update":           UpdateSchema.Copy().ToHCLSchema(),
 	"upstreams":        UpstreamsSchema.Copy().ToHCLSchema(),
+	"vault":            VaultSchema.Copy().ToHCLSchema(),
 	"volume":           VolumeSchema.Copy().ToHCLSchema(),
 	"volume_mount":     VolumeMountSchema.Copy().ToHCLSchema(),
 	"wait":             WaitSchema.Copy().ToHCLSchema(),

@@ -10,7 +10,7 @@ var TemplateSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		// TODO: add examples
 		"change_mode": {
-			Description:  lang.PlainText(" Specifies the behavior Nomad should take if the rendered template changes. Nomad will always write the new contents of the template to the specified destination. The following possible values describe Nomad's action after writing the template to disk."),
+			Description:  lang.PlainText("Specifies the behavior Nomad should take if the rendered template changes. Nomad will always write the new contents of the template to the specified destination. The following possible values describe Nomad's action after writing the template to disk."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("restart")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 		},
