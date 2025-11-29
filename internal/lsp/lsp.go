@@ -319,7 +319,7 @@ func dfs2(body hcl.Body, blocks *[]protocol.CompletionItem, schemaMap map[string
 }
 
 func asBlock(name string) string {
-	return fmt.Sprintf("%s \"$1\" {\n\t$0\n}", name)
+	return fmt.Sprintf("%s \"${1:name}\" {\n\t$0\n}", name)
 }
 
 func asAnonymousBlock(name string) string {
