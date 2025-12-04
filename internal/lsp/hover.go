@@ -1,6 +1,8 @@
 package lsp
 
 import (
+	"fmt"
+
 	hclschema "github.com/hashicorp/hcl-lang/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
@@ -40,6 +42,14 @@ func CollectHoverInfoDFS(
 
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
 				ans = CollectHoverInfoDFS(b.Body, schemaMap, k, pos, langSchema.Blocks[k].Body)
+			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
+				if bodyContent.Attributes["driver"] != nil {
+					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
+
+					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
+
+					ans = CollectHoverInfoDFS(b.Body, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())])
+				}
 			}
 		}
 	}

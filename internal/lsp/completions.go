@@ -48,6 +48,14 @@ func CollectCompletionsDFS(
 
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
 				CollectCompletionsDFS(b.Body, blocks, schemaMap, k, pos, langSchema.Blocks[k].Body)
+			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
+				if bodyContent.Attributes["driver"] != nil {
+					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
+
+					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
+
+					CollectCompletionsDFS(b.Body, blocks, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())])
+				}
 			}
 		}
 	}
@@ -80,9 +88,8 @@ func CollectCompletionsDFS(
 				continue
 			}
 
-			h := v.Constraint.(*hclschema.LiteralType)
-
-			if h == nil {
+			h, ok := v.Constraint.(*hclschema.LiteralType)
+			if !ok {
 				continue
 			}
 
