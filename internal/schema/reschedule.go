@@ -45,7 +45,7 @@ var RescheduleSchema = &schema.BodySchema{
 			Constraint: &schema.LiteralType{Type: cty.String},
 		},
 		"unlimited": {
-			Description: lang.Markdown("`unlimited` enables unlimited reschedule attempts. If this is set to `true` the `attempts` and `interval` fields are not used. The [`progress_deadline`](/nomad/docs/job-specification/update#progress_deadline) parameter within the update block is still adhered to when this is set to `true`, meaning no more reschedule attempts are triggered once the [`progress_deadline`](/nomad/docs/job-specification/update#progress_deadline) is reached."),
+			Description: lang.Markdown("`unlimited` enables unlimited reschedule attempts. If this is set to `true` the `attempts` and `interval` fields are not used. The [`progress_deadline`](https://developer.hashicorp.com/nomad/docs/job-specification/update#progress_deadline) parameter within the update block is still adhered to when this is set to `true`, meaning no more reschedule attempts are triggered once the [`progress_deadline`](https://developer.hashicorp.com/nomad/docs/job-specification/update#progress_deadline) is reached."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.BoolVal(true),
 			},

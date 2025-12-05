@@ -87,13 +87,13 @@ var CheckSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"expose": {
-			Description:  lang.Markdown("Specifies whether an [Expose Path](/nomad/docs/job-specification/expose#path-parameters) should be automatically generated for this check. Only compatible with Connect-enabled task-group services using the default Connect proxy. If set, check [`type`](/nomad/docs/job-specification/check#type) must be `http` or `grpc`, and check `name` must be set. Only supported in the Consul service provider."),
+			Description:  lang.Markdown("Specifies whether an [Expose Path](https://developer.hashicorp.com/nomad/docs/job-specification/expose#path-parameters) should be automatically generated for this check. Only compatible with Connect-enabled task-group services using the default Connect proxy. If set, check [`type`](https://developer.hashicorp.com/nomad/docs/job-specification/check#type) must be `http` or `grpc`, and check `name` must be set. Only supported in the Consul service provider."),
 			DefaultValue: &schema.DefaultValue{Value: cty.False},
 			Constraint:   &schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 		"port": {
-			Description: lang.Markdown("Specifies the label of the port on which the check will be performed. Note this is the _label_ of the port and not the port number unless `address_mode = driver`. The port label must match one defined in the [`network`](/nomad/docs/job-specification/network) block. If a port value was declared on the `service`, this will inherit from that value if not supplied. If supplied, this value takes precedence over the `service.port` value. This is useful for services which operate on multiple ports. `grpc`, `http`, and `tcp` checks require a port while `script` checks do not. Checks will use the host IP and ports by default. Numeric ports may be used if `address_mode=\"driver\"` is set on the check."),
+			Description: lang.Markdown("Specifies the label of the port on which the check will be performed. Note this is the _label_ of the port and not the port number unless `address_mode = driver`. The port label must match one defined in the [`network`](https://developer.hashicorp.com/nomad/docs/job-specification/network) block. If a port value was declared on the `service`, this will inherit from that value if not supplied. If supplied, this value takes precedence over the `service.port` value. This is useful for services which operate on multiple ports. `grpc`, `http`, and `tcp` checks require a port while `script` checks do not. Checks will use the host IP and ports by default. Numeric ports may be used if `address_mode=\"driver\"` is set on the check."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
@@ -104,7 +104,7 @@ var CheckSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"task": {
-			Description:  lang.Markdown("Specifies the task associated with this check. Scripts are executed within the task's environment, and `check_restart` blocks will apply to the specified task. Inherits the [`service.task`](/nomad/docs/job-specification/service#task-1) value if not set. Must be unset or equivalent to `service.task` in task-level services."),
+			Description:  lang.Markdown("Specifies the task associated with this check. Scripts are executed within the task's environment, and `check_restart` blocks will apply to the specified task. Inherits the [`service.task`](https://developer.hashicorp.com/nomad/docs/job-specification/service#task-1) value if not set. Must be unset or equivalent to `service.task` in task-level services."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
@@ -132,7 +132,7 @@ var CheckSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"on_update": {
-			Description:  lang.Markdown("Specifies how checks should be evaluated when determining deployment health (including a job's initial deployment). This allows job submitters to define certain checks as readiness checks, progressing a deployment even if the Service's checks are not yet healthy. Checks inherit the Service's value by default. The check status is not altered in the service provider and is only used to determine the check's health during an update.\n\n* `require_healthy` - In order for Nomad to consider the check healthy during an update it must report as healthy.\n* `ignore_warnings` - If a Service Check reports as warning, Nomad will treat the check as healthy. The Check will still be in a warning state in Consul.\n* `ignore` - Any status will be treated as healthy.\n\n**Caveat:** `on_update` is only compatible with certain [`check_restart`](/nomad/docs/job-specification/check_restart) configurations. `on_update = \"ignore_warnings\"` requires that `check_restart.ignore_warnings = true`. `check_restart` can however specify `ignore_warnings = true` with `on_update = \"require_healthy\"`. If `on_update` is set to `ignore`, `check_restart` must be omitted entirely."),
+			Description:  lang.Markdown("Specifies how checks should be evaluated when determining deployment health (including a job's initial deployment). This allows job submitters to define certain checks as readiness checks, progressing a deployment even if the Service's checks are not yet healthy. Checks inherit the Service's value by default. The check status is not altered in the service provider and is only used to determine the check's health during an update.\n\n* `require_healthy` - In order for Nomad to consider the check healthy during an update it must report as healthy.\n* `ignore_warnings` - If a Service Check reports as warning, Nomad will treat the check as healthy. The Check will still be in a warning state in Consul.\n* `ignore` - Any status will be treated as healthy.\n\n**Caveat:** `on_update` is only compatible with certain [`check_restart`](https://developer.hashicorp.com/nomad/docs/job-specification/check_restart) configurations. `on_update = \"ignore_warnings\"` requires that `check_restart.ignore_warnings = true`. `check_restart` can however specify `ignore_warnings = true` with `on_update = \"require_healthy\"`. If `on_update` is set to `ignore`, `check_restart` must be omitted entirely."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("require_healthy")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

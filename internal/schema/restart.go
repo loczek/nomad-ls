@@ -31,7 +31,7 @@ var RestartSchema = &schema.BodySchema{
 			Constraint: &schema.LiteralType{Type: cty.String},
 		},
 		"mode": {
-			Description: lang.Markdown("Controls the behavior when the task fails more than `attempts` times in an interval. For a detailed explanation of these values and their behavior, please see the [mode values section](/nomad/docs/job-specification/restart#mode-values)."),
+			Description: lang.Markdown("Controls the behavior when the task fails more than `attempts` times in an interval. For a detailed explanation of these values and their behavior, please see the [mode values section](https://developer.hashicorp.com/nomad/docs/job-specification/restart#mode-values)."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.StringVal("fail"),
 			},

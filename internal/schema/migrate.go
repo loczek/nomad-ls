@@ -9,7 +9,7 @@ import (
 var MigrateSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"max_parallel": {
-			Description: lang.Markdown("Specifies the number of allocations that can be migrated at the same time. This number must be less than the total [`count`](/nomad/docs/job-specification/group#count) for the group as `count - max_parallel` will be left running during migrations."),
+			Description: lang.Markdown("Specifies the number of allocations that can be migrated at the same time. This number must be less than the total [`count`](https://developer.hashicorp.com/nomad/docs/job-specification/group#count) for the group as `count - max_parallel` will be left running during migrations."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},

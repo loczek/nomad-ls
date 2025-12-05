@@ -26,7 +26,7 @@ var SidecarTaskSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"config": {
-			Description: lang.Markdown("Configuration provided to the driver for initialization. Keys and values support [runtime variable interpolation](/nomad/docs/reference/runtime-variable-interpolation)."),
+			Description: lang.Markdown("Configuration provided to the driver for initialization. Keys and values support [runtime variable interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
 			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
 			IsOptional:  true,
 		},

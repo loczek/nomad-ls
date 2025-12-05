@@ -23,7 +23,7 @@ var ConsulSchema = &schema.BodySchema{
 			Constraint: &schema.LiteralType{Type: cty.String},
 		},
 		"partition": {
-			Description: lang.Markdown("When this field is set, a constraint will be added to the group or task to ensure that the allocation is placed on a Nomad client that has a Consul Enterprise agent in the specified Consul [admin partition](/consul/docs/enterprise/admin-partitions). Using this field requires the following:"),
+			Description: lang.Markdown("When this field is set, a constraint will be added to the group or task to ensure that the allocation is placed on a Nomad client that has a Consul Enterprise agent in the specified Consul [admin partition](https://developer.hashicorp.com/consul/docs/enterprise/admin-partitions). Using this field requires the following:"),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},

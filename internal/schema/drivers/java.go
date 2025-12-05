@@ -24,7 +24,7 @@ var JavaDriverSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"args": {
-			Description: lang.Markdown("A list of arguments to the Jar's main method. References to environment variables or any [interpretable Nomad variables](/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task."),
+			Description: lang.Markdown("A list of arguments to the Jar's main method. References to environment variables or any [interpretable Nomad variables](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
@@ -35,29 +35,29 @@ var JavaDriverSchema = &schema.BodySchema{
 		},
 		// TODO: add warning from docs
 		"pid_mode": {
-			Description: lang.Markdown("Set to `private` to enable PID namespace isolation for this task, or `host` to disable isolation. If left unset, the behavior is determined from the [`default_pid_mode`](/nomad/docs/deploy/task-driver/exec#default_pid_mode) in plugin configuration."),
+			Description: lang.Markdown("Set to `private` to enable PID namespace isolation for this task, or `host` to disable isolation. If left unset, the behavior is determined from the [`default_pid_mode`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#default_pid_mode) in plugin configuration."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
 		// TODO: add warning from docs
 		"ipc_mode": {
-			Description: lang.Markdown("Set to `private` to enable IPC namespace isolation for this task, or `host` to disable isolation. If left unset, the behavior is determined from the [`default_ipc_mode`](/nomad/docs/deploy/task-driver/exec#default_ipc_mode) in plugin configuration."),
+			Description: lang.Markdown("Set to `private` to enable IPC namespace isolation for this task, or `host` to disable isolation. If left unset, the behavior is determined from the [`default_ipc_mode`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#default_ipc_mode) in plugin configuration."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
 		"cap_add": {
-			Description: lang.Markdown("A list of Linux capabilities to enable for the task. Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with [`allow_caps`](/nomad/docs/deploy/task-driver/exec#allow_caps). Note that `all` is not permitted here if the `allow_caps` field in the driver configuration doesn't also allow all capabilities."),
+			Description: lang.Markdown("A list of Linux capabilities to enable for the task. Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with [`allow_caps`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#allow_caps). Note that `all` is not permitted here if the `allow_caps` field in the driver configuration doesn't also allow all capabilities."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		// TODO: add example
 		"cap_drop": {
-			Description: lang.Markdown("A list of Linux capabilities to disable for the task. Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with [`allow_caps`](/nomad/docs/deploy/task-driver/exec#allow_caps)."),
+			Description: lang.Markdown("A list of Linux capabilities to disable for the task. Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with [`allow_caps`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#allow_caps)."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		"work_dir": {
-			Description: lang.Markdown("Sets a custom working directory for the task. This path must be absolute and within the task's [chroot](/nomad/docs/deploy/task-driver/exec#chroot) or in a [host volume](/nomad/docs/configuration/client#host_volume-block) mounted with a [`volume_mount`](/nomad/docs/job-specification/volume_mount) block. This will also change the working directory when using `nomad alloc exec`."),
+			Description: lang.Markdown("Sets a custom working directory for the task. This path must be absolute and within the task's [chroot](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#chroot) or in a [host volume](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume-block) mounted with a [`volume_mount`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount) block. This will also change the working directory when using `nomad alloc exec`."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},

@@ -26,13 +26,13 @@ var TemplateSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"destination": {
-			Description:  lang.Markdown("Specifies the location where the resulting template should be rendered, relative to the [task working directory](/nomad/docs/reference/runtime-environment-settings#task-directories). Only drivers without filesystem isolation (ex. `raw_exec`) or that build a chroot in the task working directory (ex. `exec`) can render templates outside of the `NOMAD_ALLOC_DIR`, `NOMAD_TASK_DIR`, or `NOMAD_SECRETS_DIR`. For more details on how `destination` interacts with task drivers, see the [Filesystem internals](/nomad/docs/concepts/filesystem#templates-artifacts-and-dispatch-payloads) documentation. Note that where possible, the `NOMAD_SECRETS_DIR` is mounted `noexec`, so rendered templates can't be used as self-executing scripts."),
+			Description:  lang.Markdown("Specifies the location where the resulting template should be rendered, relative to the [task working directory](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#task-directories). Only drivers without filesystem isolation (ex. `raw_exec`) or that build a chroot in the task working directory (ex. `exec`) can render templates outside of the `NOMAD_ALLOC_DIR`, `NOMAD_TASK_DIR`, or `NOMAD_SECRETS_DIR`. For more details on how `destination` interacts with task drivers, see the [Filesystem internals](https://developer.hashicorp.com/nomad/docs/concepts/filesystem#templates-artifacts-and-dispatch-payloads) documentation. Note that where possible, the `NOMAD_SECRETS_DIR` is mounted `noexec`, so rendered templates can't be used as self-executing scripts."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsRequired:   true,
 		},
 		"env": {
-			Description:  lang.Markdown("Specifies the template should be read back in as environment variables for the task ([example](/nomad/docs/job-specification/template#environment-variables)). To update the environment on changes, you must set `change_mode` to `restart`. Setting `env` when the `change_mode` is `signal` will return a validation error. Setting `env` when the `change_mode` is `noop` is permitted but will not update the environment variables in the task."),
+			Description:  lang.Markdown("Specifies the template should be read back in as environment variables for the task ([example](https://developer.hashicorp.com/nomad/docs/job-specification/template#environment-variables)). To update the environment on changes, you must set `change_mode` to `restart`. Setting `env` when the `change_mode` is `signal` will return a validation error. Setting `env` when the `change_mode` is `noop` is permitted but will not update the environment variables in the task."),
 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   &schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
@@ -80,7 +80,7 @@ var TemplateSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"source": {
-			Description:  lang.Markdown("Specifies the path to the template to be rendered. One of `source` or `data` must be specified, but not both. This source can be fetched using an [`artifact`](/nomad/docs/job-specification/artifact) resource. The template must exist in the [task working directory](/nomad/docs/reference/runtime-environment-settings#task-directories) prior to starting the task; it is not possible to reference a template whose source is inside a Docker container, for example."),
+			Description:  lang.Markdown("Specifies the path to the template to be rendered. One of `source` or `data` must be specified, but not both. This source can be fetched using an [`artifact`](https://developer.hashicorp.com/nomad/docs/job-specification/artifact) resource. The template must exist in the [task working directory](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#task-directories) prior to starting the task; it is not possible to reference a template whose source is inside a Docker container, for example."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
@@ -104,7 +104,7 @@ var TemplateSchema = &schema.BodySchema{
 			Body:        ChangeScriptSchema,
 		},
 		"wait": {
-			Description: lang.PlainText("Defines the minimum and maximum amount of time to wait for the Consul cluster to reach a consistent state before rendering a template. This is useful to enable in systems where network connectivity to Consul is degraded, because it will reduce the number of times a template is rendered. This setting can be overridden by the [`client.template.wait_bounds`](/nomad/docs/configuration/client#wait_bounds). If the template configuration has a `min` lower than `client.template.wait_bounds.min` or a `max` greater than `client.template.wait_bounds.max`, the client's bounds will be enforced, and the template `wait` will be adjusted before being sent to the template engine."),
+			Description: lang.PlainText("Defines the minimum and maximum amount of time to wait for the Consul cluster to reach a consistent state before rendering a template. This is useful to enable in systems where network connectivity to Consul is degraded, because it will reduce the number of times a template is rendered. This setting can be overridden by the [`client.template.wait_bounds`](https://developer.hashicorp.com/nomad/docs/configuration/client#wait_bounds). If the template configuration has a `min` lower than `client.template.wait_bounds.min` or a `max` greater than `client.template.wait_bounds.max`, the client's bounds will be enforced, and the template `wait` will be adjusted before being sent to the template engine."),
 			Body:        WaitSchema,
 		},
 	},

@@ -27,13 +27,13 @@ var VolumeMountSchema = &schema.BodySchema{
 		},
 		// TODO: add warning from docs
 		"propagation_mode": {
-			Description:  lang.Markdown("Specifies the mount propagation mode for nested volumes. Possible values are:\n\n- [`private`](/nomad/docs/job-specification/volume_mount#private) - the task is not allowed to access nested mounts.\n- [`host-to-task`](/nomad/docs/job-specification/volume_mount#host-to-task) - allows new mounts that have been created outside of the task to be visible inside the task.\n- [`bidirectional`](/nomad/docs/job-specification/volume_mount#bidirectional) - allows the task to both access new mounts from the host and also create new mounts. This mode requires `ReadWrite` permission."),
+			Description:  lang.Markdown("Specifies the mount propagation mode for nested volumes. Possible values are:\n\n- [`private`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount#private) - the task is not allowed to access nested mounts.\n- [`host-to-task`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount#host-to-task) - allows new mounts that have been created outside of the task to be visible inside the task.\n- [`bidirectional`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount#bidirectional) - allows the task to both access new mounts from the host and also create new mounts. This mode requires `ReadWrite` permission."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("private")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
 		"selinux_label": {
-			Description:  lang.Markdown("Specifies the SELinux label for the mount. This is only supported on Linux hosts and when supported by the task driver. Refer to the task driver documentation for more information. Possible values are:\n\n- [`Z`](/nomad/docs/job-specification/volume_mount#z) - Specifies that the volume content is private and unshared between containers.\n- [`z`](/nomad/docs/job-specification/volume_mount#z-1) - Specifies that the volume content is shared among containers."),
+			Description:  lang.Markdown("Specifies the SELinux label for the mount. This is only supported on Linux hosts and when supported by the task driver. Refer to the task driver documentation for more information. Possible values are:\n\n- [`Z`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount#z) - Specifies that the volume content is private and unshared between containers.\n- [`z`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount#z-1) - Specifies that the volume content is shared among containers."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

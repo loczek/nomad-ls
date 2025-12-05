@@ -31,7 +31,7 @@ var PeriodicSchema = &schema.BodySchema{
 			Constraint: &schema.LiteralType{Type: cty.Bool},
 		},
 		"time_zone": {
-			Description: lang.Markdown("Specifies the time zone to evaluate the next launch interval against. [Daylight Saving Time](/nomad/docs/job-specification/periodic#daylight-saving-time) affects scheduling, so please ensure the [behavior below](/nomad/docs/job-specification/periodic#daylight-saving-time) meets your needs. The time zone must be parsable by Golang's [LoadLocation](https://golang.org/pkg/time/#LoadLocation)."),
+			Description: lang.Markdown("Specifies the time zone to evaluate the next launch interval against. [Daylight Saving Time](https://developer.hashicorp.com/nomad/docs/job-specification/periodic#daylight-saving-time) affects scheduling, so please ensure the [behavior below](https://developer.hashicorp.com/nomad/docs/job-specification/periodic#daylight-saving-time) meets your needs. The time zone must be parsable by Golang's [LoadLocation](https://golang.org/pkg/time/#LoadLocation)."),
 			DefaultValue: &schema.DefaultValue{
 				Value: cty.StringVal("UTC"),
 			},

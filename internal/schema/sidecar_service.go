@@ -43,7 +43,7 @@ var SidecarServiceSchema = &schema.BodySchema{
 var ProxySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"config": {
-			Description: lang.Markdown("Proxy configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](/consul/docs/connect/proxies/envoy#dynamic-configuration) for details. Keys and values support [runtime variable interpolation](/nomad/docs/reference/runtime-variable-interpolation)."),
+			Description: lang.Markdown("Proxy configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/envoy#dynamic-configuration) for details. Keys and values support [runtime variable interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
 			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
 			IsOptional:  true,
 		},
@@ -74,11 +74,11 @@ var ProxySchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		// TODO: this can also be set to `true` or the `ExposeSchema`
 		"expose": {
-			Description: lang.Markdown("Used to configure expose path configuration for Envoy. See Consul's [Expose Paths Configuration Reference](/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for more information."),
+			Description: lang.Markdown("Used to configure expose path configuration for Envoy. See Consul's [Expose Paths Configuration Reference](https://developer.hashicorp.com/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for more information."),
 			Body:        ExposeSchema,
 		},
 		"transparent_proxy": {
-			Description: lang.Markdown("Used to enable [transparent proxy](/consul/docs/k8s/connect/transparent-proxy) mode, which allows the proxy to use Consul service intentions to automatically configure upstreams, and configures iptables rules to force traffic from the allocation to flow through the proxy."),
+			Description: lang.Markdown("Used to enable [transparent proxy](https://developer.hashicorp.com/consul/docs/k8s/connect/transparent-proxy) mode, which allows the proxy to use Consul service intentions to automatically configure upstreams, and configures iptables rules to force traffic from the allocation to flow through the proxy."),
 			Body:        TransparentProxySchema,
 		},
 		"upstreams": {
@@ -116,7 +116,7 @@ var PathSchema = &schema.BodySchema{
 	},
 	Blocks: map[string]*schema.BlockSchema{
 		"listener_port": {
-			Description: lang.Markdown("The name of the port to use for the exposed listener. The port should be configured to [map inside](/nomad/docs/job-specification/network#to) the task's network namespace."),
+			Description: lang.Markdown("The name of the port to use for the exposed listener. The port should be configured to [map inside](https://developer.hashicorp.com/nomad/docs/job-specification/network#to) the task's network namespace."),
 			Body:        PortSchema,
 		},
 	},
@@ -125,7 +125,7 @@ var PathSchema = &schema.BodySchema{
 var TransparentProxySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"exclude_inbound_ports": {
-			Description: lang.Markdown("A list of inbound ports to exclude from the inbound traffic redirection. This allows traffic on these ports to bypass the Envoy proxy. These ports can be specified as either [network port labels](/nomad/docs/job-specification/network#port-parameters) or as numeric ports. Nomad will automatically add the following to this list:\n\n- The [`local_path_port`](/nomad/docs/job-specification/expose#local_path_port) of any [`expose`](/nomad/docs/job-specification/expose) block.\n- The port of any service check with [`expose=true`](/nomad/docs/job-specification/check#expose) set.\n- The port of any `network.port` with a [`static`](/nomad/docs/job-specification/network#static) value."),
+			Description: lang.Markdown("A list of inbound ports to exclude from the inbound traffic redirection. This allows traffic on these ports to bypass the Envoy proxy. These ports can be specified as either [network port labels](https://developer.hashicorp.com/nomad/docs/job-specification/network#port-parameters) or as numeric ports. Nomad will automatically add the following to this list:\n\n- The [`local_path_port`](https://developer.hashicorp.com/nomad/docs/job-specification/expose#local_path_port) of any [`expose`](https://developer.hashicorp.com/nomad/docs/job-specification/expose) block.\n- The port of any service check with [`expose=true`](https://developer.hashicorp.com/nomad/docs/job-specification/check#expose) set.\n- The port of any `network.port` with a [`static`](https://developer.hashicorp.com/nomad/docs/job-specification/network#static) value."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsRequired:  true,
 		},
@@ -145,19 +145,19 @@ var TransparentProxySchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"no_dns": {
-			Description:  lang.Markdown("By default, Consul will be set as the nameserver for the workload and IP tables rules will redirect DNS queries to Consul. If you want only external DNS, set `no_dns=true`. You will need to add your own CIDR and port exclusions for your DNS nameserver. You cannot set [`network.dns`](/nomad/docs/job-specification/network#dns-parameters) if `no_dns=false`."),
+			Description:  lang.Markdown("By default, Consul will be set as the nameserver for the workload and IP tables rules will redirect DNS queries to Consul. If you want only external DNS, set `no_dns=true`. You will need to add your own CIDR and port exclusions for your DNS nameserver. You cannot set [`network.dns`](https://developer.hashicorp.com/nomad/docs/job-specification/network#dns-parameters) if `no_dns=false`."),
 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   &schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 		"outbound_port": {
-			Description:  lang.Markdown("The port that Envoy will bind on inside the network namespace. The iptables rules created by `consul-cni` will force traffic to flow to this port. You should only set this value if you have specifically set the [`outbound_listener_port`](/consul/docs/connect/proxies/proxy-config-reference#outbound_listener_port) in your Consul proxy configuration. You can change the default value for a given node via [client metadata](/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below)."),
+			Description:  lang.Markdown("The port that Envoy will bind on inside the network namespace. The iptables rules created by `consul-cni` will force traffic to flow to this port. You should only set this value if you have specifically set the [`outbound_listener_port`](https://developer.hashicorp.com/consul/docs/connect/proxies/proxy-config-reference#outbound_listener_port) in your Consul proxy configuration. You can change the default value for a given node via [client metadata](https://developer.hashicorp.com/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below)."),
 			DefaultValue: &schema.DefaultValue{Value: cty.NumberIntVal(15001)},
 			Constraint:   &schema.LiteralType{Type: cty.Number},
 			IsOptional:   true,
 		},
 		"uid": {
-			Description:  lang.Markdown("The Unix user ID (UID) used by the Envoy proxy. You should only set this value if you have a custom build of the Envoy container image which uses a different UID. You can change the default value for a given node via [client metadata](/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below). Note that your workload's task cannot use the same UID as the Envoy sidecar proxy."),
+			Description:  lang.Markdown("The Unix user ID (UID) used by the Envoy proxy. You should only set this value if you have a custom build of the Envoy container image which uses a different UID. You can change the default value for a given node via [client metadata](https://developer.hashicorp.com/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below). Note that your workload's task cannot use the same UID as the Envoy sidecar proxy."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("101")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
@@ -165,7 +165,7 @@ var TransparentProxySchema = &schema.BodySchema{
 	},
 	Blocks: map[string]*schema.BlockSchema{
 		"listener_port": {
-			Description: lang.Markdown("The name of the port to use for the exposed listener. The port should be configured to [map inside](/nomad/docs/job-specification/network#to) the task's network namespace."),
+			Description: lang.Markdown("The name of the port to use for the exposed listener. The port should be configured to [map inside](https://developer.hashicorp.com/nomad/docs/job-specification/network#to) the task's network namespace."),
 			Body:        PortSchema,
 		},
 	},
@@ -174,7 +174,7 @@ var TransparentProxySchema = &schema.BodySchema{
 var UpstreamsSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"config": {
-			Description: lang.Markdown("Upstream configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for details. Keys and values support [runtime variable interpolation](/nomad/docs/reference/runtime-variable-interpolation)."),
+			Description: lang.Markdown("Upstream configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for details. Keys and values support [runtime variable interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
 			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
 			IsOptional:  true,
 		},
@@ -244,7 +244,7 @@ var UpstreamsSchema = &schema.BodySchema{
 var MeshGatewaySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"mode": {
-			Description:  lang.Markdown("The mode of operation in which to use [Connect Mesh Gateways](/consul/docs/connect/gateways/mesh-gateway/service-to-service-traffic-datacenters#mesh-gateways). If left unset, the mode will default to the mode as determined by the Consul [service-defaults](/consul/docs/connect/config-entries/service-defaults#meshgateway) configuration for the service. Can be configured with the following modes:\n\n - [`local`](/nomad/docs/job-specification/upstreams#local) - In this mode the Connect proxy makes its outbound connection to a gateway running in the same datacenter. That gateway is then responsible for ensuring the data gets forwarded along to gateways in the destination datacenter.\n - [`remote`](/nomad/docs/job-specification/upstreams#remote) - In this mode the Connect proxy makes its outbound connection to a gateway running in the destination datacenter. That gateway will then forward the data to the final destination service.\n - [`none`](/nomad/docs/job-specification/upstreams#none) - In this mode, no gateway is used and a Connect proxy makes its outbound connections directly to the destination services."),
+			Description:  lang.Markdown("The mode of operation in which to use [Connect Mesh Gateways](https://developer.hashicorp.com/consul/docs/connect/gateways/mesh-gateway/service-to-service-traffic-datacenters#mesh-gateways). If left unset, the mode will default to the mode as determined by the Consul [service-defaults](https://developer.hashicorp.com/consul/docs/connect/config-entries/service-defaults#meshgateway) configuration for the service. Can be configured with the following modes:\n\n - [`local`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#local) - In this mode the Connect proxy makes its outbound connection to a gateway running in the same datacenter. That gateway is then responsible for ensuring the data gets forwarded along to gateways in the destination datacenter.\n - [`remote`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#remote) - In this mode the Connect proxy makes its outbound connection to a gateway running in the destination datacenter. That gateway will then forward the data to the final destination service.\n - [`none`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#none) - In this mode, no gateway is used and a Connect proxy makes its outbound connections directly to the destination services."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

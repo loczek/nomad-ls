@@ -9,12 +9,12 @@ import (
 var RawExecDriverSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"args": {
-			Description: lang.Markdown("A list of arguments to the `command`. References to environment variables or any [interpretable Nomad variables](/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task."),
+			Description: lang.Markdown("A list of arguments to the `command`. References to environment variables or any [interpretable Nomad variables](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		"command": {
-			Description: lang.Markdown("The command to execute. Must be provided. If executing a binary that exists on the host, the path must be absolute. If executing a binary that is downloaded from an [`artifact`](/nomad/docs/job-specification/artifact), the path can be relative from the allocation's root directory."),
+			Description: lang.Markdown("The command to execute. Must be provided. If executing a binary that exists on the host, the path must be absolute. If executing a binary that is downloaded from an [`artifact`](https://developer.hashicorp.com/nomad/docs/job-specification/artifact), the path can be relative from the allocation's root directory."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 		},
 		// TODO: check if type is correct

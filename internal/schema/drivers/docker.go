@@ -21,18 +21,18 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"args": {
-			Description: lang.Markdown("A list of arguments to the optional `command`. If no `command` is specified, the arguments are passed directly to the container. References to environment variables or any [interpretable Nomad variables](/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task. For example:"),
+			Description: lang.Markdown("A list of arguments to the optional `command`. If no `command` is specified, the arguments are passed directly to the container. References to environment variables or any [interpretable Nomad variables](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task. For example:"),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		// TODO: update with docs
 		"auth": {
-			Description: lang.Markdown("A list of arguments to the optional `command`. If no `command` is specified, the arguments are passed directly to the container. References to environment variables or any [interpretable Nomad variables](/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task. For example:"),
+			Description: lang.Markdown("A list of arguments to the optional `command`. If no `command` is specified, the arguments are passed directly to the container. References to environment variables or any [interpretable Nomad variables](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task. For example:"),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		"auth_soft_fail": {
-			Description:  lang.Markdown("Don't fail the task on an auth failure. Attempt to continue without auth. If the Nomad client configuration has an [`auth.helper`](/nomad/docs/deploy/task-driver/docker#helper) block, the helper will be tried for all images, including public images. If you mix private and public images, you will need to include `auth_soft_fail=true` in every job using a public image."),
+			Description:  lang.Markdown("Don't fail the task on an auth failure. Attempt to continue without auth. If the Nomad client configuration has an [`auth.helper`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#helper) block, the helper will be tried for all images, including public images. If you mix private and public images, you will need to include `auth_soft_fail=true` in every job using a public image."),
 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   &schema.LiteralType{Type: cty.Bool},
 		},
@@ -72,7 +72,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"extra_hosts": {
-			Description: lang.Markdown("A list of hosts, given as host:IP, to be added to `/etc/hosts`. This option may not work as expected in `bridge` network mode when there is more than one task within the same group. Refer to the [upgrade guide](/nomad/docs/upgrade/upgrade-specific#docker-driver) for more information."),
+			Description: lang.Markdown("A list of hosts, given as host:IP, to be added to `/etc/hosts`. This option may not work as expected in `bridge` network mode when there is more than one task within the same group. Refer to the [upgrade guide](https://developer.hashicorp.com/nomad/docs/upgrade/upgrade-specific#docker-driver) for more information."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
@@ -171,7 +171,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"memory_hard_limit": {
-			Description: lang.Markdown("The maximum allowable amount of memory used (megabytes) by the container. If set, the [`memory`](/nomad/docs/job-specification/resources#memory) parameter of the task resource configuration becomes a soft limit passed to the docker driver as [`--memory_reservation`](https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory), and `memory_hard_limit` is passed as the [`--memory`](https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory) hard limit. When the host is under memory pressure, the behavior of soft limit activation is governed by the [Kernel](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt)."),
+			Description: lang.Markdown("The maximum allowable amount of memory used (megabytes) by the container. If set, the [`memory`](https://developer.hashicorp.com/nomad/docs/job-specification/resources#memory) parameter of the task resource configuration becomes a soft limit passed to the docker driver as [`--memory_reservation`](https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory), and `memory_hard_limit` is passed as the [`--memory`](https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory) hard limit. When the host is under memory pressure, the behavior of soft limit activation is governed by the [Kernel](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt)."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
@@ -182,7 +182,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 		"network_mode": {
-			Description:  lang.Markdown("The network mode to be used for the container. In order to support userspace networking plugins in Docker 1.9 this accepts any value. The default is `bridge` for all operating systems but Windows, which defaults to `nat`. Other networking modes may not work without additional configuration on the host (which is outside the scope of Nomad). Valid values pre-docker 1.9 are `default`, `bridge`, `host`, `none`, or `container:name`.\n\nThe default `network_mode` for tasks that use group networking in [`bridge`](/nomad/docs/job-specification/network#bridge) mode will be `container:<name>`, where the name is the container name of the parent container used to share network namespaces between tasks. If you set the group [`network.mode`](/nomad/docs/job-specification/network#mode) to `bridge` you should not set this Docker `network_mode` config, otherwise the container will be unable to reach other containers in the task group. This will also prevent [Connect-enabled](/nomad/docs/job-specification/connect) tasks from reaching the Envoy sidecar proxy. You must also set any DNS options in the `network.dns` block and not in the task configuration.\n\nIf you are in the process of migrating from the default Docker network to group-wide bridge networking, you may encounter issues preventing your containers from reaching networks outside of the bridge interface on systems with firewalld enabled. This behavior is often caused by the CNI plugin not registering the group network as trusted and can be resolved as described in the [network block](/nomad/docs/job-specification/network#bridge-mode) documentation."),
+			Description:  lang.Markdown("The network mode to be used for the container. In order to support userspace networking plugins in Docker 1.9 this accepts any value. The default is `bridge` for all operating systems but Windows, which defaults to `nat`. Other networking modes may not work without additional configuration on the host (which is outside the scope of Nomad). Valid values pre-docker 1.9 are `default`, `bridge`, `host`, `none`, or `container:name`.\n\nThe default `network_mode` for tasks that use group networking in [`bridge`](https://developer.hashicorp.com/nomad/docs/job-specification/network#bridge) mode will be `container:<name>`, where the name is the container name of the parent container used to share network namespaces between tasks. If you set the group [`network.mode`](https://developer.hashicorp.com/nomad/docs/job-specification/network#mode) to `bridge` you should not set this Docker `network_mode` config, otherwise the container will be unable to reach other containers in the task group. This will also prevent [Connect-enabled](https://developer.hashicorp.com/nomad/docs/job-specification/connect) tasks from reaching the Envoy sidecar proxy. You must also set any DNS options in the `network.dns` block and not in the task configuration.\n\nIf you are in the process of migrating from the default Docker network to group-wide bridge networking, you may encounter issues preventing your containers from reaching networks outside of the bridge interface on systems with firewalld enabled. This behavior is often caused by the CNI plugin not registering the group network as trusted and can be resolved as described in the [network block](https://developer.hashicorp.com/nomad/docs/job-specification/network#bridge-mode) documentation."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("bridge")},
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
@@ -246,7 +246,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"volumes": {
-			Description: lang.Markdown("A list of `host_path:container_path` strings to bind host paths to container paths. Mounting host paths outside of the [allocation working directory](/nomad/docs/reference/runtime-environment-settings#task-directories) is prevented by default and limits volumes to directories that exist inside the allocation working directory. You can allow mounting host paths outside of the [allocation working directory](/nomad/docs/reference/runtime-environment-settings#task-directories) on individual clients by setting the `docker.volumes.enabled` option to `true` in the [client's configuration](/nomad/docs/deploy/task-driver/docker#client-requirements). We recommend using [`mount`](/nomad/docs/job-declare/task-driver/docker#mount) if you wish to have more control over volume definitions."),
+			Description: lang.Markdown("A list of `host_path:container_path` strings to bind host paths to container paths. Mounting host paths outside of the [allocation working directory](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#task-directories) is prevented by default and limits volumes to directories that exist inside the allocation working directory. You can allow mounting host paths outside of the [allocation working directory](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#task-directories) on individual clients by setting the `docker.volumes.enabled` option to `true` in the [client's configuration](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#client-requirements). We recommend using [`mount`](https://developer.hashicorp.com/nomad/docs/job-declare/task-driver/docker#mount) if you wish to have more control over volume definitions."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
@@ -277,13 +277,13 @@ var DockerDriverSchema = &schema.BodySchema{
 		},
 		// TODO: add example
 		"cap_add": {
-			Description: lang.Markdown("A list of Linux capabilities as strings to pass directly to [`--cap-add`](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities). Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with the [`allow_caps`](/nomad/docs/deploy/task-driver/docker#allow_caps) plugin option key in the client node's configuration. Note that `all` is not permitted here if the `allow_caps` field in the driver configuration doesn't also allow all capabilities."),
+			Description: lang.Markdown("A list of Linux capabilities as strings to pass directly to [`--cap-add`](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities). Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with the [`allow_caps`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#allow_caps) plugin option key in the client node's configuration. Note that `all` is not permitted here if the `allow_caps` field in the driver configuration doesn't also allow all capabilities."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
 		// TODO: add example
 		"cap_drop": {
-			Description: lang.Markdown("A list of Linux capabilities as strings to pass directly to [`--cap-drop`](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities). Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with the [`allow_caps`](/nomad/docs/deploy/task-driver/docker#allow_caps) plugin option key in the client node's configuration."),
+			Description: lang.Markdown("A list of Linux capabilities as strings to pass directly to [`--cap-drop`](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities). Effective capabilities (computed from `cap_add` and `cap_drop`) must be a subset of the allowed capabilities configured with the [`allow_caps`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#allow_caps) plugin option key in the client node's configuration."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:  true,
 		},
@@ -300,7 +300,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"advertise_ipv6_address": {
-			Description:  lang.Markdown("`true` or `false` (default). Use the container's IPv6 address (GlobalIPv6Address in Docker) when registering services and checks. See [IPv6 Docker containers](/nomad/docs/job-specification/service#ipv6-docker-containers) for details."),
+			Description:  lang.Markdown("`true` or `false` (default). Use the container's IPv6 address (GlobalIPv6Address in Docker) when registering services and checks. See [IPv6 Docker containers](https://developer.hashicorp.com/nomad/docs/job-specification/service#ipv6-docker-containers) for details."),
 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   &schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
