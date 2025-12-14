@@ -13,7 +13,7 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 	return protocol.InitializeResult{
 		ServerInfo: &protocol.ServerInfo{
 			Name:    "nomad-ls",
-			Version: "0.0.1",
+			Version: "0.0.2",
 		},
 		Capabilities: protocol.ServerCapabilities{
 			CompletionProvider: &protocol.CompletionOptions{},
