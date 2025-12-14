@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/hashicorp/hcl/v2"
@@ -154,12 +155,12 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 	return nil, nil
 }
 
-func asBlock(name string) string {
-	return fmt.Sprintf("%s \"${1:name}\" {\n\t$0\n}", name)
+func asBlock(name string, depth int) string {
+	return fmt.Sprintf("%s \"${1:name}\" {\n%s$0\n}", name, strings.Repeat("\t", depth))
 }
 
-func asAnonymousBlock(name string) string {
-	return fmt.Sprintf("%s {\n\t$0\n}", name)
+func asAnonymousBlock(name string, depth int) string {
+	return fmt.Sprintf("%s {\n%s$0\n}", name, strings.Repeat("\t", depth))
 }
 
 func CalculateByteOffset(pos protocol.Position, src []byte) uint {

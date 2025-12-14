@@ -15,7 +15,7 @@ import (
 func CollectCompletions(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []protocol.CompletionItem {
 	var blocks []protocol.CompletionItem
 
-	CollectCompletionsDFS(body, &blocks, schemaMap, "root", pos, &schema.RootBodySchema)
+	CollectCompletionsDFS(body, &blocks, schemaMap, "root", pos, &schema.RootBodySchema, 1)
 
 	return blocks
 }
@@ -27,6 +27,7 @@ func CollectCompletionsDFS(
 	schemaKey string,
 	pos hcl.Pos,
 	langSchema *hclschema.BodySchema,
+	depth int,
 ) {
 	if schemaMap[schemaKey] == nil {
 		return
@@ -47,14 +48,14 @@ func CollectCompletionsDFS(
 			matchingBlocks += 1
 
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
-				CollectCompletionsDFS(b.Body, blocks, schemaMap, k, pos, langSchema.Blocks[k].Body)
+				CollectCompletionsDFS(b.Body, blocks, schemaMap, k, pos, langSchema.Blocks[k].Body, depth+1)
 			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
 				if bodyContent.Attributes["driver"] != nil {
 					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
 
 					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
 
-					CollectCompletionsDFS(b.Body, blocks, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())])
+					CollectCompletionsDFS(b.Body, blocks, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())], depth+1)
 				}
 			}
 		}
@@ -64,23 +65,23 @@ func CollectCompletionsDFS(
 		var blocksByTypeArr []protocol.CompletionItem
 
 		for k, v := range langSchema.Blocks {
+			var text string
+			var detail string
+
 			if len(v.Labels) != 0 {
-				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-					Label:      k,
-					InsertText: asBlock(k),
-					Kind:       protocol.CompletionItemKindInterface,
-					// Kind:       protocol.CompletionItemKindClass,
-					InsertTextFormat: protocol.InsertTextFormatSnippet,
-				})
+				text = asBlock(k, depth)
+				detail = "named"
 			} else {
-				blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
-					Label:      k,
-					InsertText: asAnonymousBlock(k),
-					Kind:       protocol.CompletionItemKindInterface,
-					// Kind:       protocol.CompletionItemKindClass,
-					InsertTextFormat: protocol.InsertTextFormatSnippet,
-				})
+				text = asAnonymousBlock(k, depth)
 			}
+
+			blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
+				Label:            k,
+				InsertText:       text,
+				Kind:             protocol.CompletionItemKindInterface,
+				InsertTextFormat: protocol.InsertTextFormatSnippet,
+				Detail:           detail,
+			})
 		}
 
 		for k, v := range langSchema.Attributes {
