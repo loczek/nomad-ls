@@ -97,51 +97,60 @@ func CollectCompletionsDFS(
 				continue
 			}
 
-			log.Printf("attr: %s", k)
-			log.Printf("%+v", bodyContent.Attributes)
+			var insertText string
+
+			switch c.Type {
+			case cty.String:
+				insertText = fmt.Sprintf("%s = \"$0\"", k)
+			case cty.Number:
+			case cty.Bool:
+				insertText = fmt.Sprintf("%s = $0", k)
+			case cty.List(cty.String):
+				insertText = fmt.Sprintf("%s = [$0]", k)
+			case cty.Map(cty.String):
+				insertText = fmt.Sprintf("%s = {$0}", k)
+			default:
+				insertText = fmt.Sprintf("%s = ", k)
+			}
 
 			if bodyContent.Attributes[k] != nil {
 				continue
 			}
 
-			var insertText string
-
 			d, ok := v.DefaultValue.(*hclschema.DefaultValue)
-			if !ok {
-				continue
-			}
+			if ok {
+				switch c.Type {
+				case cty.String:
+					insertText = fmt.Sprintf("%s = \"${0:%s}\"", k, d.Value.AsString())
+				case cty.Number:
+					val, err := convert.Convert(d.Value, cty.String)
 
-			switch c.Type {
-			case cty.String:
-				insertText = fmt.Sprintf("%s = \"${0:%s}\"", k, d.Value.AsString())
-			case cty.Number:
-				val, err := convert.Convert(d.Value, cty.String)
+					if err != nil {
+						continue
+					}
 
-				if err != nil {
-					continue
+					insertText = fmt.Sprintf("%s = ${0:%s}", k, val.AsString())
+				case cty.Bool:
+					insertText = fmt.Sprintf("%s = ${0:%s}", k, strconv.FormatBool(d.Value.True()))
+				case cty.List(cty.String):
+					var arr []string
+
+					for _, b := range d.Value.Elements() {
+						arr = append(arr, b.AsString())
+					}
+
+					insertText = fmt.Sprintf("%s = [\"${0:%s}\"]", k, arr)
+				case cty.Map(cty.String):
+					var arr = make(map[string]string)
+
+					for a, b := range d.Value.Elements() {
+						arr[a.AsString()] = b.AsString()
+					}
+
+					insertText = fmt.Sprintf("%s = {${0:%s}}", k, formatMap(arr))
+				default:
+					insertText = fmt.Sprintf("%s = ", k)
 				}
-
-				insertText = fmt.Sprintf("%s = ${0:%s}", k, val.AsString())
-			case cty.Bool:
-				insertText = fmt.Sprintf("%s = ${0:%s}", k, strconv.FormatBool(d.Value.True()))
-			case cty.List(cty.String):
-				var arr []string
-
-				for _, b := range d.Value.Elements() {
-					arr = append(arr, b.AsString())
-				}
-
-				insertText = fmt.Sprintf("%s = [\"${0:%s}\"]", k, arr)
-			case cty.Map(cty.String):
-				var arr = make(map[string]string)
-
-				for a, b := range d.Value.Elements() {
-					arr[a.AsString()] = b.AsString()
-				}
-
-				insertText = fmt.Sprintf("%s = {${0:%s}}", k, formatMap(arr))
-			default:
-				insertText = fmt.Sprintf("%s = ", k)
 			}
 
 			blocksByTypeArr = append(blocksByTypeArr, protocol.CompletionItem{
