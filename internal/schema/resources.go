@@ -81,7 +81,7 @@ var DeviceSchema = &schema.BodySchema{
 			MinItems:    1,
 		},
 		"affinity": {
-			Description: lang.Markdown("Constraints to restrict which devices are eligible. This can be provided multiple times to define additional constraints. See below for available attributes."),
+			Description: lang.Markdown(" Affinity to specify a preference for which devices get selected. This can be provided multiple times to define additional affinities. See below for available attributes."),
 			Body:        AffinitySchema,
 		},
 	},
