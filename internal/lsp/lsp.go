@@ -77,7 +77,8 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 
 			for _, v := range *diag {
 				protocolDiagnostics = append(protocolDiagnostics, protocol.Diagnostic{
-					Source: "nomad-ls",
+					Source:   "nomad-ls",
+					Severity: protocol.DiagnosticSeverity(v.Severity),
 					Range: protocol.Range{
 						Start: protocol.Position{
 							Line:      uint32(v.Subject.Start.Line - 1),
