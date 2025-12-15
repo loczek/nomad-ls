@@ -53,6 +53,13 @@ var VaultSchema = &schema.BodySchema{
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
+		// TODO: mark as deprecated
+		"policies": {
+			Description:  lang.Markdown("Specifies the set of Vault policies that the task requires. The Nomad client will retrieve a Vault token that is limited to those policies. This field may only be used with the legacy Vault authentication workflow and not with JWT and workload identity. It is deprecated in favor of the `role` field and will be removed in Nomad 1.10."),
+			DefaultValue: &schema.DefaultValue{Value: cty.ListValEmpty(cty.String)},
+			Constraint:   &schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:   true,
+		},
 		"role": {
 			Description:  lang.Markdown("Specifies the Vault role used when retrieving a token from Vault using JWT and workload identity. If not specified the client's [`create_from_role`](https://developer.hashicorp.com/nomad/docs/configuration/vault#create_from_role) value is used."),
 			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
