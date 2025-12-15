@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/lmittmann/tint"
@@ -45,7 +46,7 @@ func main() {
 		return nil
 	})
 
-	logger.Info("starting")
+	logger.Info("starting", "build", BuildInfo())
 
 	<-con.Done()
 
@@ -77,4 +78,19 @@ func isBuilt() bool {
 	}
 
 	return true
+}
+
+func BuildInfo() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "unknown"
+	}
+	var rev string
+	for _, s := range info.Settings {
+		if s.Key == "vcs.revision" {
+			rev = s.Value[:min(7, len(rev))]
+			break
+		}
+	}
+	return fmt.Sprintf("%s-%s", info.Main.Version, rev)
 }
