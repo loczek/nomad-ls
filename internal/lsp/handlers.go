@@ -84,7 +84,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
 	file, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
 
-	schemaDiags := CollectDiagnistics(file.Body, s.schemaMap)
+	schemaDiags := CollectDiagnostics(file.Body, s.schemaMap)
 
 	allDiags := diags.Extend(*schemaDiags)
 
@@ -105,7 +105,7 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 
 		body := file.Body
 
-		schemaDiags := CollectDiagnistics(body, s.schemaMap)
+		schemaDiags := CollectDiagnostics(body, s.schemaMap)
 
 		allDiags := diags.Extend(*schemaDiags)
 

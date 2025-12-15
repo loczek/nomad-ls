@@ -8,15 +8,15 @@ import (
 	"github.com/loczek/nomad-ls/internal/schema"
 )
 
-func CollectDiagnistics(body hcl.Body, schemaMap map[string]*hcl.BodySchema) *hcl.Diagnostics {
+func CollectDiagnostics(body hcl.Body, schemaMap map[string]*hcl.BodySchema) *hcl.Diagnostics {
 	var diags hcl.Diagnostics
 
-	diags = diags.Extend(CollectDiagnisticsDFS(body, &diags, schemaMap, schema.SchemaMapBetter["root"], &schema.RootBodySchema))
+	diags = diags.Extend(CollectDiagnosticsDFS(body, &diags, schemaMap, schema.SchemaMapBetter["root"], &schema.RootBodySchema))
 
 	return &diags
 }
 
-func CollectDiagnisticsDFS(body hcl.Body, diags *hcl.Diagnostics, schemaMap map[string]*hcl.BodySchema, currSchema *hcl.BodySchema, langSchema *hclschema.BodySchema) hcl.Diagnostics {
+func CollectDiagnosticsDFS(body hcl.Body, diags *hcl.Diagnostics, schemaMap map[string]*hcl.BodySchema, currSchema *hcl.BodySchema, langSchema *hclschema.BodySchema) hcl.Diagnostics {
 	if currSchema == nil {
 		return make(hcl.Diagnostics, 0)
 	}
@@ -37,14 +37,14 @@ func CollectDiagnisticsDFS(body hcl.Body, diags *hcl.Diagnostics, schemaMap map[
 	for k, v := range blocksByType {
 		for _, b := range v {
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
-				allDiags = allDiags.Extend(CollectDiagnisticsDFS(b.Body, diags, schemaMap, schemaMap[k], langSchema.Blocks[k].Body))
+				allDiags = allDiags.Extend(CollectDiagnosticsDFS(b.Body, diags, schemaMap, schemaMap[k], langSchema.Blocks[k].Body))
 			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
 				if bodyContent.Attributes["driver"] != nil {
 					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
 
 					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
 
-					allDiags = allDiags.Extend(CollectDiagnisticsDFS(b.Body, diags, schemaMap, schemaMap[schemaMapDependentKey], langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())]))
+					allDiags = allDiags.Extend(CollectDiagnosticsDFS(b.Body, diags, schemaMap, schemaMap[schemaMapDependentKey], langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())]))
 				}
 			}
 		}
