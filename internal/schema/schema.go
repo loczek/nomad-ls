@@ -7,7 +7,7 @@ import (
 	"github.com/loczek/nomad-ls/internal/schema/drivers"
 )
 
-var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
+var SchemaMap map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"root": RootBodySchema.Copy().ToHCLSchema(),
 
 	"variable":  VariableSchema.Copy().ToHCLSchema(),
@@ -31,7 +31,7 @@ var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"expose":           ExposeSchema.Copy().ToHCLSchema(),
 	"group":            GroupSchema.Copy().ToHCLSchema(),
 	"identity":         IdentitySchema.Copy().ToHCLSchema(),
-	"job":              JobSchemaBetter.Copy().ToHCLSchema(),
+	"job":              JobSchema.Copy().ToHCLSchema(),
 	"lifecycle":        LifecycleSchema.Copy().ToHCLSchema(),
 	"listener_port":    PortSchema.Copy().ToHCLSchema(),
 	"logs":             LogsSchema.Copy().ToHCLSchema(),
@@ -90,7 +90,7 @@ var RootBodySchema = schema.BodySchema{
 			Labels: []*schema.LabelSchema{
 				{Name: "name"},
 			},
-			Body: JobSchemaBetter,
+			Body: JobSchema,
 		},
 	},
 }

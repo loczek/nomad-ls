@@ -29,7 +29,7 @@ func New(con jsonrpc2.Conn, logger slog.Logger) Service {
 	return Service{
 		con:       con,
 		parser:    *parser.NewParser(),
-		schemaMap: schema.SchemaMapBetter,
+		schemaMap: schema.SchemaMap,
 		logger:    logger,
 	}
 }

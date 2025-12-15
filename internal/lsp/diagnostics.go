@@ -11,7 +11,7 @@ import (
 func CollectDiagnostics(body hcl.Body, schemaMap map[string]*hcl.BodySchema) *hcl.Diagnostics {
 	var diags hcl.Diagnostics
 
-	diags = diags.Extend(CollectDiagnosticsDFS(body, &diags, schemaMap, schema.SchemaMapBetter["root"], &schema.RootBodySchema))
+	diags = diags.Extend(CollectDiagnosticsDFS(body, &diags, schemaMap, schema.SchemaMap["root"], &schema.RootBodySchema))
 
 	return &diags
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var JobSchemaBetter = &schema.BodySchema{
+var JobSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"all_at_once": {
 			Description:  lang.PlainText("Controls whether the scheduler can make partial placements if optimistic scheduling resulted in an oversubscribed node. This does not control whether all allocations for the job, where all would be the desired count for each task group, must be placed atomically. This should only be used for special circumstances."),

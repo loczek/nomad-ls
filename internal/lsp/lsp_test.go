@@ -62,7 +62,7 @@ func TestServiceBlockHoverInformation(t *testing.T) {
 				Line:   int(tt.pos.Line),
 				Column: int(tt.pos.Character),
 				Byte:   int(predictedCount),
-			}, schema.SchemaMapBetter)
+			}, schema.SchemaMap)
 
 			t.Logf("blocks: %v", blocks)
 
@@ -86,7 +86,7 @@ func TestBlockCompletion(t *testing.T) {
 		Line:   int(pos.Line),
 		Column: int(pos.Character),
 		Byte:   int(predictedCount),
-	}, schema.SchemaMapBetter)
+	}, schema.SchemaMap)
 
 	t.Logf("blocks: %v", blocks)
 
@@ -98,7 +98,7 @@ func TestBlockCompletion(t *testing.T) {
 func TestMetaBlockAllowsAnyAttribute(t *testing.T) {
 	hclFile := LoadSampleFile(GENERIC_NOMAD_FILE_PATH)
 
-	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMapBetter)
+	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMap)
 
 	// Filter for errors only (ignore warnings)
 	var errors hcl.Diagnostics
@@ -118,7 +118,7 @@ func TestMetaBlockAllowsAnyAttribute(t *testing.T) {
 func TestInvalidAttributeGeneratesDiagnostic(t *testing.T) {
 	hclFile := LoadSampleFile(INVALID_ATTRIBUTE_NOMAD_FILE_PATH)
 
-	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMapBetter)
+	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMap)
 
 	// Filter for errors only
 	var errors hcl.Diagnostics
