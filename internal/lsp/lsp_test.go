@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	LOKI_NOMAD_FILE_PATH    = "./testdata/loki.nomad.hcl"
-	GENERIC_NOMAD_FILE_PATH = "./testdata/generic.nomad.hcl"
+	LOKI_NOMAD_FILE_PATH              = "./testdata/loki.nomad.hcl"
+	GENERIC_NOMAD_FILE_PATH           = "./testdata/generic.nomad.hcl"
+	INVALID_ATTRIBUTE_NOMAD_FILE_PATH = "./testdata/invalid_attribute.nomad.hcl"
 )
 
 func TestByteCount(t *testing.T) {
@@ -91,6 +92,58 @@ func TestBlockCompletion(t *testing.T) {
 
 	if len(blocks) == 0 {
 		t.Errorf("blocks empty")
+	}
+}
+
+func TestMetaBlockAllowsAnyAttribute(t *testing.T) {
+	hclFile := LoadSampleFile(GENERIC_NOMAD_FILE_PATH)
+
+	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMapBetter)
+
+	// Filter for errors only (ignore warnings)
+	var errors hcl.Diagnostics
+	for _, d := range *diags {
+		if d.Severity == hcl.DiagError {
+			errors = append(errors, d)
+		}
+	}
+
+	if len(errors) > 0 {
+		for _, d := range errors {
+			t.Errorf("unexpected diagnostic: %s at %v", d.Summary, d.Subject)
+		}
+	}
+}
+
+func TestInvalidAttributeGeneratesDiagnostic(t *testing.T) {
+	hclFile := LoadSampleFile(INVALID_ATTRIBUTE_NOMAD_FILE_PATH)
+
+	diags := CollectDiagnostics(hclFile.Body, schema.SchemaMapBetter)
+
+	// Filter for errors only
+	var errors hcl.Diagnostics
+	for _, d := range *diags {
+		if d.Severity == hcl.DiagError {
+			errors = append(errors, d)
+		}
+	}
+
+	if len(errors) == 0 {
+		t.Error("expected diagnostic error for invalid attribute, but got none")
+	}
+
+	// Verify the error is about an unsupported attribute
+	found := false
+	for _, d := range errors {
+		if strings.Contains(d.Summary, "Unsupported") || strings.Contains(d.Summary, "unsupported") {
+			found = true
+			t.Logf("correctly detected invalid attribute: %s", d.Summary)
+			break
+		}
+	}
+
+	if !found {
+		t.Errorf("expected 'unsupported attribute' error, got: %v", errors)
 	}
 }
 

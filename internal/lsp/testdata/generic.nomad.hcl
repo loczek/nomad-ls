@@ -7,6 +7,10 @@ job "example" {
   datacenters = ["dc1"]
   type        = "service"
 
+  meta {
+		owner = "dev-team"
+  }
+
   group "app" {
     count = 1
 
