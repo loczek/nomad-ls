@@ -10,7 +10,8 @@ import (
 var SchemaMapBetter map[string]*hcl.BodySchema = map[string]*hcl.BodySchema{
 	"root": RootBodySchema.Copy().ToHCLSchema(),
 
-	"variable": VariableSchema.Copy().ToHCLSchema(),
+	"variable":  VariableSchema.Copy().ToHCLSchema(),
+	"variables": VariablesSchema.Copy().ToHCLSchema(),
 
 	"affinity":         AffinitySchema.Copy().ToHCLSchema(),
 	"artifact":         ArtifactSchema.Copy().ToHCLSchema(),
@@ -79,6 +80,10 @@ var RootBodySchema = schema.BodySchema{
 				{Name: "name"},
 			},
 			Body: VariableSchema,
+		},
+		"variables": {
+			Description: VariablesSchema.Description,
+			Body:        VariablesSchema,
 		},
 		"job": {
 			Description: lang.Markdown("## h2\njob docs"),

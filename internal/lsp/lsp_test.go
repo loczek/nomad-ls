@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	LOKI_NOMAD_FILE_PATH = "./testdata/loki.nomad.hcl"
+	LOKI_NOMAD_FILE_PATH    = "./testdata/loki.nomad.hcl"
+	GENERIC_NOMAD_FILE_PATH = "./testdata/generic.nomad.hcl"
 )
 
 func TestByteCount(t *testing.T) {
@@ -30,24 +31,46 @@ func TestByteCount(t *testing.T) {
 }
 
 func TestServiceBlockHoverInformation(t *testing.T) {
-	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
+	tests := []struct {
+		name           string
+		filePath       string
+		pos            protocol.Position
+		expectedPrefix string
+	}{
+		{
+			name:           "loki nomad file",
+			filePath:       LOKI_NOMAD_FILE_PATH,
+			pos:            protocol.Position{Line: 28, Character: 5},
+			expectedPrefix: "Specifies integrations with Noma",
+		},
+		{
+			name:           "generic nomad file",
+			filePath:       GENERIC_NOMAD_FILE_PATH,
+			pos:            protocol.Position{Line: 0, Character: 5},
+			expectedPrefix: "A less precise block for decla",
+		},
+	}
 
-	pos := protocol.Position{Line: 28, Character: 5}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hclFile := LoadSampleFile(tt.filePath)
 
-	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
+			predictedCount := CalculateByteOffset(tt.pos, hclFile.Bytes)
 
-	blocks := CollectHoverInfo(hclFile.Body, hcl.Pos{
-		Line:   int(pos.Line),
-		Column: int(pos.Character),
-		Byte:   int(predictedCount),
-	}, schema.SchemaMapBetter)
+			blocks := CollectHoverInfo(hclFile.Body, hcl.Pos{
+				Line:   int(tt.pos.Line),
+				Column: int(tt.pos.Character),
+				Byte:   int(predictedCount),
+			}, schema.SchemaMapBetter)
 
-	t.Logf("blocks: %v", blocks)
+			t.Logf("blocks: %v", blocks)
 
-	x := blocks[len(blocks)-1]
+			x := blocks[len(blocks)-1]
 
-	if !strings.HasPrefix(x, "Specifies integrations with Noma") {
-		t.Errorf("wrong hover information %s", x)
+			if !strings.HasPrefix(x, tt.expectedPrefix) {
+				t.Errorf("wrong hover information '%s'", x)
+			}
+		})
 	}
 }
 
@@ -79,9 +102,9 @@ func LoadSampleFile(path string) *hcl.File {
 		panic(err)
 	}
 
-	parser.ParseHCL(file, "loki")
+	parser.ParseHCL(file, "nomad-job")
 
-	hclFile := parser.Files()["loki"]
+	hclFile := parser.Files()["nomad-job"]
 
 	return hclFile
 }
