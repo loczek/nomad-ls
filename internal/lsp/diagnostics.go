@@ -21,7 +21,17 @@ func CollectDiagnisticsDFS(body hcl.Body, diags *hcl.Diagnostics, schemaMap map[
 		return make(hcl.Diagnostics, 0)
 	}
 
-	bodyContent, allDiags := body.Content(currSchema)
+	var bodyContent *hcl.BodyContent
+	var allDiags hcl.Diagnostics
+
+	// Use PartialContent for schemas that allow any attribute (like `variables` or `meta`)
+	// to avoid false errors for user-defined attributes
+	if langSchema != nil && langSchema.AnyAttribute != nil {
+		bodyContent, _, allDiags = body.PartialContent(currSchema)
+	} else {
+		bodyContent, allDiags = body.Content(currSchema)
+	}
+
 	blocksByType := bodyContent.Blocks.ByType()
 
 	for k, v := range blocksByType {
