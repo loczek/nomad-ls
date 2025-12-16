@@ -91,7 +91,7 @@ var PortSchema = &schema.BodySchema{
 
 var DnsSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
-		"server": {
+		"servers": {
 			Description: lang.Markdown("Sets the DNS nameservers the allocation uses for name resolution."),
 			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
 		},
