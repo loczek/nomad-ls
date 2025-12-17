@@ -160,11 +160,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
-		"logging": {
-			Description: lang.Markdown("A key-value map of Docker logging options. Defaults to `json-file` with log rotation (`max-file=2` and `max-size=2m`)."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
-		},
+
 		"mac_address": {
 			Description: lang.Markdown("The MAC address for the container to use (e.g. \"02:68:b3:29:da:98\")."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
@@ -321,6 +317,29 @@ var DockerDriverSchema = &schema.BodySchema{
 			Description: lang.Markdown("An integer value that specifies the pid limit for the container. Defaults to unlimited."),
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
+		},
+	},
+	Blocks: map[string]*schema.BlockSchema{
+		"logging": {
+			Description: lang.Markdown("Configure logging for the container. Defaults to `json-file` with log rotation (`max-file=2` and `max-size=2m`)."),
+			Body:        LoggingSchema,
+		},
+	},
+}
+
+var LoggingSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"type": {
+			Description:  lang.Markdown("Specifies the logging driver Docker should use. Defaults to `\"json-file\"`. Note that for older versions of Docker, only `json-file` or `journald` will allow Nomad to read the driver's logs via the Docker API, and this will prevent commands such as `nomad alloc logs` from functioning."),
+			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("json-file")},
+			Constraint:   &schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
+		},
+		"config": {
+			Description:  lang.Markdown("A key-value map of logging driver configuration options. Defaults to `{ max-file = \"2\", max-size = \"2m\" }`. This option can be used to pass further configuration to the logging driver."),
+			DefaultValue: &schema.DefaultValue{Value: cty.MapVal(map[string]cty.Value{"max-file": cty.StringVal("2"), "max-size": cty.StringVal("2m")})},
+			Constraint:   &schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional:   true,
 		},
 	},
 }
