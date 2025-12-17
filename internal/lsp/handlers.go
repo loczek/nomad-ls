@@ -39,7 +39,7 @@ func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.
 		Line:   int(params.Position.Line),
 		Column: int(params.Position.Character),
 		Byte:   pos.Byte,
-	}, s.schemaMap)
+	})
 
 	s.logger.Info(fmt.Sprintf("arr: %v", x))
 
@@ -73,7 +73,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 		Line:   int(params.Position.Line),
 		Column: int(params.Position.Character),
 		Byte:   pos.Byte,
-	}, s.schemaMap)
+	})
 
 	return &protocol.CompletionList{
 		IsIncomplete: false,
@@ -84,7 +84,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
 	file, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
 
-	schemaDiags := CollectDiagnostics(file.Body, s.schemaMap)
+	schemaDiags := CollectDiagnostics(file.Body)
 
 	allDiags := diags.Extend(*schemaDiags)
 
@@ -105,7 +105,7 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 
 		body := file.Body
 
-		schemaDiags := CollectDiagnostics(body, s.schemaMap)
+		schemaDiags := CollectDiagnostics(body)
 
 		allDiags := diags.Extend(*schemaDiags)
 

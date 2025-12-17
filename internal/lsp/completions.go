@@ -14,10 +14,10 @@ import (
 	"go.lsp.dev/protocol"
 )
 
-func CollectCompletions(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []protocol.CompletionItem {
+func CollectCompletions(body hcl.Body, pos hcl.Pos) []protocol.CompletionItem {
 	var blocks []protocol.CompletionItem
 
-	CollectCompletionsDFS(body, &blocks, schemaMap, "root", pos, &schema.RootBodySchema, 1)
+	CollectCompletionsDFS(body, &blocks, pos, &schema.RootBodySchema, 1)
 
 	return blocks
 }
@@ -25,17 +25,15 @@ func CollectCompletions(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.Bo
 func CollectCompletionsDFS(
 	body hcl.Body,
 	blocks *[]protocol.CompletionItem,
-	schemaMap map[string]*hcl.BodySchema,
-	schemaKey string,
 	pos hcl.Pos,
 	langSchema *hclschema.BodySchema,
 	depth int,
 ) {
-	if schemaMap[schemaKey] == nil {
+	if langSchema.ToHCLSchema() == nil {
 		return
 	}
 
-	bodyContent, _ := body.Content(schemaMap[schemaKey])
+	bodyContent, _ := body.Content(langSchema.ToHCLSchema())
 	blocksByType := bodyContent.Blocks.ByType()
 
 	var matchingBlocks uint
@@ -50,14 +48,12 @@ func CollectCompletionsDFS(
 			matchingBlocks += 1
 
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
-				CollectCompletionsDFS(b.Body, blocks, schemaMap, k, pos, langSchema.Blocks[k].Body, depth+1)
+				CollectCompletionsDFS(b.Body, blocks, pos, langSchema.Blocks[k].Body, depth+1)
 			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
 				if bodyContent.Attributes["driver"] != nil {
 					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
 
-					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
-
-					CollectCompletionsDFS(b.Body, blocks, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())], depth+1)
+					CollectCompletionsDFS(b.Body, blocks, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())], depth+1)
 				}
 			}
 		}

@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/hcl/v2"
 
 	"github.com/loczek/nomad-ls/internal/parser"
-	"github.com/loczek/nomad-ls/internal/schema"
 
 	"go.lsp.dev/jsonrpc2"
 	"go.lsp.dev/protocol"
@@ -27,10 +26,9 @@ type Service struct {
 
 func New(con jsonrpc2.Conn, logger slog.Logger) Service {
 	return Service{
-		con:       con,
-		parser:    *parser.NewParser(),
-		schemaMap: schema.SchemaMap,
-		logger:    logger,
+		con:    con,
+		parser: *parser.NewParser(),
+		logger: logger,
 	}
 }
 

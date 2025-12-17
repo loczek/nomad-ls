@@ -1,30 +1,26 @@
 package lsp
 
 import (
-	"fmt"
-
 	hclschema "github.com/hashicorp/hcl-lang/schema"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/loczek/nomad-ls/internal/schema"
 )
 
-func CollectHoverInfo(body hcl.Body, pos hcl.Pos, schemaMap map[string]*hcl.BodySchema) []string {
-	return []string{CollectHoverInfoDFS(body, schemaMap, "root", pos, &schema.RootBodySchema)}
+func CollectHoverInfo(body hcl.Body, pos hcl.Pos) []string {
+	return []string{CollectHoverInfoDFS(body, pos, &schema.RootBodySchema)}
 }
 
 func CollectHoverInfoDFS(
 	body hcl.Body,
-	schemaMap map[string]*hcl.BodySchema,
-	schemaKey string,
 	pos hcl.Pos,
 	langSchema *hclschema.BodySchema,
 ) string {
-	if schemaMap[schemaKey] == nil {
+	if langSchema.ToHCLSchema() == nil {
 		return ""
 	}
 
-	bodyContent, _ := body.Content(schemaMap[schemaKey])
+	bodyContent, _ := body.Content(langSchema.ToHCLSchema())
 	blocksByType := bodyContent.Blocks.ByType()
 
 	ans := ""
@@ -41,14 +37,12 @@ func CollectHoverInfoDFS(
 			}
 
 			if langSchema.Blocks[k] != nil && langSchema.Blocks[k].Body != nil {
-				ans = CollectHoverInfoDFS(b.Body, schemaMap, k, pos, langSchema.Blocks[k].Body)
+				ans = CollectHoverInfoDFS(b.Body, pos, langSchema.Blocks[k].Body)
 			} else if langSchema.Blocks[k] != nil && langSchema.Blocks[k].DependentBody != nil {
 				if bodyContent.Attributes["driver"] != nil {
 					driver, _ := bodyContent.Attributes["driver"].Expr.Value(&hcl.EvalContext{})
 
-					schemaMapDependentKey := fmt.Sprintf("%s:%s", k, driver.AsString())
-
-					ans = CollectHoverInfoDFS(b.Body, schemaMap, schemaMapDependentKey, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())])
+					ans = CollectHoverInfoDFS(b.Body, pos, langSchema.Blocks[k].DependentBody[hclschema.SchemaKey(driver.AsString())])
 				}
 			}
 		}
