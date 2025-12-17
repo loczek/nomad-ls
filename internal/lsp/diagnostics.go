@@ -15,7 +15,7 @@ func CollectDiagnostics(body hcl.Body) *hcl.Diagnostics {
 }
 
 func CollectDiagnosticsDFS(body hcl.Body, diags *hcl.Diagnostics, langSchema *hclschema.BodySchema) hcl.Diagnostics {
-	if langSchema.ToHCLSchema() == nil {
+	if langSchema == nil {
 		return make(hcl.Diagnostics, 0)
 	}
 
@@ -24,7 +24,7 @@ func CollectDiagnosticsDFS(body hcl.Body, diags *hcl.Diagnostics, langSchema *hc
 
 	// Use PartialContent for schemas that allow any attribute (like `variables` or `meta`)
 	// to avoid false errors for user-defined attributes
-	if langSchema != nil && langSchema.AnyAttribute != nil {
+	if langSchema.AnyAttribute != nil {
 		bodyContent, _, allDiags = body.PartialContent(langSchema.ToHCLSchema())
 	} else {
 		bodyContent, allDiags = body.Content(langSchema.ToHCLSchema())

@@ -16,7 +16,7 @@ func CollectHoverInfoDFS(
 	pos hcl.Pos,
 	langSchema *hclschema.BodySchema,
 ) string {
-	if langSchema.ToHCLSchema() == nil {
+	if langSchema == nil {
 		return ""
 	}
 

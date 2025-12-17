@@ -29,7 +29,7 @@ func CollectCompletionsDFS(
 	langSchema *hclschema.BodySchema,
 	depth int,
 ) {
-	if langSchema.ToHCLSchema() == nil {
+	if langSchema == nil {
 		return
 	}
 
