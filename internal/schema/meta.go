@@ -21,7 +21,7 @@ var MetaSchema = &schema.BodySchema{
 	Description: lang.Markdown("Specifies a key-value map that annotates with user-defined metadata."),
 	AnyAttribute: &schema.AttributeSchema{
 		Description: lang.Markdown("A user-defined key-value pair for metadata."),
-		Constraint:  &schema.LiteralType{Type: cty.String},
+		Constraint:  schema.LiteralType{Type: cty.String},
 		IsOptional:  true,
 	},
 }

@@ -10,16 +10,17 @@ var GroupSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"count": {
 			Description: lang.Markdown("Specifies the number of instances that should be running under for this group. This value must be non-negative. This defaults to the `min` value specified in the [`scaling`](https://developer.hashicorp.com/nomad/docs/job-specification/scaling) block, if present; otherwise, this defaults to `1`."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},
 			Constraint: schema.LiteralType{Type: cty.Number},
 		},
 		"shutdown_delay": {
 			Description: lang.PlainText("Specifies the duration to wait when stopping a group's tasks. The delay occurs between Consul or Nomad service deregistration and sending each task a shutdown signal. Ideally, services would fail health checks once they receive a shutdown signal. Alternatively, shutdown_delay may be set to give in-flight requests time to complete before shutting down. A group level shutdown_delay will run regardless if there are any defined group services and only applies to these services. In addition, tasks may have their own shutdown_delay which waits between de-registering task services and stopping the task."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("0s"),
 			},
+			Constraint: schema.LiteralType{Type: cty.String},
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{

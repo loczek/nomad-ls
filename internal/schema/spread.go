@@ -10,17 +10,17 @@ var SpreadSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"attribute": {
 			Description: lang.PlainText("Specifies the name or reference of the attribute to use. This can be any of the [Nomad interpolated values](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation#interpreted_node_vars)."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: &schema.LiteralType{Type: cty.String},
+			Constraint: schema.LiteralType{Type: cty.String},
 		},
 		"weight": {
 			Description: lang.PlainText("Specifies a weight for the spread block. The weight is used during scoring and must be an integer between 0 to 100. Weights can be used when there is more than one spread or affinity block to express relative preference across them."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(0),
 			},
-			Constraint: &schema.LiteralType{Type: cty.Number},
+			Constraint: schema.LiteralType{Type: cty.Number},
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
