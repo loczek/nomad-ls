@@ -15,8 +15,17 @@ var QemuDriverSchema = &schema.BodySchema{
 		"drive_interface": {
 			Description:  lang.Markdown("This option defines on which type of interface the drive is connected. Available types are: `ide`, `scsi`, `sd`, `mtd`, `floppy`, `pflash`, `virtio` and `none`. Default is `ide`."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("ide")},
-			Constraint:   schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			Constraint: schema.OneOf{
+				schema.LiteralValue{Value: cty.StringVal("ide")},
+				schema.LiteralValue{Value: cty.StringVal("scsi")},
+				schema.LiteralValue{Value: cty.StringVal("sd")},
+				schema.LiteralValue{Value: cty.StringVal("mtd")},
+				schema.LiteralValue{Value: cty.StringVal("floppy")},
+				schema.LiteralValue{Value: cty.StringVal("pflash")},
+				schema.LiteralValue{Value: cty.StringVal("virtio")},
+				schema.LiteralValue{Value: cty.StringVal("none")},
+			},
+			IsOptional: true,
 		},
 		"accelerator": {
 			Description:  lang.Markdown("The type of accelerator to use in the invocation. If the host machine has `qemu` installed with KVM support, users can specify `kvm` for the `accelerator`. Default is `tcg`."),

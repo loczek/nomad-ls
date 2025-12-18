@@ -13,7 +13,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralValue{Value: cty.StringVal("host")},
+				schema.LiteralValue{Value: cty.StringVal("csi")},
+			},
 		},
 		"source": {
 			Description: lang.Markdown("The name of the volume to request. When using `host_volume`'s this should match the published name of the host volume. When using `csi` volumes, this should match the ID of the registered volume."),

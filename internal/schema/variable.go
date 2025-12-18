@@ -6,17 +6,17 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-// TODO: update docs and constraints
+// TODO: update docs
 var VariableSchema = &schema.BodySchema{
 	Description: lang.Markdown("Input variables serve as parameters for a Nomad job, allowing aspects of the job to be customized without altering the job's own source code.\nWhen you declare variables in the same file as the job specification, you can set their values using CLI options and environment variables."),
 	Attributes: map[string]*schema.AttributeSchema{
 		"type": {
 			Description: lang.Markdown("The type of HCL variable: `string`, `number`, `bool`."),
-			Constraint:  schema.LiteralType{Type: cty.String},
+			Constraint:  schema.TypeDeclaration{},
 		},
 		"default": {
 			Description: lang.Markdown("The default value used when no value for this variable is provided."),
-			Constraint:  schema.LiteralType{Type: cty.String},
+			Constraint:  schema.LiteralType{Type: cty.DynamicPseudoType},
 		},
 	},
 }

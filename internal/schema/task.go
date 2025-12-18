@@ -14,7 +14,13 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralValue{Value: cty.StringVal("docker")},
+				schema.LiteralValue{Value: cty.StringVal("exec")},
+				schema.LiteralValue{Value: cty.StringVal("raw_exec")},
+				schema.LiteralValue{Value: cty.StringVal("java")},
+				schema.LiteralValue{Value: cty.StringVal("qemu")},
+			},
 			IsRequired: true,
 			IsDepKey:   true,
 		},
