@@ -139,6 +139,10 @@ var TaskSchema = &schema.BodySchema{
 			Description: lang.PlainText("secret docs"),
 			Body:        SecretSchema,
 		},
+		"schedule": {
+			Description: lang.PlainText("schedule docs"),
+			Body:        ScheduleSchema,
+		},
 		"template": {
 			Description: lang.PlainText("Specifies the set of templates to render for the task. Templates can be used to inject both static and dynamic configuration with data populated from environment variables, Consul and Vault."),
 			Body:        TemplateSchema,
