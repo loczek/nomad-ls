@@ -44,7 +44,6 @@ var ResourcesSchema = &schema.BodySchema{
 			IsOptional:  true,
 		},
 	},
-	// TODO: add numa block
 	Blocks: map[string]*schema.BlockSchema{
 		"device": {
 			Description: lang.Markdown("Specifies the device requirements. This may be repeated to request multiple device types."),
@@ -52,6 +51,10 @@ var ResourcesSchema = &schema.BodySchema{
 				{Name: "name"},
 			},
 			Body: DeviceSchema,
+		},
+		"numa": {
+			Description: lang.Markdown("Specifies the NUMA scheduling preference for the task. Requires the use of `cores`."),
+			Body:        NumaSchema,
 		},
 	},
 }
