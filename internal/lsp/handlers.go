@@ -5,17 +5,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"runtime/debug"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 	"go.lsp.dev/protocol"
 )
 
-func (s *Service) HandleInitialize(ctx context.Context, params *protocol.InitializedParams) (protocol.InitializeResult, error) {
-	return protocol.InitializeResult{
+func (s *Service) HandleInitialize(ctx context.Context, params *protocol.InitializedParams) (*protocol.InitializeResult, error) {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return nil, errors.New("could not read build info")
+	}
+
+	return &protocol.InitializeResult{
 		ServerInfo: &protocol.ServerInfo{
 			Name:    "nomad-ls",
-			Version: "0.0.2",
+			Version: info.Main.Version,
 		},
 		Capabilities: protocol.ServerCapabilities{
 			CompletionProvider: &protocol.CompletionOptions{},
