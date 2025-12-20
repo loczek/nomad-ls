@@ -73,6 +73,11 @@ var TaskSchema = &schema.BodySchema{
 				"qemu":     drivers.QemuDriverSchema,
 			},
 		},
+		// TODO: add docs in the future
+		"action": {
+			Description: lang.PlainText("action docs"),
+			Body:        ActionSchema,
+		},
 		"artifact": {
 			Description: lang.PlainText("Defines an artifact to download before running the task. This may be specified multiple times to download multiple artifacts."),
 			Body:        ArtifactSchema,
@@ -97,6 +102,7 @@ var TaskSchema = &schema.BodySchema{
 			Description: lang.PlainText("Configures the task to have access to dispatch payloads."),
 			Body:        DispatchPayloadSchema,
 		},
+		// TODO: update type to a body?
 		"env": {
 			Description: lang.PlainText("Specifies environment variables that will be passed to the running process."),
 			Type:        schema.BlockTypeMap,

@@ -89,7 +89,7 @@ var JobSchema = &schema.BodySchema{
 		},
 		"meta": {
 			Description: lang.PlainText("Specifies a key-value map that annotates with user-defined metadata."),
-			Type:        schema.BlockTypeMap,
+			Body:        MetaSchema,
 		},
 		"migrate": {
 			Description: lang.PlainText("Specifies the groups strategy for migrating off of draining nodes. If omitted, a default migration strategy is applied. Only service jobs with a count greater than 1 support migrate blocks."),
@@ -106,6 +106,11 @@ var JobSchema = &schema.BodySchema{
 		"reschedule": {
 			Description: lang.PlainText("Allows to specify a rescheduling strategy. Nomad will then attempt to schedule the task on another node if any of its allocation statuses become \"failed\"."),
 			Body:        RescheduleSchema,
+		},
+		// TODO: add in the future
+		"ui": {
+			Description: lang.PlainText("ui docs"),
+			Body:        UISchema,
 		},
 		"update": {
 			Description: lang.PlainText("Specifies the task's update strategy. When omitted, a default update strategy is applied."),

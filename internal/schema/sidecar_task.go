@@ -60,6 +60,11 @@ var SidecarTaskSchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		// TODO: add docs in future
+		"identity": {
+			Description: lang.Markdown("identity docs"),
+			Body:        IdentitySchema,
+		},
 		"resources": {
 			Description: lang.Markdown("Resources needed by the sidecar task."),
 			Body:        ResourcesSchema,
