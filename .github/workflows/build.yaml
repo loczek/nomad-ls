@@ -30,6 +30,9 @@ jobs:
         with:
           go-version-file: "go.mod"
 
+      - name: Run Tests (${{ matrix.os }}-${{ matrix.arch }})
+        run: go test ./...
+
       - name: Build (${{ matrix.os }}-${{ matrix.arch }})
         env:
           GOOS: ${{ matrix.os }}
