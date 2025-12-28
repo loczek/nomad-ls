@@ -335,11 +335,17 @@ var LoggingSchema = &schema.BodySchema{
 			Constraint:   &schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
+	},
+	Blocks: map[string]*schema.BlockSchema{
 		"config": {
-			Description:  lang.Markdown("A key-value map of logging driver configuration options. Defaults to `{ max-file = \"2\", max-size = \"2m\" }`. This option can be used to pass further configuration to the logging driver."),
-			DefaultValue: &schema.DefaultValue{Value: cty.MapVal(map[string]cty.Value{"max-file": cty.StringVal("2"), "max-size": cty.StringVal("2m")})},
-			Constraint:   &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:   true,
+			Description: lang.Markdown("A key-value map of logging driver configuration options. Defaults to `{ max-file = \"2\", max-size = \"2m\" }`. This option can be used to pass further configuration to the logging driver."),
+			Body: &schema.BodySchema{
+				AnyAttribute: &schema.AttributeSchema{
+					Description: lang.Markdown("Logging driver configuration option."),
+					Constraint:  &schema.LiteralType{Type: cty.String},
+					IsOptional:  true,
+				},
+			},
 		},
 	},
 }
