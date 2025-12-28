@@ -121,12 +121,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
 			IsOptional:  true,
 		},
-		// TODO: update docs with examples
-		"ulimit": {
-			Description: lang.Markdown("A key-value map of ulimit configurations to set to the containers on start."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
-		},
+
 		"privileged": {
 			Description:  lang.Markdown("`true` or `false` (default). Privileged mode gives the container access to devices on the host. Note that this also requires the nomad agent and docker daemon to be configured to allow privileged containers."),
 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
@@ -323,6 +318,16 @@ var DockerDriverSchema = &schema.BodySchema{
 		"logging": {
 			Description: lang.Markdown("Configure logging for the container. Defaults to `json-file` with log rotation (`max-file=2` and `max-size=2m`)."),
 			Body:        LoggingSchema,
+		},
+		"ulimit": {
+			Description: lang.Markdown("A key-value map of ulimit configurations to set to the containers on start. Supported options include `as`, `core`, `cpu`, `data`, `fsize`, `locks`, `memlock`, `msgqueue`, `nice`, `nofile`, `nproc`, `rss`, `rtprio`, `rttime`, `sigpending`, and `stack`. Values can be a single number (e.g. `\"4242\"`) or a soft:hard pair (e.g. `\"2048:4096\"`)."),
+			Body: &schema.BodySchema{
+				AnyAttribute: &schema.AttributeSchema{
+					Description: lang.Markdown("Ulimit configuration value. Can be a single number or a soft:hard pair."),
+					Constraint:  &schema.LiteralType{Type: cty.String},
+					IsOptional:  true,
+				},
+			},
 		},
 	},
 }
