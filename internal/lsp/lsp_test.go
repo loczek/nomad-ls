@@ -14,6 +14,7 @@ const (
 	LOKI_NOMAD_FILE_PATH              = "./testdata/loki.nomad.hcl"
 	GENERIC_NOMAD_FILE_PATH           = "./testdata/generic.nomad.hcl"
 	INVALID_ATTRIBUTE_NOMAD_FILE_PATH = "./testdata/invalid_attribute.nomad.hcl"
+	DOCKER_LOGGING_NOMAD_FILE_PATH    = "./testdata/docker_logging.nomad.hcl"
 )
 
 func TestByteCount(t *testing.T) {
@@ -96,6 +97,26 @@ func TestBlockCompletion(t *testing.T) {
 
 func TestMetaBlockAllowsAnyAttribute(t *testing.T) {
 	hclFile := LoadSampleFile(GENERIC_NOMAD_FILE_PATH)
+
+	diags := CollectDiagnostics(hclFile.Body)
+
+	// Filter for errors only (ignore warnings)
+	var errors hcl.Diagnostics
+	for _, d := range *diags {
+		if d.Severity == hcl.DiagError {
+			errors = append(errors, d)
+		}
+	}
+
+	if len(errors) > 0 {
+		for _, d := range errors {
+			t.Errorf("unexpected diagnostic: %s at %v", d.Summary, d.Subject)
+		}
+	}
+}
+
+func TestDockerLoggingConfigBlock(t *testing.T) {
+	hclFile := LoadSampleFile(DOCKER_LOGGING_NOMAD_FILE_PATH)
 
 	diags := CollectDiagnostics(hclFile.Body)
 
