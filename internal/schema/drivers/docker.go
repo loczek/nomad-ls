@@ -256,13 +256,6 @@ var DockerDriverSchema = &schema.BodySchema{
 			Constraint:  &schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
-		// TODO: add body from docker docs
-		"mount": {
-			Description:  lang.Markdown("Specify a [mount](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems) to be mounted into the container. Volume, bind, and tmpfs type mounts are supported. May be specified multiple times."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
-		},
 		// TODO: add mounts here as deprecated
 		// "mounts":{}
 		// TODO: update body
@@ -324,6 +317,10 @@ var DockerDriverSchema = &schema.BodySchema{
 			Description: lang.Markdown("Configure logging for the container. Defaults to `json-file` with log rotation (`max-file=2` and `max-size=2m`)."),
 			Body:        LoggingSchema,
 		},
+		"mount": {
+			Description: lang.Markdown("Specify a [mount](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems) to be mounted into the container. Volume, bind, and tmpfs type mounts are supported. May be specified multiple times."),
+			Body:        MountSchema,
+		},
 	},
 }
 
@@ -344,12 +341,104 @@ var LoggingSchema = &schema.BodySchema{
 	},
 }
 
-// var HealthchecksSchema = &schema.BodySchema{
-// 	Attributes: map[string]*schema.AttributeSchema{
-// 		"disable": {
-// 			Description:  lang.Markdown("The Docker image to run. The image may include a tag or custom URL and should include `https://` if required. By default it will be fetched from Docker Hub. If the tag is omitted or equal to `latest` the driver will always try to pull the image. If the image to be pulled exists in a registry that requires authentication credentials must be provided to Nomad."),
-// 			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
-// 			Constraint:   &schema.LiteralType{Type: cty.Bool},
-// 		},
-// 	},
-// }
+var MountSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"type": {
+			Description: lang.Markdown("The type of mount. Supported types are `bind`, `volume`, and `tmpfs`."),
+			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsRequired:  true,
+		},
+		"source": {
+			Description: lang.Markdown("The source path or volume name on the host."),
+			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
+		},
+		"target": {
+			Description: lang.Markdown("The target path inside the container."),
+			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsRequired:  true,
+		},
+		"readonly": {
+			Description:  lang.Markdown("`true` or `false` (default). Whether the mount is read-only inside the container."),
+			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   &schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+	},
+	Blocks: map[string]*schema.BlockSchema{
+		"bind_options": {
+			Description: lang.Markdown("A configuration block for bind mount options."),
+			Body:        BindMountOptionsSchema,
+		},
+		"volume_options": {
+			Description: lang.Markdown("A configuration block for volume mount options."),
+			Body:        VolumeMountOptionsSchema,
+		},
+		"tmpfs_options": {
+			Description: lang.Markdown("A configuration block for tmpfs mount options."),
+			Body:        TmpfsMountOptionsSchema,
+		},
+	},
+}
+
+var BindMountOptionsSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"propagation": {
+			Description: lang.Markdown("The bind propagation mode. Supported values are `private`, `rprivate`, `shared`, `rshared`, `slave`, and `rslave`."),
+			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
+		},
+	},
+}
+
+var VolumeMountOptionsSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"no_copy": {
+			Description:  lang.Markdown("`true` or `false` (default). If true, data from the container's filesystem will not be copied into the volume."),
+			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   &schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"labels": {
+			Description: lang.Markdown("A key-value map of labels to set on the volume."),
+			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional:  true,
+		},
+	},
+	Blocks: map[string]*schema.BlockSchema{
+		"driver_config": {
+			Description: lang.Markdown("A configuration block for the volume driver."),
+			Body:        VolumeDriverConfigSchema,
+		},
+	},
+}
+
+var VolumeDriverConfigSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"name": {
+			Description: lang.Markdown("The name of the volume driver plugin."),
+			Constraint:  &schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
+		},
+		"options": {
+			Description: lang.Markdown("A key-value map of options to pass to the volume driver."),
+			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional:  true,
+		},
+	},
+}
+
+var TmpfsMountOptionsSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"size": {
+			Description: lang.Markdown("The size of the tmpfs mount in bytes."),
+			Constraint:  &schema.LiteralType{Type: cty.Number},
+			IsOptional:  true,
+		},
+		"mode": {
+			Description: lang.Markdown("The file mode for the tmpfs mount as an octal integer."),
+			Constraint:  &schema.LiteralType{Type: cty.Number},
+			IsOptional:  true,
+		},
+	},
+}
