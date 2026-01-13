@@ -3,7 +3,6 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
-	"github.com/loczek/nomad-ls/internal/schema/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -71,13 +70,6 @@ var TaskSchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"config": {
 			Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
-			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
-				"docker":   drivers.DockerDriverSchema,
-				"exec":     drivers.ExecDriverSchema,
-				"raw_exec": drivers.RawExecDriverSchema,
-				"java":     drivers.JavaDriverSchema,
-				"qemu":     drivers.QemuDriverSchema,
-			},
 		},
 		// TODO: add docs in the future
 		"action": {

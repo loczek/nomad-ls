@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/schema/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -83,7 +84,6 @@ var GroupSchema = &schema.BodySchema{
 			Description: lang.PlainText("secret docs"),
 			Body:        SecretSchema,
 		},
-		// TODO: make it required
 		"task": {
 			Description: lang.PlainText("Specifies one or more tasks to run within this group. This can be specified multiple times, to add a task as part of the group."),
 			Labels: []*schema.LabelSchema{
@@ -92,6 +92,14 @@ var GroupSchema = &schema.BodySchema{
 				},
 			},
 			Body: TaskSchema,
+			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
+				attrKey("docker"):   createConfigSchema(drivers.DockerDriverSchema),
+				attrKey("exec"):     createConfigSchema(drivers.ExecDriverSchema),
+				attrKey("raw_exec"): createConfigSchema(drivers.RawExecDriverSchema),
+				attrKey("java"):     createConfigSchema(drivers.JavaDriverSchema),
+				attrKey("qemu"):     createConfigSchema(drivers.QemuDriverSchema),
+			},
+			MinItems: 1,
 		},
 		"update": {
 			Description: lang.PlainText("Specifies the task's update strategy. When omitted, a default update strategy is applied."),
@@ -111,4 +119,15 @@ var GroupSchema = &schema.BodySchema{
 			},
 		},
 	},
+}
+
+func createConfigSchema(innerBody *schema.BodySchema) *schema.BodySchema {
+	return &schema.BodySchema{
+		Blocks: map[string]*schema.BlockSchema{
+			"config": {
+				Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
+				Body:        innerBody,
+			},
+		},
+	}
 }
