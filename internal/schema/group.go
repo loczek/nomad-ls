@@ -121,6 +121,17 @@ var GroupSchema = &schema.BodySchema{
 	},
 }
 
+func attrKey(value string) schema.SchemaKey {
+	return schema.NewSchemaKey(schema.DependencyKeys{
+		Attributes: []schema.AttributeDependent{
+			{
+				Name: "driver",
+				Expr: schema.ExpressionValue{Static: cty.StringVal(value)},
+			},
+		},
+	})
+}
+
 func createConfigSchema(innerBody *schema.BodySchema) *schema.BodySchema {
 	return &schema.BodySchema{
 		Blocks: map[string]*schema.BlockSchema{
