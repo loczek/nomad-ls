@@ -22,7 +22,9 @@ var RootBodySchema = schema.BodySchema{
 			Labels: []*schema.LabelSchema{
 				{Name: "name"},
 			},
-			Body: JobSchema,
+			MinItems: 1,
+			MaxItems: 1,
+			Body:     JobSchema,
 		},
 	},
 }
