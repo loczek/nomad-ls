@@ -23,10 +23,6 @@ func (p *Parser) ParseHCL(src []byte, filename string) (*hcl.File, hcl.Diagnosti
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	// if existing := p.files[filename]; existing != nil {
-	// 	return existing, nil
-	// }
-
 	file, diags := hclsyntax.ParseConfig(src, filename, hcl.InitialPos)
 	p.files[filename] = file
 	return file, diags
