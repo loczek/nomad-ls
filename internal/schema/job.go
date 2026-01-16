@@ -77,7 +77,6 @@ var JobSchema = &schema.BodySchema{
 			Description: lang.PlainText("This can be provided multiple times to define criteria for spreading allocations across a node attribute or metadata. See the [Nomad spread reference](https://developer.hashicorp.com/nomad/docs/job-specification/spread) for more details."),
 			Body:        SpreadSchema,
 		},
-		// TODO: make it required
 		"group": {
 			Description: lang.PlainText("Specifies the start of a group of tasks. This can be provided multiple times to define additional groups. Group names must be unique within the job file."),
 			Body:        GroupSchema,
@@ -86,7 +85,7 @@ var JobSchema = &schema.BodySchema{
 					Name: "name",
 				},
 			},
-			// MinItems: 1,
+			MinItems: 1,
 		},
 		"meta": {
 			Description: lang.PlainText("Specifies a key-value map that annotates with user-defined metadata."),
