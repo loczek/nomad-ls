@@ -3,7 +3,7 @@ module github.com/loczek/nomad-ls
 go 1.24.1
 
 require (
-	github.com/hashicorp/hcl-lang v0.0.0-20250630055507-713607578ebe
+	github.com/hashicorp/hcl-lang v0.0.0-20251114064237-4d002ed218c2
 	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/lmittmann/tint v1.1.2
 	github.com/zclconf/go-cty v1.17.0
@@ -28,5 +28,5 @@ require (
 	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
-	golang.org/x/tools v0.38.0 // indirect
+	golang.org/x/tools v0.39.0 // indirect
 )
