@@ -41,7 +41,7 @@ func main() {
 			reply(ctx, resp, err)
 
 			if err != nil {
-				logger.Info("received error from handler", "error", err.Error())
+				logger.Info("recieved error from handler", "error", err.Error())
 			}
 		}()
 		return nil
