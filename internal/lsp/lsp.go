@@ -71,28 +71,9 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 		diag, err := s.HandleTextDocumentDidOpen(ctx, &params)
 
 		if diag != nil {
-			protocolDiagnostics := []protocol.Diagnostic{}
+			protocolDiagnostics := hcl2lsp.Diagnostics(*diag)
 
-			for _, v := range *diag {
-				protocolDiagnostics = append(protocolDiagnostics, protocol.Diagnostic{
-					Source:   "nomad-ls",
-					Severity: protocol.DiagnosticSeverity(v.Severity),
-					Range: protocol.Range{
-						Start: protocol.Position{
-							Line:      uint32(v.Subject.Start.Line - 1),
-							Character: uint32(v.Subject.Start.Column - 1),
-						},
-						End: protocol.Position{
-							Line:      uint32(v.Subject.End.Line - 1),
-							Character: uint32(v.Subject.End.Column - 1),
-						},
-					},
-					Message: v.Detail,
-				})
-			}
-
-			log.Printf("diagnostics: %+v", protocolDiagnostics)
-			s.con.Notify(context.Background(), "textDocument/publishDiagnostics", protocol.PublishDiagnosticsParams{
+			s.con.Notify(context.Background(), protocol.MethodTextDocumentPublishDiagnostics, protocol.PublishDiagnosticsParams{
 				URI:         params.TextDocument.URI,
 				Version:     uint32(params.TextDocument.Version),
 				Diagnostics: protocolDiagnostics,
@@ -110,27 +91,9 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 		diag, err := s.HandleTextDocumentDidChange(ctx, &params)
 
 		if diag != nil {
-			protocolDiagnostics := []protocol.Diagnostic{}
+			protocolDiagnostics := hcl2lsp.Diagnostics(*diag)
 
-			for _, v := range *diag {
-				protocolDiagnostics = append(protocolDiagnostics, protocol.Diagnostic{
-					Source: "nomad-ls",
-					Range: protocol.Range{
-						Start: protocol.Position{
-							Line:      uint32(v.Subject.Start.Line - 1),
-							Character: uint32(v.Subject.Start.Column - 1),
-						},
-						End: protocol.Position{
-							Line:      uint32(v.Subject.End.Line - 1),
-							Character: uint32(v.Subject.End.Column - 1),
-						},
-					},
-					Message: v.Detail,
-				})
-			}
-
-			log.Printf("diagnostics: %+v", protocolDiagnostics)
-			s.con.Notify(context.Background(), "textDocument/publishDiagnostics", protocol.PublishDiagnosticsParams{
+			s.con.Notify(context.Background(), protocol.MethodTextDocumentPublishDiagnostics, protocol.PublishDiagnosticsParams{
 				URI:         params.TextDocument.URI,
 				Version:     uint32(params.TextDocument.Version),
 				Diagnostics: protocolDiagnostics,
