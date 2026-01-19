@@ -44,7 +44,7 @@ func Diagnostics(diag hcl.Diagnostics) []protocol.Diagnostic {
 	protocolDiagnostics := []protocol.Diagnostic{}
 
 	for _, v := range diag {
-		protocolDiagnostics = append(protocolDiagnostics, protocol.Diagnostic{
+		newDiag := protocol.Diagnostic{
 			Source: "nomad-ls",
 			Range: protocol.Range{
 				Start: protocol.Position{
@@ -56,8 +56,14 @@ func Diagnostics(diag hcl.Diagnostics) []protocol.Diagnostic {
 					Character: uint32(v.Subject.End.Column - 1),
 				},
 			},
-			Message: v.Detail,
-		})
+			Message: v.Summary,
+		}
+
+		if newDiag.Message == "" {
+			newDiag.Message = v.Detail
+		}
+
+		protocolDiagnostics = append(protocolDiagnostics, newDiag)
 	}
 
 	return protocolDiagnostics
