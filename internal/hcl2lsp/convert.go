@@ -40,6 +40,15 @@ func Completions(cands lang.Candidates) []protocol.CompletionItem {
 	return completions
 }
 
+func Hover(hoverData *lang.HoverData) protocol.Hover {
+	return protocol.Hover{
+		Contents: protocol.MarkupContent{
+			Kind:  protocol.Markdown,
+			Value: hoverData.Content.Value,
+		},
+	}
+}
+
 func Diagnostics(diag hcl.Diagnostics) []protocol.Diagnostic {
 	protocolDiagnostics := []protocol.Diagnostic{}
 
