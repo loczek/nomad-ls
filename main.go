@@ -32,7 +32,7 @@ func main() {
 
 	con.Go(context.Background(), func(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) error {
 		go func() {
-			logger.Info(fmt.Sprintf("recieved method: %s", req.Method()))
+			logger.Info("recieved request", slog.String("method", req.Method()))
 
 			resp, err := service.Handle(ctx, reply, req)
 
