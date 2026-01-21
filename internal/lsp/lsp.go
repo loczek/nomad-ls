@@ -133,29 +133,3 @@ func asBlock(name string, depth int) string {
 func asAnonymousBlock(name string, depth int) string {
 	return fmt.Sprintf("%s {\n%s$0\n}", name, strings.Repeat("\t", depth))
 }
-
-func CalculateByteOffset(pos protocol.Position, src []byte) uint {
-	runes := []rune(string(src))
-
-	var runeIndex uint
-	var line uint
-	var bytesCount uint
-
-	for line < uint(pos.Line) && runeIndex < uint(len(runes)) {
-		if runes[runeIndex] == '\n' {
-			line += 1
-		}
-		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
-		runeIndex += 1
-	}
-
-	var j uint
-
-	for j < uint(pos.Character) && runeIndex < uint(len(runes)) {
-		bytesCount += uint(utf8.RuneLen(runes[runeIndex]))
-		runeIndex += 1
-		j += 1
-	}
-
-	return bytesCount
-}
