@@ -29,6 +29,25 @@ var RootBodySchema = schema.BodySchema{
 			Description: VariablesSchema.Description,
 			Body:        VariablesSchema,
 		},
+		"locals": {
+			Description: lang.Markdown("Local values assigning names to expressions, so you can use these multiple times without repetition\n" +
+				"e.g. `service_name = \"forum\"`"),
+			Body: &schema.BodySchema{
+				AnyAttribute: &schema.AttributeSchema{
+					Address: &schema.AttributeAddrSchema{
+						Steps: []schema.AddrStep{
+							schema.StaticStep{Name: "local"},
+							schema.AttrNameStep{},
+						},
+						FriendlyName: "local",
+						ScopeId:      scope.LocalScope,
+						AsReference:  true,
+						AsExprType:   true,
+					},
+					Constraint: schema.AnyExpression{OfType: cty.DynamicPseudoType},
+				},
+			},
+		},
 		"job": {
 			Description: JobSchema.Description,
 			Labels: []*schema.LabelSchema{
