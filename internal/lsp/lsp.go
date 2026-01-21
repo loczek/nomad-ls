@@ -18,10 +18,9 @@ import (
 )
 
 type Service struct {
-	con       jsonrpc2.Conn
-	parser    parser.Parser
-	schemaMap map[string]*hcl.BodySchema
-	logger    slog.Logger
+	con    jsonrpc2.Conn
+	parser parser.Parser
+	logger slog.Logger
 }
 
 func New(con jsonrpc2.Conn, logger slog.Logger) Service {
