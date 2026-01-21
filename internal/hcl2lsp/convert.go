@@ -18,12 +18,12 @@ func Completions(cands lang.Candidates) []protocol.CompletionItem {
 				NewText: v.TextEdit.Snippet,
 				Range: protocol.Range{
 					Start: protocol.Position{
-						Line:      uint32(v.TextEdit.Range.Start.Line),
-						Character: uint32(v.TextEdit.Range.Start.Column),
+						Line:      uint32(v.TextEdit.Range.Start.Line - 1),
+						Character: uint32(v.TextEdit.Range.Start.Column - 1),
 					},
 					End: protocol.Position{
-						Line:      uint32(v.TextEdit.Range.End.Line),
-						Character: uint32(v.TextEdit.Range.End.Column),
+						Line:      uint32(v.TextEdit.Range.End.Line - 1),
+						Character: uint32(v.TextEdit.Range.End.Column - 1),
 					},
 				},
 			},

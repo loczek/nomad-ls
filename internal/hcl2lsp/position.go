@@ -31,8 +31,8 @@ func Position(pos protocol.Position, src []byte) hcl.Pos {
 	}
 
 	return hcl.Pos{
-		Line:   int(pos.Line),
-		Column: int(pos.Character),
+		Line:   int(pos.Line) + 1,
+		Column: int(pos.Character) + 1,
 		Byte:   int(bytesCount),
 	}
 }
