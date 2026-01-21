@@ -7,6 +7,18 @@ import (
 var RootBodySchema = schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"variable": {
+			Address: &schema.BlockAddrSchema{
+				Steps: []schema.AddrStep{
+					schema.StaticStep{Name: "var"},
+					schema.LabelStep{Index: 0},
+				},
+				FriendlyName: "variable",
+				ScopeId:      scope.VariableScope,
+				AsReference:  true,
+				AsTypeOf: &schema.BlockAsTypeOf{
+					AttributeExpr: "type",
+				},
+			},
 			Description: VariableSchema.Description,
 			Labels: []*schema.LabelSchema{
 				{Name: "name"},
