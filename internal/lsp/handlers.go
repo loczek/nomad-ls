@@ -74,7 +74,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 	file := s.parser.Files()[params.TextDocument.URI.Filename()]
 
 	if file == nil {
-		return nil, errors.New("file not found")
+		return nil, errors.New("file is not found")
 	}
 
 	pos := hcl2lsp.Position(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
