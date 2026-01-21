@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"strings"
 
 	"go.lsp.dev/jsonrpc2"
 	"go.lsp.dev/protocol"
@@ -120,12 +119,4 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 	}
 
 	return nil, nil
-}
-
-func asBlock(name string, depth int) string {
-	return fmt.Sprintf("%s \"${1:name}\" {\n%s$0\n}", name, strings.Repeat("\t", depth))
-}
-
-func asAnonymousBlock(name string, depth int) string {
-	return fmt.Sprintf("%s {\n%s$0\n}", name, strings.Repeat("\t", depth))
 }
