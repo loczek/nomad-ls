@@ -4,17 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"log/slog"
 	"strings"
-	"unicode/utf8"
-
-	"github.com/hashicorp/hcl/v2"
-
-	"github.com/loczek/nomad-ls/internal/parser"
 
 	"go.lsp.dev/jsonrpc2"
 	"go.lsp.dev/protocol"
+
+	"github.com/loczek/nomad-ls/internal/hcl2lsp"
+	"github.com/loczek/nomad-ls/internal/parser"
 )
 
 type Service struct {
