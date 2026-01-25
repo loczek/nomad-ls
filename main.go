@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"log/slog"
@@ -14,12 +15,42 @@ import (
 	"go.lsp.dev/jsonrpc2"
 )
 
+var logLevel string
+
+func init() {
+	flag.StringVar(&logLevel, "log-level", "info", "language server log level")
+	flag.Parse()
+}
+
 func main() {
 	w := os.Stderr
 
-	handler := tint.NewHandler(w, nil)
+	var handler slog.Handler
+	handlerOpts := slog.HandlerOptions{
+		Level: slog.LevelError,
+	}
+
+	switch logLevel {
+	case "debug":
+		handlerOpts.Level = slog.LevelDebug
+	case "info":
+		handlerOpts.Level = slog.LevelInfo
+	case "warn":
+		handlerOpts.Level = slog.LevelWarn
+	case "error":
+		handlerOpts.Level = slog.LevelError
+	default:
+		panic("invalid log level")
+	}
+
 	if isBuilt() {
-		handler = slog.NewTextHandler(w, nil)
+		handler = slog.NewTextHandler(w, &handlerOpts)
+	} else {
+		handler = tint.NewHandler(w, &tint.Options{
+			AddSource:   handlerOpts.AddSource,
+			Level:       handlerOpts.Level,
+			ReplaceAttr: handlerOpts.ReplaceAttr,
+		})
 	}
 
 	logger := slog.New(handler)
