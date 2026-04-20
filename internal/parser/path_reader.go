@@ -38,7 +38,7 @@ func (p *Parser) Paths(ctx context.Context) []lang.Path {
 	for path := range p.files {
 		paths = append(paths, lang.Path{
 			Path:       path,
-			LanguageID: "nomad",
+			LanguageID: languages.NomadJob.String(),
 		})
 	}
 
