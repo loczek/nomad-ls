@@ -81,7 +81,7 @@ var TaskSchema = &schema.BodySchema{
 			Body:        ArtifactSchema,
 		},
 		"consul": {
-			Description: lang.PlainText(" Consul configuration options specific to the task."),
+			Description: lang.PlainText("Consul configuration options specific to the task."),
 			Body:        ConsulSchema,
 		},
 		"constraint": {

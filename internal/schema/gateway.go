@@ -145,7 +145,7 @@ var TLSSchema = &schema.BodySchema{
 	},
 	Blocks: map[string]*schema.BlockSchema{
 		"sds": {
-			Description: lang.Markdown(" Defines a set of parameters that configures the listener to load TLS certificates from an external Secret Discovery Service ([SDS](https://developer.hashicorp.com/consul/docs/connect/config-entries/ingress-gateway#listeners-services-tls-sds))."),
+			Description: lang.Markdown("Defines a set of parameters that configures the listener to load TLS certificates from an external Secret Discovery Service ([SDS](https://developer.hashicorp.com/consul/docs/connect/config-entries/ingress-gateway#listeners-services-tls-sds))."),
 			Body:        SDSSchema,
 		},
 	},
