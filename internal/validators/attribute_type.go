@@ -5,10 +5,13 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/hashicorp/hcl-lang/validator"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/zclconf/go-cty/cty"
 )
+
+var _ validator.Validator = (*TypeAttribute)(nil)
 
 type TypeAttribute struct{}
 
