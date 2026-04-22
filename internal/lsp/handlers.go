@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"runtime/debug"
+	"strings"
 
 	"github.com/hashicorp/hcl-lang/decoder"
 	"github.com/hashicorp/hcl-lang/lang"
@@ -27,7 +28,7 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 	return &protocol.InitializeResult{
 		ServerInfo: &protocol.ServerInfo{
 			Name:    "nomad-ls",
-			Version: info.Main.Version,
+			Version: strings.TrimPrefix(info.Main.Version, "v"),
 		},
 		Capabilities: protocol.ServerCapabilities{
 			CompletionProvider: &protocol.CompletionOptions{},
