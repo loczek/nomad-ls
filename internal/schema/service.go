@@ -11,8 +11,11 @@ var ServiceSchema = &schema.BodySchema{
 		"provider": {
 			Description:  lang.Markdown("Specifies the service registration provider to use for service registrations. Valid options are either `consul` or `nomad`. All services within a single task group must utilise the same provider value."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("consul")},
-			Constraint:   schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			Constraint: schema.OneOf{
+				schema.LiteralValue{Value: cty.StringVal("nomad")},
+				schema.LiteralValue{Value: cty.StringVal("consul")},
+			},
+			IsOptional: true,
 		},
 		// TODO: mark as enterprise only
 		"cluster": {
