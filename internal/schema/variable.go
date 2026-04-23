@@ -18,5 +18,9 @@ var VariableSchema = &schema.BodySchema{
 			Description: lang.Markdown("The default value used when no value for this variable is provided."),
 			Constraint:  schema.LiteralType{Type: cty.DynamicPseudoType},
 		},
+		"description": {
+			Description: lang.Markdown("variable description"),
+			Constraint:  schema.LiteralType{Type: cty.String},
+		},
 	},
 }
