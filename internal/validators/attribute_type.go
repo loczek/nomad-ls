@@ -11,11 +11,11 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var _ validator.Validator = (*TypeAttribute)(nil)
+var _ validator.Validator = (*AttributeType)(nil)
 
-type TypeAttribute struct{}
+type AttributeType struct{}
 
-func (v TypeAttribute) Visit(ctx context.Context, node hclsyntax.Node, nodeSchema schema.Schema) (context.Context, hcl.Diagnostics) {
+func (v AttributeType) Visit(ctx context.Context, node hclsyntax.Node, nodeSchema schema.Schema) (context.Context, hcl.Diagnostics) {
 	var diags hcl.Diagnostics
 
 	attr, ok := node.(*hclsyntax.Attribute)
