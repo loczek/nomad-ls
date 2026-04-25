@@ -15,6 +15,7 @@ var PeriodicSchema = &schema.BodySchema{
 			},
 			IsDeprecated: true,
 			Constraint:   schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:   true,
 		},
 		"crons": {
 			Description: lang.Markdown("A list of cron expressions configuring the intervals the job is launched at. The job runs at the next earliest time that matches any of the expressions. Supports predefined expressions such as `@daily` and `@weekly`. Refer to [the documentation](https://github.com/hashicorp/cronexpr#implementation) for full details about the supported cron specs and the predefined expressions. Either `cron` or `crons` must be set, but not both."),
@@ -22,6 +23,7 @@ var PeriodicSchema = &schema.BodySchema{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
 			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional: true,
 		},
 		"prohibit_overlap": {
 			Description: lang.Markdown("Specifies if this job should wait until previous instances of this job have completed. This only applies to this job; it does not prevent other periodic jobs from running at the same time."),
@@ -29,6 +31,7 @@ var PeriodicSchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 		"time_zone": {
 			Description: lang.Markdown("Specifies the time zone to evaluate the next launch interval against. [Daylight Saving Time](https://developer.hashicorp.com/nomad/docs/job-specification/periodic#daylight-saving-time) affects scheduling, so please ensure the [behavior below](https://developer.hashicorp.com/nomad/docs/job-specification/periodic#daylight-saving-time) meets your needs. The time zone must be parsable by Golang's [LoadLocation](https://golang.org/pkg/time/#LoadLocation)."),
@@ -36,6 +39,7 @@ var PeriodicSchema = &schema.BodySchema{
 				Value: cty.StringVal("UTC"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"enabled": {
 			Description: lang.Markdown("Specifies if this job should run. This not only prevents this job from running on the `cron` schedule but prevents force launches."),
@@ -43,6 +47,7 @@ var PeriodicSchema = &schema.BodySchema{
 				Value: cty.BoolVal(true),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 	},
 }

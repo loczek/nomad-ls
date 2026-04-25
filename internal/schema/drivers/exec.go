@@ -16,6 +16,7 @@ var ExecDriverSchema = &schema.BodySchema{
 		"command": {
 			Description: lang.Markdown("The command to execute. Must be provided. If executing a binary that exists on the host, the path must be absolute and within the task's [chroot](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#chroot) or in a [host volume](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume-block) mounted with a [`volume_mount`](https://developer.hashicorp.com/nomad/docs/job-specification/volume_mount) block. The driver will make the binary executable and will search, in order:\n\n- The `local` directory with the task directory.\n- The task directory.\n- Any mounts, in the order listed in the job specification.\n- The `usr/local/bin`, `usr/bin` and `bin` directories inside the task directory.\n\nIf executing a binary that is downloaded from an [`artifact`](https://developer.hashicorp.com/nomad/docs/job-specification/artifact), the path can be relative from the allocation's root directory."),
 			Constraint:  schema.LiteralType{Type: cty.String},
+			IsRequired:  true,
 		},
 		// TODO: add warning from docs
 		"pid_mode": {

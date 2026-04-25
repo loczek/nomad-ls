@@ -12,6 +12,7 @@ var CheckRestartSchema = &schema.BodySchema{
 			Description:  lang.Markdown("Restart task when a health check has failed `limit` times. For example 1 causes a restart on the first failure. The default, `0`, disables health check based restarts. Failures must be consecutive. A single passing check will reset the count, so flapping services may not be restarted."),
 			DefaultValue: schema.DefaultValue{Value: cty.NumberIntVal(0)},
 			Constraint:   schema.LiteralType{Type: cty.Number},
+			IsOptional:   true,
 		},
 		"grace": {
 			Description:  lang.Markdown("Duration to wait after a task starts or restarts before checking its health."),

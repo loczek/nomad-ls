@@ -23,6 +23,7 @@ var LifecycleSchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 	},
 }

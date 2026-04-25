@@ -12,16 +12,18 @@ var JobSchema = &schema.BodySchema{
 			Description:  lang.PlainText("Controls whether the scheduler can make partial placements if optimistic scheduling resulted in an oversubscribed node. This does not control whether all allocations for the job, where all would be the desired count for each task group, must be placed atomically. This should only be used for special circumstances."),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
 		},
 		"datacenters": {
 			Description:  lang.Markdown("A list of datacenters in the region which are eligible for task placement. This field allows wildcard globbing through the use of * for multi-character matching. The default value is [\"*\"], which allows the job to be placed in any available datacenter."),
 			DefaultValue: schema.DefaultValue{Value: cty.ListVal([]cty.Value{cty.StringVal("*")})},
 			Constraint:   schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:   true,
 		},
 		"node_pool": {
 			Description: lang.Markdown("Specifies the node pool to place the job in. The node pool must exist when the job is registered. Defaults to \"default\"."),
-			IsOptional:  true,
 			Constraint:  schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
 		},
 		"name": {
 			Description: lang.PlainText("Specifies a name for the job, which otherwise defaults to the job ID."),
@@ -32,36 +34,39 @@ var JobSchema = &schema.BodySchema{
 			Description:  lang.PlainText("The namespace in which to execute the job."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("default")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"priority": {
 			Description:  lang.Markdown("Specifies the job priority which is used to prioritize scheduling and access to resources. Must be between 1 and `job_max_priority` inclusively, with a larger value corresponding to a higher priority. If value 0 is provided this will fallback to `job_default_priority`. Priority only has an effect when job preemption is enabled. It does not have an effect on which of multiple pending jobs is run first."),
 			DefaultValue: schema.DefaultValue{Value: cty.NumberIntVal(50)},
-
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint:   schema.LiteralType{Type: cty.Number},
+			IsOptional:   true,
 		},
 		"region": {
 			Description:  lang.PlainText("The region in which to execute the job."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("global")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"type": {
 			Description:  lang.PlainText("Specifies the Nomad scheduler to use. Nomad provides the `service`, `system`, `batch`, and `sysbatch` schedulers."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("service")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		// TODO: Update with docs later
 		"vault_token": {
 			Description:  lang.PlainText("Specifies the Vault token used for job submission. Strongly discouraged to place in config."),
-			IsOptional:   true,
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		// TODO: Update with docs later
 		"consul_token": {
 			Description:  lang.PlainText("Specifies the Consul token used for job submission."),
-			IsOptional:   true,
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{

@@ -14,6 +14,7 @@ var AffinitySchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		// TODO: update docs
 		"operator": {
@@ -22,6 +23,7 @@ var AffinitySchema = &schema.BodySchema{
 				Value: cty.StringVal("="),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"value": {
 			Description: lang.Markdown("Specifies the value to compare the attribute against using the specified operation. This can be a literal value, another attribute, or any [Nomad interpolated values](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation#interpreted_node_vars). The `value` field is required."),
@@ -37,6 +39,7 @@ var AffinitySchema = &schema.BodySchema{
 				Value: cty.NumberIntVal(50),
 			},
 			Constraint: schema.LiteralType{Type: cty.Number},
+			IsOptional: true,
 		},
 	},
 }

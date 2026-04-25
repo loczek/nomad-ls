@@ -16,6 +16,7 @@ var RawExecDriverSchema = &schema.BodySchema{
 		"command": {
 			Description: lang.Markdown("The command to execute. Must be provided. If executing a binary that exists on the host, the path must be absolute. If executing a binary that is downloaded from an [`artifact`](https://developer.hashicorp.com/nomad/docs/job-specification/artifact), the path can be relative from the allocation's root directory."),
 			Constraint:  schema.LiteralType{Type: cty.String},
+			IsRequired:  true,
 		},
 		// TODO: check if type is correct
 		"cgroup_v1_override": {

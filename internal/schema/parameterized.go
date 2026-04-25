@@ -14,6 +14,7 @@ var ParameterizedSchema = &schema.BodySchema{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
 			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional: true,
 		},
 		"meta_required": {
 			Description: lang.Markdown("Specifies the set of metadata keys that must be provided when dispatching against the job."),
@@ -21,6 +22,7 @@ var ParameterizedSchema = &schema.BodySchema{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
 			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional: true,
 		},
 		"payload": {
 			Description: lang.Markdown("Specifies the requirement of providing a payload when dispatching against the parameterized job. The maximum size of a `payload` is 16 KiB. The options for this field are:\n- `optional` - A payload is optional when dispatching against the job.\n- `required` - A payload must be provided when dispatching against the job.\n- `forbidden` - A payload is forbidden when dispatching against the job."),
@@ -28,6 +30,7 @@ var ParameterizedSchema = &schema.BodySchema{
 				Value: cty.StringVal("optional"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 	},
 }

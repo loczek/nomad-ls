@@ -13,11 +13,13 @@ var TemplateSchema = &schema.BodySchema{
 			Description:  lang.PlainText("Specifies the behavior Nomad should take if the rendered template changes. Nomad will always write the new contents of the template to the specified destination. The following possible values describe Nomad's action after writing the template to disk."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("restart")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"change_signal": {
 			Description:  lang.PlainText("Specifies the signal to send to the task as a string like `\"SIGUSR1\"` or `\"SIGINT\"`. This option is required if the `change_mode` is `signal`."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"data": {
 			Description:  lang.Markdown("Specifies the raw template to execute. One of `source` or `data` must be specified, but not both. This is useful for smaller templates, but we recommend using `source` for larger templates."),
@@ -96,6 +98,7 @@ var TemplateSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("15s")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsDeprecated: true,
+			IsOptional:   true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{

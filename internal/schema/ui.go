@@ -13,6 +13,7 @@ var UISchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsDeprecated: true,
+			IsOptional:   true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{

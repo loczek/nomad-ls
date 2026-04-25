@@ -12,6 +12,7 @@ var VolumeMountSchema = &schema.BodySchema{
 			Description:  lang.Markdown("Specifies the group volume that the mount is going to access."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"destination": {
 			Description:  lang.Markdown("Specifies where the volume should be mounted inside the task's allocation."),

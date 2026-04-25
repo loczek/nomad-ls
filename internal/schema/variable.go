@@ -13,14 +13,17 @@ var VariableSchema = &schema.BodySchema{
 		"type": {
 			Description: lang.Markdown("The type of HCL variable: `string`, `number`, `bool`."),
 			Constraint:  schema.TypeDeclaration{},
+			IsOptional:  true,
 		},
 		"default": {
 			Description: lang.Markdown("The default value used when no value for this variable is provided."),
 			Constraint:  schema.LiteralType{Type: cty.DynamicPseudoType},
+			IsOptional:  true,
 		},
 		"description": {
 			Description: lang.Markdown("variable description"),
 			Constraint:  schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
 		},
 	},
 }

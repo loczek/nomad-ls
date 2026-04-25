@@ -192,16 +192,19 @@ var UpstreamsSchema = &schema.BodySchema{
 			Description:  lang.Markdown("Name of the Cluster admin partition containing the upstream service."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"destination_peer": {
 			Description:  lang.Markdown("Name of the peer cluster containing the upstream service."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"destination_type": {
 			Description:  lang.Markdown("The type of discovery query the proxy should use for finding service mesh instances."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("service")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 		},
 		"local_bind_port": {
 			Description: lang.Markdown("The port the proxy will receive connections for the upstream on."),

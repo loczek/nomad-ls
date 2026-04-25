@@ -14,6 +14,7 @@ var EphemeralDiskSchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 		"size": {
 			Description: lang.Markdown("Specifies the size of the ephemeral disk in MB. The current Nomad ephemeral storage implementation does not enforce this limit; however, it is used during job placement."),
@@ -21,6 +22,7 @@ var EphemeralDiskSchema = &schema.BodySchema{
 				Value: cty.NumberIntVal(300),
 			},
 			Constraint: schema.LiteralType{Type: cty.Number},
+			IsOptional: true,
 		},
 		"sticky": {
 			Description: lang.Markdown("Specifies that Nomad should make a best-effort attempt to place the updated allocation on the same machine. This will move the `local/` and `alloc/data` directories to the new allocation."),
@@ -28,6 +30,7 @@ var EphemeralDiskSchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 	},
 }

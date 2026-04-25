@@ -14,6 +14,7 @@ var NetworkSchema = &schema.BodySchema{
 				Value: cty.NumberIntVal(10),
 			},
 			Constraint:   schema.LiteralType{Type: cty.Number},
+			IsOptional:   true,
 			IsDeprecated: true,
 		},
 		// TODO: update docs
@@ -23,6 +24,7 @@ var NetworkSchema = &schema.BodySchema{
 				Value: cty.StringVal("host"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"hostname": {
 			Description: lang.Markdown("The hostname assigned to the network namespace. This is currently only supported using the [Docker driver](https://developer.hashicorp.com/nomad/docs/job-declare/task-driver/docker) and when the [mode](https://developer.hashicorp.com/nomad/docs/job-specification/network#mode) is set to [`bridge`](https://developer.hashicorp.com/nomad/docs/job-specification/network#bridge). This parameter supports [interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
@@ -30,6 +32,7 @@ var NetworkSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
 			IsDeprecated: true,
 		},
 		"image_pull_timeout": {
@@ -38,6 +41,7 @@ var NetworkSchema = &schema.BodySchema{
 				Value: cty.StringVal("5m"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -94,14 +98,17 @@ var DnsSchema = &schema.BodySchema{
 		"servers": {
 			Description: lang.Markdown("Sets the DNS nameservers the allocation uses for name resolution."),
 			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:  true,
 		},
 		"searches": {
 			Description: lang.Markdown("Sets the search list for hostname lookup"),
 			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:  true,
 		},
 		"options": {
 			Description: lang.Markdown("Sets internal resolver variables."),
 			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
+			IsOptional:  true,
 		},
 	},
 }
@@ -111,6 +118,7 @@ var CniSchema = &schema.BodySchema{
 		"args": {
 			Description: lang.Markdown("Sets CNI arguments for network configuration. These get turned into `CNI_ARGS` per the [CNI spec](https://www.cni.dev/docs/spec/#parameters)."),
 			Constraint:  schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional:  true,
 		},
 	},
 }

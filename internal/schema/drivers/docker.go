@@ -35,6 +35,7 @@ var DockerDriverSchema = &schema.BodySchema{
 			Description:  lang.Markdown("Don't fail the task on an auth failure. Attempt to continue without auth. If the Nomad client configuration has an [`auth.helper`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#helper) block, the helper will be tried for all images, including public images. If you mix private and public images, you will need to include `auth_soft_fail=true` in every job using a public image."),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
 		},
 		"command": {
 			Description: lang.Markdown("The command to run when starting the container."),

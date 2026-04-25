@@ -14,6 +14,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.StringVal("default"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		// TODO: fix default value
 		"aud": {
@@ -21,6 +22,7 @@ var IdentitySchema = &schema.BodySchema{
 			// DefaultValue: schema.DefaultValue{
 			// 	Value: cty.List(cty.String),
 			// },
+			IsOptional: true,
 		},
 		// TODO: update default values
 		"change_mode": {
@@ -29,6 +31,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.StringVal("noop"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"change_signal": {
 			Description: lang.Markdown("Specifies the signal to send to the task as a string like \"SIGHUP\" or \"SIGUSR1\". This option is required if the `change_mode` is `signal`."),
@@ -36,6 +39,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"env": {
 			Description: lang.Markdown("If true the workload identity will be available in the task's NOMAD_TOKEN environment variable."),
@@ -43,6 +47,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 		"file": {
 			Description: lang.Markdown("If true the workload identity will be available in the task's filesystem via the path `secrets/nomad_token`. If the `task.user` parameter is set, the token file will only be readable by that user. Otherwise the file is readable by everyone but is protected by parent directory permissions."),
@@ -50,6 +55,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.BoolVal(false),
 			},
 			Constraint: schema.LiteralType{Type: cty.Bool},
+			IsOptional: true,
 		},
 		"filepath": {
 			Description: lang.Markdown("If not empty and file is `true`, the workload identity is available at the specified location relative to the [task working directory](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#task-directories) instead of the `NOMAD_SECRETS_DIR`.\"30s\" or \"1h\". You may not set a TTL on the default identity. You should always set a TTL for non-default identities.\"30s\" or \"1h\". You may not set a TTL on the default identity. You should always set a TTL for non-default identities."),
@@ -57,6 +63,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"ttl": {
 			Description: lang.Markdown("The lifetime of the identity before it expires. The client will renew the identity at roughly half the TTL. This is specified using a label suffix like \"30s\" or \"1h\". You may not set a TTL on the default identity. You should always set a TTL for non-default identities.\"30s\" or \"1h\". You may not set a TTL on the default identity. You should always set a TTL for non-default identities."),
@@ -64,6 +71,7 @@ var IdentitySchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 	},
 }

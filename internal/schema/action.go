@@ -16,6 +16,7 @@ var ActionSchema = &schema.BodySchema{
 		"args": {
 			Description: lang.Markdown("Provides a list of arguments to pass to the command."),
 			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
+			IsRequired:  true,
 		},
 	},
 }

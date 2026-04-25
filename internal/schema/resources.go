@@ -14,6 +14,7 @@ var ResourcesSchema = &schema.BodySchema{
 				Value: cty.NumberIntVal(100),
 			},
 			Constraint: schema.LiteralType{Type: cty.Number},
+			IsOptional: true,
 		},
 		"cores": {
 			Description: lang.Markdown("Specifies the number of CPU cores to reserve specifically for the task. This may not be used with `cpu`. The behavior of setting `cores` is specific to each task driver (e.g. [docker](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#cpu), [exec](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/exec#cpu))."),
@@ -29,6 +30,7 @@ var ResourcesSchema = &schema.BodySchema{
 				Value: cty.NumberIntVal(300),
 			},
 			Constraint: schema.LiteralType{Type: cty.Number},
+			IsOptional: true,
 		},
 		"memory_max": {
 			Description: lang.Markdown("Optionally, specifies the maximum memory the task may use, if the client has excess memory capacity, in MB. See [Memory Oversubscription](https://developer.hashicorp.com/nomad/docs/job-specification/resources#memory-oversubscription) for more details."),
@@ -67,6 +69,7 @@ var DeviceSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"count": {
 			Description: lang.Markdown("Specifies the number of instances of the given device that are required."),

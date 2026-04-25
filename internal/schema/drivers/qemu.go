@@ -11,6 +11,7 @@ var QemuDriverSchema = &schema.BodySchema{
 		"image_path": {
 			Description: lang.Markdown("The path to the downloaded image. In most cases this will just be the name of the image. However, if the supplied artifact is an archive that contains the image in a subfolder, the path will need to be the relative path (`subdir/from_archive/my.img`)."),
 			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
+			IsRequired:  true,
 		},
 		"drive_interface": {
 			Description:  lang.Markdown("This option defines on which type of interface the drive is connected. Available types are: `ide`, `scsi`, `sd`, `mtd`, `floppy`, `pflash`, `virtio` and `none`. Default is `ide`."),

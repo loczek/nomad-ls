@@ -14,6 +14,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.StringVal("local/"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		"mode": {
 			Description: lang.Markdown("One of `any`, `file`, or `dir`. If set to `file` the destination must be a file, not a directory. By default the `destination` will be `local/<filename>`."),
@@ -21,6 +22,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.StringVal("any"),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 		// TODO: change the default value type?
 		"options": {
@@ -29,6 +31,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.MapValEmpty(cty.String),
 			},
 			Constraint: schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional: true,
 		},
 		"headers": {
 			Description: lang.Markdown("Specifies HTTP headers to set when fetching the artifact using `http` or `https` protocol. Please see the [`go-getter` headers documentation](https://github.com/hashicorp/go-getter#headers) for more information."),
@@ -36,6 +39,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.MapValEmpty(cty.String),
 			},
 			Constraint: schema.LiteralType{Type: cty.Map(cty.String)},
+			IsOptional: true,
 		},
 		"source": {
 			Description: lang.Markdown("Specifies the URL of the artifact to download. See [`go-getter`](https://github.com/hashicorp/go-getter) for details."),
@@ -43,6 +47,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsRequired: true,
 		},
 		"chown": {
 			Description: lang.Markdown("Specifies whether Nomad should recursively `chown` the downloaded artifact to be owned by the [`task.user`](https://developer.hashicorp.com/nomad/docs/job-specification/task#user) uid and gid."),
@@ -50,6 +55,7 @@ var ArtifactSchema = &schema.BodySchema{
 				Value: cty.StringVal(""),
 			},
 			Constraint: schema.LiteralType{Type: cty.String},
+			IsOptional: true,
 		},
 	},
 }
