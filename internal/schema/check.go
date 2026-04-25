@@ -17,7 +17,7 @@ var CheckSchema = &schema.BodySchema{
 		"args": {
 			Description:  lang.Markdown("Specifies additional arguments to the `command`. This only applies to script-based health checks."),
 			DefaultValue: schema.DefaultValue{Value: cty.ListValEmpty(cty.String)},
-			Constraint:   schema.LiteralType{Type: cty.String},
+			Constraint:   schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional:   true,
 		},
 		"command": {
