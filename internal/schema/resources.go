@@ -13,7 +13,10 @@ var ResourcesSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(100),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"cores": {
@@ -21,7 +24,10 @@ var ResourcesSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(0),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"memory": {
@@ -29,7 +35,10 @@ var ResourcesSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(300),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"memory_max": {
@@ -37,13 +46,19 @@ var ResourcesSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(300),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"secret": {
 			Description: lang.Markdown("Specifies the size of the [`secrets/`](https://developer.hashicorp.com/nomad/docs/reference/runtime-environment-settings#secrets) directory in MB, on platforms where the directory is a tmpfs. If set, the scheduler adds the `secrets` value to the `memory` value when allocating resources on a client, and this value will be included in the allocated resources shown by the `nomad alloc status` and `nomad node status` commands. If unset, the client will allocate 1 MB of tmpfs space and it will not be counted for scheduling purposes or included in allocated resources. You should not set this value if the workload will be placed on a platform where tmpfs is unsupported, because it will still be counted for scheduling purposes."),
-			Constraint:  schema.LiteralType{Type: cty.Number},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -68,7 +83,10 @@ var DeviceSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"count": {
@@ -76,7 +94,10 @@ var DeviceSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 	},

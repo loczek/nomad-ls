@@ -13,7 +13,10 @@ var ConsulSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("default"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"namespace": {
@@ -21,7 +24,10 @@ var ConsulSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"partition": {
@@ -29,7 +35,10 @@ var ConsulSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

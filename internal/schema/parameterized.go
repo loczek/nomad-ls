@@ -14,7 +14,10 @@ var ParameterizedSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
-			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
 			IsOptional: true,
 		},
 		// TODO: shoud be required
@@ -23,7 +26,10 @@ var ParameterizedSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
-			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
 			IsOptional: true,
 		},
 		"payload": {
@@ -31,7 +37,10 @@ var ParameterizedSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("optional"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

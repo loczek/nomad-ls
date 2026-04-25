@@ -28,7 +28,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("5s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"kill_signal": {
@@ -36,7 +39,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("5s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"leader": {
@@ -44,7 +50,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"shutdown_delay": {
@@ -52,7 +61,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("0s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"user": {
@@ -60,7 +72,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"kind": {
@@ -68,7 +83,10 @@ var TaskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

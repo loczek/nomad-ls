@@ -24,7 +24,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsRequired: true,
 		},
 		"read_only": {
@@ -32,7 +35,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"sticky": {
@@ -40,7 +46,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"per_alloc": {
@@ -48,7 +57,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"access_mode": {
@@ -56,7 +68,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: this should be required for csi voulmes https://developer.hashicorp.com/nomad/docs/job-specification/volume#attachment_mode
@@ -65,7 +80,10 @@ var VolumeSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: check if constraint is correct

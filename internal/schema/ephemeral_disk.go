@@ -13,7 +13,10 @@ var EphemeralDiskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"size": {
@@ -21,7 +24,10 @@ var EphemeralDiskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(300),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"sticky": {
@@ -29,7 +35,10 @@ var EphemeralDiskSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 	},

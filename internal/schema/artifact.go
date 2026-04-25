@@ -13,7 +13,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("local/"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"mode": {
@@ -21,7 +24,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("any"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: change the default value type?
@@ -30,7 +36,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.MapValEmpty(cty.String),
 			},
-			Constraint: schema.LiteralType{Type: cty.Map(cty.String)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
 			IsOptional: true,
 		},
 		"headers": {
@@ -38,7 +47,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.MapValEmpty(cty.String),
 			},
-			Constraint: schema.LiteralType{Type: cty.Map(cty.String)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
 			IsOptional: true,
 		},
 		"source": {
@@ -46,7 +58,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsRequired: true,
 		},
 		"chown": {
@@ -54,7 +69,10 @@ var ArtifactSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

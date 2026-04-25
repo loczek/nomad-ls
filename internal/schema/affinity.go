@@ -13,7 +13,10 @@ var AffinitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: update docs
@@ -22,7 +25,10 @@ var AffinitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("="),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"value": {
@@ -30,7 +36,10 @@ var AffinitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsRequired: true,
 		},
 		"weight": {
@@ -38,7 +47,10 @@ var AffinitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(50),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 	},

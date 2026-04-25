@@ -13,7 +13,10 @@ var MigrateSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"health_checks": {
@@ -21,7 +24,10 @@ var MigrateSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("checks"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"min_healthy_time": {
@@ -29,7 +35,10 @@ var MigrateSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("10s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"healthy_deadline": {
@@ -37,7 +46,10 @@ var MigrateSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("5m"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

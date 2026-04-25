@@ -11,7 +11,10 @@ var UISchema = &schema.BodySchema{
 		"description": {
 			Description:  lang.Markdown("The markdown-enabled description of the job. We support [GitHub Flavored Markdown](https://github.github.com/gfm/)."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsDeprecated: true,
 			IsOptional:   true,
 		},
@@ -28,7 +31,10 @@ var UISchema = &schema.BodySchema{
 var LinkSchema = &schema.BodySchema{
 	AnyAttribute: &schema.AttributeSchema{
 		Description: lang.Markdown("A user-defined key-value pair for metadata."),
-		Constraint:  schema.LiteralType{Type: cty.String},
-		IsOptional:  true,
+		Constraint: schema.OneOf{
+			schema.LiteralType{Type: cty.String},
+			schema.AnyExpression{OfType: cty.String},
+		},
+		IsOptional: true,
 	},
 }

@@ -13,7 +13,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("default"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: fix default value
@@ -30,7 +33,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("noop"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: this should be required when `change_mode` is set to `signal`
@@ -39,7 +45,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"env": {
@@ -47,7 +56,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"file": {
@@ -55,7 +67,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"filepath": {
@@ -63,7 +78,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"ttl": {
@@ -71,7 +89,10 @@ var IdentitySchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

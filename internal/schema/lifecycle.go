@@ -14,7 +14,10 @@ var LifecycleSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("default"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsRequired: true,
 		},
 		"sidecar": {
@@ -22,7 +25,10 @@ var LifecycleSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 	},

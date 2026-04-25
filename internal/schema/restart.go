@@ -14,7 +14,10 @@ var RestartSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(0),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"delay": {
@@ -22,7 +25,10 @@ var RestartSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("15s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"interval": {
@@ -30,7 +36,10 @@ var RestartSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"mode": {
@@ -38,7 +47,10 @@ var RestartSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("fail"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"render_templates": {
@@ -46,7 +58,10 @@ var RestartSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 	},

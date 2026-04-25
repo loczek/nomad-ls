@@ -13,7 +13,10 @@ var NetworkSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(10),
 			},
-			Constraint:   schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional:   true,
 			IsDeprecated: true,
 		},
@@ -23,7 +26,10 @@ var NetworkSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("host"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		// TODO: this should not be deprecated
@@ -32,7 +38,10 @@ var NetworkSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal(""),
 			},
-			Constraint:   schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional:   true,
 			IsDeprecated: true,
 		},
@@ -41,7 +50,10 @@ var NetworkSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("5m"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},
@@ -70,25 +82,37 @@ var PortSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"static": {
 			Description: lang.Markdown("Specifies the static TCP/UDP port to allocate. If omitted, a dynamic port is chosen. We do not recommend using static ports, except for system or specialized jobs like load balancers."),
-			Constraint:  schema.LiteralType{Type: cty.Number},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 		"to": {
 			Description: lang.Markdown("Applicable when using \"bridge\" mode to configure port to map to inside the task's network namespace. Omitting this field or setting it to `-1` sets the mapped port equal to the dynamic port allocated by the scheduler. The `NOMAD_PORT_<label>` environment variable will contain the `to` value."),
-			Constraint:  schema.LiteralType{Type: cty.Number},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 		"host_network": {
 			Description: lang.Markdown("Designates the host network name to use when allocating the port. When port mapping the host port will only forward traffic to the matched host network address."),
-			Constraint:  schema.LiteralType{Type: cty.String},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"ignore_collision": {
 			Description: lang.Markdown("A time duration that controls how long Nomad will wait before cancelling an in-progress pull of the Docker image as specified in `image`. Defaults to `\"5m\"`."),
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 	},
@@ -98,18 +122,27 @@ var DnsSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"servers": {
 			Description: lang.Markdown("Sets the DNS nameservers the allocation uses for name resolution."),
-			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"searches": {
 			Description: lang.Markdown("Sets the search list for hostname lookup"),
-			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"options": {
 			Description: lang.Markdown("Sets internal resolver variables."),
-			Constraint:  schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 	},
 }
@@ -118,8 +151,11 @@ var CniSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"args": {
 			Description: lang.Markdown("Sets CNI arguments for network configuration. These get turned into `CNI_ARGS` per the [CNI spec](https://www.cni.dev/docs/spec/#parameters)."),
-			Constraint:  schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
+			IsOptional: true,
 		},
 	},
 }

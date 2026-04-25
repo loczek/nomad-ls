@@ -14,15 +14,21 @@ var PeriodicSchema = &schema.BodySchema{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
 			IsDeprecated: true,
-			Constraint:   schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:   true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"crons": {
 			Description: lang.Markdown("A list of cron expressions configuring the intervals the job is launched at. The job runs at the next earliest time that matches any of the expressions. Supports predefined expressions such as `@daily` and `@weekly`. Refer to [the documentation](https://github.com/hashicorp/cronexpr#implementation) for full details about the supported cron specs and the predefined expressions. Either `cron` or `crons` must be set, but not both."),
 			DefaultValue: schema.DefaultValue{
 				Value: cty.ListVal([]cty.Value{cty.StringVal("")}),
 			},
-			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
 			IsOptional: true,
 		},
 		"prohibit_overlap": {
@@ -30,7 +36,10 @@ var PeriodicSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"time_zone": {
@@ -38,7 +47,10 @@ var PeriodicSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("UTC"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"enabled": {
@@ -46,7 +58,10 @@ var PeriodicSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(true),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 	},

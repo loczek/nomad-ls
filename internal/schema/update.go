@@ -20,7 +20,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"health_check": {
@@ -32,7 +35,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("checks"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"min_healthy_time": {
@@ -40,7 +46,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("10s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"healthy_deadline": {
@@ -48,7 +57,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("5m"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"progress_deadline": {
@@ -56,7 +68,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("10m"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 		"auto_revert": {
@@ -64,7 +79,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"auto_promote": {
@@ -72,7 +90,10 @@ updated in parallel. In-place updates are performed all at once.
 			DefaultValue: schema.DefaultValue{
 				Value: cty.BoolVal(false),
 			},
-			Constraint: schema.LiteralType{Type: cty.Bool},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
 			IsOptional: true,
 		},
 		"canary": {
@@ -84,7 +105,10 @@ In system jobs, the canary setting indicates the percentage of feasible nodes to
 			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(0),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
 			IsOptional: true,
 		},
 		"stagger": {
@@ -92,7 +116,10 @@ In system jobs, the canary setting indicates the percentage of feasible nodes to
 			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("30s"),
 			},
-			Constraint: schema.LiteralType{Type: cty.String},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
 			IsOptional: true,
 		},
 	},

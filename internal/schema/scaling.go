@@ -10,19 +10,28 @@ var ScalingSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"min": {
 			Description: lang.Markdown("The minimum acceptable count for the task group. This should be honored by the external autoscaler. It will also be honored by Nomad during job updates and scaling operations. Defaults to the specified task group [`count`](https://developer.hashicorp.com/nomad/docs/job-specification/group#count)."),
-			Constraint:  schema.LiteralType{Type: cty.String},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"max": {
 			Description: lang.Markdown("The maximum acceptable count for the task group. This should be honored by the external autoscaler. It will also be honored by Nomad during job updates and scaling operations."),
-			Constraint:  schema.LiteralType{Type: cty.String},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsRequired: true,
 		},
 		"enabled": {
 			Description:  lang.Markdown("Whether the scaling policy is enabled. This is intended to allow temporarily disabling an autoscaling policy, and should be honored by the external autoscaler."),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
-			Constraint:   schema.LiteralType{Type: cty.Bool},
-			IsOptional:   true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
