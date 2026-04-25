@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/validator"
 	funcs "github.com/loczek/nomad-ls/internal/function"
+	"github.com/loczek/nomad-ls/internal/languages"
 	nomadSchema "github.com/loczek/nomad-ls/internal/schema"
 )
 
