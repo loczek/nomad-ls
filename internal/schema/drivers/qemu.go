@@ -16,6 +16,24 @@ var QemuDriverSchema = &schema.BodySchema{
 			},
 			IsRequired: true,
 		},
+		"emulator": {
+			Description:  lang.Markdown("The QEMU emulator arch used to run the virtual machine. This also supports the full emulator binary name. For example, `qemu-system-x86_64`."),
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("x86_64")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
+		},
+		"machine_type": {
+			Description:  lang.Markdown("Used to select the emulated machine by name"),
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("pc")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
+		},
 		"drive_interface": {
 			Description:  lang.Markdown("This option defines on which type of interface the drive is connected. Available types are: `ide`, `scsi`, `sd`, `mtd`, `floppy`, `pflash`, `virtio` and `none`. Default is `ide`."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("ide")},
