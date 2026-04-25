@@ -31,6 +31,7 @@ var RootBodySchema = schema.BodySchema{
 		"variables": {
 			Description: VariablesSchema.Description,
 			Body:        VariablesSchema,
+			MaxItems:    1,
 		},
 		"locals": {
 			Description: lang.Markdown("Local values assigning names to expressions, so you can use these multiple times without repetition\n" +
