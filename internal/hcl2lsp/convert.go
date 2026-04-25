@@ -11,9 +11,21 @@ func Completions(cands lang.Candidates) []protocol.CompletionItem {
 	completions := make([]protocol.CompletionItem, 0)
 
 	for _, v := range cands.List {
+		newKind := v.Kind
+		newLabel := v.Label
+
+		switch v.Kind {
+		case 14:
+			newKind = 2 // constant to function
+		case 1:
+			newKind = 6 // text to variable
+		case 2:
+			newKind = 14 // method to keyword
+		}
+
 		completions = append(completions, protocol.CompletionItem{
-			Label: v.Label,
-			Kind:  protocol.CompletionItemKind(v.Kind),
+			Label: newLabel,
+			Kind:  protocol.CompletionItemKind(newKind),
 			TextEdit: &protocol.TextEdit{
 				NewText: v.TextEdit.Snippet,
 				Range: protocol.Range{
