@@ -33,6 +33,7 @@ var IdentitySchema = &schema.BodySchema{
 			Constraint: schema.LiteralType{Type: cty.String},
 			IsOptional: true,
 		},
+		// TODO: this should be required when `change_mode` is set to `signal`
 		"change_signal": {
 			Description: lang.Markdown("Specifies the signal to send to the task as a string like \"SIGHUP\" or \"SIGUSR1\". This option is required if the `change_mode` is `signal`."),
 			DefaultValue: schema.DefaultValue{

@@ -26,6 +26,7 @@ var NetworkSchema = &schema.BodySchema{
 			Constraint: schema.LiteralType{Type: cty.String},
 			IsOptional: true,
 		},
+		// TODO: this should not be deprecated
 		"hostname": {
 			Description: lang.Markdown("The hostname assigned to the network namespace. This is currently only supported using the [Docker driver](https://developer.hashicorp.com/nomad/docs/job-declare/task-driver/docker) and when the [mode](https://developer.hashicorp.com/nomad/docs/job-specification/network#mode) is set to [`bridge`](https://developer.hashicorp.com/nomad/docs/job-specification/network#bridge). This parameter supports [interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
 			DefaultValue: schema.DefaultValue{

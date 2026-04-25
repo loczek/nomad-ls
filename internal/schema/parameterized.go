@@ -8,6 +8,7 @@ import (
 
 var ParameterizedSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
+		// TODO: shoud be required
 		"meta_optional": {
 			Description: lang.Markdown("Specifies the set of metadata keys that may be provided when dispatching against the job."),
 			DefaultValue: schema.DefaultValue{
@@ -16,6 +17,7 @@ var ParameterizedSchema = &schema.BodySchema{
 			Constraint: schema.LiteralType{Type: cty.List(cty.String)},
 			IsOptional: true,
 		},
+		// TODO: shoud be required
 		"meta_required": {
 			Description: lang.Markdown("Specifies the set of metadata keys that must be provided when dispatching against the job."),
 			DefaultValue: schema.DefaultValue{

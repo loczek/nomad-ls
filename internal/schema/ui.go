@@ -17,6 +17,7 @@ var UISchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		// TODO: change this type
 		"link": {
 			Description: lang.PlainText("A link that should show up in the header of the job index page in the Web UI. A job can have any number of links, and they must contain both a string `label` and `url`."),
 			Body:        LinkSchema,

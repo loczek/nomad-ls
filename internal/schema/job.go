@@ -55,6 +55,7 @@ var JobSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		// TODO: Update with docs later
+		// TODO: mark as deprecated
 		"vault_token": {
 			Description:  lang.PlainText("Specifies the Vault token used for job submission. Strongly discouraged to place in config."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
@@ -62,6 +63,7 @@ var JobSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		// TODO: Update with docs later
+		// TODO: mark as deprecated
 		"consul_token": {
 			Description:  lang.PlainText("Specifies the Consul token used for job submission."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},

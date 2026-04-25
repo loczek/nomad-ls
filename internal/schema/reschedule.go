@@ -7,6 +7,7 @@ import (
 )
 
 // TODO: find actuall default values for all of the attributes
+// TODO: add better docs
 var RescheduleSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"attempts": {

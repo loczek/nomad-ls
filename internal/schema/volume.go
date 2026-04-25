@@ -59,6 +59,7 @@ var VolumeSchema = &schema.BodySchema{
 			Constraint: schema.LiteralType{Type: cty.String},
 			IsOptional: true,
 		},
+		// TODO: this should be required for csi voulmes https://developer.hashicorp.com/nomad/docs/job-specification/volume#attachment_mode
 		"attachment_mode": {
 			Description: lang.Markdown("The storage API used by the volume. One of `\"file-system\"` or `\"block-device\"`. The `access_mode` and `attachment_mode` together must exactly match one of the volume's `capability` blocks.\n-For CSI volumes the `attachment_mode` field is required. Most storage providers support `\"file-system\"`, to mount volumes using the CSI filesystem API. Some storage providers support `\"block-device\"`, which mounts the volume with the CSI block device API within the container.\n-For dynamic host volumes the `attachment_mode` field is optional and defaults to `\"file-system\"`."),
 			DefaultValue: schema.DefaultValue{
