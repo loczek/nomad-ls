@@ -1,6 +1,6 @@
 module github.com/loczek/nomad-ls
 
-go 1.24.1
+go 1.26.2
 
 require (
 	github.com/hashicorp/hcl-lang v0.0.0-20260119114541-59e53641aaba
