@@ -6,10 +6,17 @@ import (
 	"errors"
 	"fmt"
 	"runtime/debug"
+	"strings"
 
+	"github.com/hashicorp/hcl-lang/decoder"
+	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
 	"go.lsp.dev/protocol"
+
+	"github.com/loczek/nomad-ls/internal/hcl2lsp"
+	"github.com/loczek/nomad-ls/internal/languages"
+	"github.com/loczek/nomad-ls/internal/validation"
 )
 
 func (s *Service) HandleInitialize(ctx context.Context, params *protocol.InitializedParams) (*protocol.InitializeResult, error) {
@@ -21,7 +28,7 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 	return &protocol.InitializeResult{
 		ServerInfo: &protocol.ServerInfo{
 			Name:    "nomad-ls",
-			Version: info.Main.Version,
+			Version: strings.TrimPrefix(info.Main.Version, "v"),
 		},
 		Capabilities: protocol.ServerCapabilities{
 			CompletionProvider: &protocol.CompletionOptions{},
@@ -37,69 +44,90 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.HoverParams) (*protocol.Hover, error) {
 	file := s.parser.Files()[params.TextDocument.URI.Filename()]
 
-	body := file.Body
+	pos := hcl2lsp.Position(params.Position, file.Bytes)
 
-	byteOffset := CalculateByteOffset(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
+	dec := decoder.NewDecoder(&s.parser)
+	langPath := lang.Path{
+		Path:       params.TextDocument.URI.Filename(),
+		LanguageID: languages.NomadJob.String(),
+	}
 
-	pos := hcl.InitialPos
-	pos.Byte = int(byteOffset)
+	pathDec, err := dec.Path(langPath)
+	if err != nil {
+		panic(err)
+	}
 
-	x := CollectHoverInfo(body, hcl.Pos{
-		Line:   int(params.Position.Line),
-		Column: int(params.Position.Character),
-		Byte:   pos.Byte,
-	})
+	hoverData, err := pathDec.HoverAtPos(ctx, params.TextDocument.URI.Filename(), pos)
+	if err != nil {
+		return nil, err
+	}
 
-	s.logger.Info(fmt.Sprintf("arr: %v", x))
-
-	if len(x) == 0 {
+	if hoverData == nil {
 		return nil, nil
 	}
 
-	return &protocol.Hover{
-		Contents: protocol.MarkupContent{
-			Kind:  protocol.PlainText,
-			Value: fmt.Sprintf("%s", x[len(x)-1]),
-		},
-	}, nil
+	var hover = hcl2lsp.Hover(hoverData)
+
+	return &hover, nil
 }
 
 func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *protocol.CompletionParams) (*protocol.CompletionList, error) {
 	file := s.parser.Files()[params.TextDocument.URI.Filename()]
 
 	if file == nil {
-		return nil, errors.New("file is nil")
+		return nil, errors.New("file not found")
 	}
 
-	body := file.Body
+	pos := hcl2lsp.Position(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
 
-	byteOffset := CalculateByteOffset(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
+	dec := decoder.NewDecoder(&s.parser)
+	langPath := lang.Path{
+		Path:       params.TextDocument.URI.Filename(),
+		LanguageID: languages.NomadJob.String(),
+	}
 
-	pos := hcl.InitialPos
-	pos.Byte = int(byteOffset)
+	pathDec, err := dec.Path(langPath)
+	if err != nil {
+		return nil, err
+	}
 
-	completions := CollectCompletions(body, hcl.Pos{
-		Line:   int(params.Position.Line),
-		Column: int(params.Position.Character),
-		Byte:   pos.Byte,
-	})
+	cands, err := pathDec.CompletionAtPos(ctx, params.TextDocument.URI.Filename(), pos)
+	if err != nil {
+		return nil, err
+	}
+
+	completions := hcl2lsp.Completions(cands)
 
 	return &protocol.CompletionList{
-		IsIncomplete: false,
+		IsIncomplete: cands.IsComplete,
 		Items:        completions,
 	}, nil
 }
 
 func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
-	file, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
+	_, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
 
-	schemaDiags := CollectDiagnostics(file.Body)
+	dec := decoder.NewDecoder(&s.parser)
+	langPath := lang.Path{
+		Path:       params.TextDocument.URI.Filename(),
+		LanguageID: languages.NomadJob.String(),
+	}
 
-	allDiags := diags.Extend(*schemaDiags)
+	dec.SetContext(decoder.NewDecoderContext())
 
-	s.logger.Info(fmt.Sprintf("%+v", params))
+	pathDec, err := dec.Path(langPath)
+	if err != nil {
+		return nil, err
+	}
 
-	return &allDiags, nil
+	diags, err = pathDec.ValidateFile(ctx, params.TextDocument.URI.Filename())
+	if err != nil {
+		return nil, err
+	}
+
+	diags = diags.Extend(diags)
+
+	return &diags, nil
 }
 
 func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*hcl.Diagnostics, error) {
@@ -108,19 +136,42 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 	if changesCount > 0 {
 		_, diags := s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
 
-		s.logger.Info(fmt.Sprintf("text: %+v", params))
+		dec := decoder.NewDecoder(&s.parser)
+		langPath := lang.Path{
+			Path:       params.TextDocument.URI.Filename(),
+			LanguageID: languages.NomadJob.String(),
+		}
 
-		file := s.parser.Files()[params.TextDocument.URI.Filename()]
+		dec.SetContext(decoder.NewDecoderContext())
 
-		body := file.Body
+		pathDec, err := dec.Path(langPath)
+		if err != nil {
+			return nil, err
+		}
 
-		schemaDiags := CollectDiagnostics(body)
+		pathContext, err := s.parser.PathContext(langPath)
+		if err != nil {
+			return nil, err
+		}
 
-		allDiags := diags.Extend(*schemaDiags)
+		diagMap := validation.UnreferencedOrigins(ctx, pathContext)
+		originsDiags := hcl.Diagnostics{}
+		for _, v := range diagMap {
+			originsDiags = originsDiags.Extend(v)
+		}
 
-		s.logger.Info(fmt.Sprintf("diags: %+v", allDiags))
+		diags = diags.Extend(originsDiags)
 
-		return &allDiags, nil
+		schemaDiags, err := pathDec.ValidateFile(ctx, params.TextDocument.URI.Filename())
+		if err != nil {
+			return nil, err
+		}
+
+		diags = diags.Extend(schemaDiags)
+
+		s.logger.Info(fmt.Sprintf("diags: %+v", diags))
+
+		return &diags, nil
 	}
 
 	return nil, nil

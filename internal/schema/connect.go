@@ -10,9 +10,12 @@ var ConnectSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"native": {
 			Description:  lang.Markdown("This is used to configure the service as supporting [Consul service mesh native](https://developer.hashicorp.com/consul/docs/automate/native) applications."),
-			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
-			Constraint:   &schema.LiteralType{Type: cty.Bool},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{

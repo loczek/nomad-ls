@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/scope"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -23,7 +24,17 @@ var VariablesSchema = &schema.BodySchema{
 	Description: lang.Markdown("A less precise block for declaring multiple input variables at once. Each attribute defines a variable name and its default value. Variables declared in a `variables` block do not support type constraints, descriptions, or validation rules. For more control over variable behavior, use individual `variable` blocks instead."),
 	AnyAttribute: &schema.AttributeSchema{
 		Description: lang.Markdown("Defines a variable with the given name and default value."),
-		Constraint:  &schema.LiteralType{Type: cty.DynamicPseudoType},
-		IsOptional:  true,
+		Constraint:  schema.LiteralType{Type: cty.DynamicPseudoType},
+		Address: &schema.AttributeAddrSchema{
+			Steps: []schema.AddrStep{
+				schema.StaticStep{Name: "var"},
+				schema.AttrNameStep{},
+			},
+			FriendlyName: "variable",
+			ScopeId:      scope.VariableScope,
+			AsExprType:   true,
+			AsReference:  true,
+		},
+		IsOptional: true,
 	},
 }

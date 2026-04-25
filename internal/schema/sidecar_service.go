@@ -10,26 +10,38 @@ var SidecarServiceSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"disable_default_tcp_check": {
 			Description:  lang.Markdown("disable the default TCP health check."),
-			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
-			Constraint:   &schema.LiteralType{Type: cty.Bool},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
+			IsOptional: true,
 		},
 		"meta": {
 			Description: lang.Markdown("Specifies arbitrary KV metadata pairs."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
+			IsOptional: true,
 		},
 		// TODO: docs don't have default value?
 		"port": {
 			Description:  lang.Markdown("Port label for sidecar service."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"tags": {
 			Description: lang.Markdown("Custom Consul service tags for the sidecar service."),
-			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -44,31 +56,46 @@ var ProxySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"config": {
 			Description: lang.Markdown("Proxy configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/envoy#dynamic-configuration) for details. Keys and values support [runtime variable interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"meta": {
 			Description: lang.Markdown("Specifies arbitrary KV metadata pairs."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
+			IsOptional: true,
 		},
 		// TODO: docs don't have default value?
 		"port": {
 			Description:  lang.Markdown("Port label for sidecar service."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_service_address": {
 			Description:  lang.Markdown("The address the local service binds to. Useful to customize in clusters with mixed Connect and non-Connect services."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("127.0.0.1")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("127.0.0.1")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_service_port": {
 			Description: lang.Markdown("The port the local service binds to. Usually the same as the parent service's port, it is useful to customize in clusters with mixed Connect and non-Connect services."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -100,18 +127,27 @@ var PathSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"path": {
 			Description: lang.Markdown("The HTTP or gRPC path to expose. The path must be prefixed with a slash."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsRequired: true,
 		},
 		"protocol": {
 			Description: lang.Markdown("Sets the protocol of the listener. Must be `http` or `http2`. For gRPC use `http2`."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsRequired: true,
 		},
 		"local_path_port": {
 			Description: lang.Markdown("The port the service is listening to for connections to the configured `path`. Typically this will be the same as the `service.port` value, but could be different if for example the exposed path is intended to resolve to another task in the task group."),
-			Constraint:  &schema.LiteralType{Type: cty.Number},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -126,41 +162,62 @@ var TransparentProxySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"exclude_inbound_ports": {
 			Description: lang.Markdown("A list of inbound ports to exclude from the inbound traffic redirection. This allows traffic on these ports to bypass the Envoy proxy. These ports can be specified as either [network port labels](https://developer.hashicorp.com/nomad/docs/job-specification/network#port-parameters) or as numeric ports. Nomad will automatically add the following to this list:\n\n- The [`local_path_port`](https://developer.hashicorp.com/nomad/docs/job-specification/expose#local_path_port) of any [`expose`](https://developer.hashicorp.com/nomad/docs/job-specification/expose) block.\n- The port of any service check with [`expose=true`](https://developer.hashicorp.com/nomad/docs/job-specification/check#expose) set.\n- The port of any `network.port` with a [`static`](https://developer.hashicorp.com/nomad/docs/job-specification/network#static) value."),
-			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsRequired: true,
 		},
 		"exclude_outbound_cidrs": {
 			Description: lang.Markdown("A list of CIDR subnets that should be excluded from outbound traffic redirection. This allows traffic to these subnets to bypass the Envoy proxy. Note this is independent of `exclude_outbound_ports`; CIDR subnets listed here are excluded regardless of the port."),
-			Constraint:  &schema.LiteralType{Type: cty.List(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.String)},
+				schema.AnyExpression{OfType: cty.List(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"exclude_outbound_ports": {
 			Description: lang.Markdown("A list of port numbers that should be excluded from outbound traffic redirection. This allows traffic to these subnets to bypass the Envoy proxy. Note this is independent of `exclude_outbound_cidrs`; ports listed here are excluded regardless of the CIDR."),
-			Constraint:  &schema.LiteralType{Type: cty.List(cty.Number)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.List(cty.Number)},
+				schema.AnyExpression{OfType: cty.List(cty.Number)},
+			},
+			IsOptional: true,
 		},
 		"exclude_uids": {
 			Description: lang.Markdown("A list of Unix user IDs (UIDs) that should be excluded from outbound traffic redirection. When unset, only the Envoy proxy's user will be allowed to bypass the iptables rule."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"no_dns": {
 			Description:  lang.Markdown("By default, Consul will be set as the nameserver for the workload and IP tables rules will redirect DNS queries to Consul. If you want only external DNS, set `no_dns=true`. You will need to add your own CIDR and port exclusions for your DNS nameserver. You cannot set [`network.dns`](https://developer.hashicorp.com/nomad/docs/job-specification/network#dns-parameters) if `no_dns=false`."),
-			DefaultValue: &schema.DefaultValue{Value: cty.BoolVal(false)},
-			Constraint:   &schema.LiteralType{Type: cty.Bool},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Bool},
+				schema.AnyExpression{OfType: cty.Bool},
+			},
+			IsOptional: true,
 		},
 		"outbound_port": {
 			Description:  lang.Markdown("The port that Envoy will bind on inside the network namespace. The iptables rules created by `consul-cni` will force traffic to flow to this port. You should only set this value if you have specifically set the [`outbound_listener_port`](https://developer.hashicorp.com/consul/docs/connect/proxies/proxy-config-reference#outbound_listener_port) in your Consul proxy configuration. You can change the default value for a given node via [client metadata](https://developer.hashicorp.com/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below)."),
-			DefaultValue: &schema.DefaultValue{Value: cty.NumberIntVal(15001)},
-			Constraint:   &schema.LiteralType{Type: cty.Number},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.NumberIntVal(15001)},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 		"uid": {
 			Description:  lang.Markdown("The Unix user ID (UID) used by the Envoy proxy. You should only set this value if you have a custom build of the Envoy container image which uses a different UID. You can change the default value for a given node via [client metadata](https://developer.hashicorp.com/nomad/docs/job-specification/transparent_proxy#client-metadata) (see below). Note that your workload's task cannot use the same UID as the Envoy sidecar proxy."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("101")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("101")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -175,65 +232,98 @@ var UpstreamsSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"config": {
 			Description: lang.Markdown("Upstream configuration that is opaque to Nomad and passed directly to Consul. See [Consul service mesh documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/proxy-config-reference#expose-paths-configuration-reference) for details. Keys and values support [runtime variable interpolation](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation)."),
-			Constraint:  &schema.LiteralType{Type: cty.Map(cty.String)},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Map(cty.String)},
+				schema.AnyExpression{OfType: cty.Map(cty.String)},
+			},
+			IsOptional: true,
 		},
 		"destination_name": {
 			Description: lang.Markdown("Name of the upstream service."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsRequired: true,
 		},
 		"destination_namespace": {
 			Description: lang.Markdown("Name of the upstream Consul namespace."),
-			Constraint:  &schema.LiteralType{Type: cty.String},
-			IsOptional:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsRequired: true,
 		},
 		"destination_partition": {
 			Description:  lang.Markdown("Name of the Cluster admin partition containing the upstream service."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"destination_peer": {
 			Description:  lang.Markdown("Name of the peer cluster containing the upstream service."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"destination_type": {
 			Description:  lang.Markdown("The type of discovery query the proxy should use for finding service mesh instances."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("service")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("service")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_bind_port": {
 			Description: lang.Markdown("The port the proxy will receive connections for the upstream on."),
-			Constraint:  &schema.LiteralType{Type: cty.Number},
-			IsRequired:  true,
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsRequired: true,
 		},
 		"datacenter": {
 			Description:  lang.Markdown("The Consul datacenter in which to issue the discovery query. Defaults to the empty string, which Consul interprets as the local Consul datacenter."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_bind_address": {
 			Description:  lang.Markdown("The address the proxy will receive connections for the upstream on."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_bind_socket_mode": {
 			Description:  lang.Markdown("Unix octal that configures file permissions for the socket."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 		"local_bind_socket_path": {
 			Description:  lang.Markdown("The path at which to bind a Unix domain socket listener."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -248,9 +338,12 @@ var MeshGatewaySchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"mode": {
 			Description:  lang.Markdown("The mode of operation in which to use [Connect Mesh Gateways](https://developer.hashicorp.com/consul/docs/connect/gateways/mesh-gateway/service-to-service-traffic-datacenters#mesh-gateways). If left unset, the mode will default to the mode as determined by the Consul [service-defaults](https://developer.hashicorp.com/consul/docs/connect/config-entries/service-defaults#meshgateway) configuration for the service. Can be configured with the following modes:\n\n - [`local`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#local) - In this mode the Connect proxy makes its outbound connection to a gateway running in the same datacenter. That gateway is then responsible for ensuring the data gets forwarded along to gateways in the destination datacenter.\n - [`remote`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#remote) - In this mode the Connect proxy makes its outbound connection to a gateway running in the destination datacenter. That gateway will then forward the data to the final destination service.\n - [`none`](https://developer.hashicorp.com/nomad/docs/job-specification/upstreams#none) - In this mode, no gateway is used and a Connect proxy makes its outbound connections directly to the destination services."),
-			DefaultValue: &schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   &schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 	},
 }

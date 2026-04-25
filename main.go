@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"log/slog"
@@ -14,12 +15,42 @@ import (
 	"go.lsp.dev/jsonrpc2"
 )
 
+var logLevel string
+
+func init() {
+	flag.StringVar(&logLevel, "log-level", "info", "language server log level")
+	flag.Parse()
+}
+
 func main() {
 	w := os.Stderr
 
-	handler := tint.NewHandler(w, nil)
+	var handler slog.Handler
+	handlerOpts := slog.HandlerOptions{
+		Level: slog.LevelError,
+	}
+
+	switch logLevel {
+	case "debug":
+		handlerOpts.Level = slog.LevelDebug
+	case "info":
+		handlerOpts.Level = slog.LevelInfo
+	case "warn":
+		handlerOpts.Level = slog.LevelWarn
+	case "error":
+		handlerOpts.Level = slog.LevelError
+	default:
+		panic("invalid log level")
+	}
+
 	if isBuilt() {
-		handler = slog.NewTextHandler(w, nil)
+		handler = slog.NewTextHandler(w, &handlerOpts)
+	} else {
+		handler = tint.NewHandler(w, &tint.Options{
+			AddSource:   handlerOpts.AddSource,
+			Level:       handlerOpts.Level,
+			ReplaceAttr: handlerOpts.ReplaceAttr,
+		})
 	}
 
 	logger := slog.New(handler)
@@ -32,7 +63,7 @@ func main() {
 
 	con.Go(context.Background(), func(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) error {
 		go func() {
-			logger.Info(fmt.Sprintf("recieved method: %s", req.Method()))
+			logger.Info("recieved request", slog.String("method", req.Method()))
 
 			resp, err := service.Handle(ctx, reply, req)
 
@@ -41,7 +72,7 @@ func main() {
 			reply(ctx, resp, err)
 
 			if err != nil {
-				logger.Info("received error from handler", "error", err.Error())
+				logger.Error("recieved error from handler", "error", err.Error())
 			}
 		}()
 		return nil

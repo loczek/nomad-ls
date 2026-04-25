@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/schema/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -10,16 +11,25 @@ var GroupSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"count": {
 			Description: lang.Markdown("Specifies the number of instances that should be running under for this group. This value must be non-negative. This defaults to the `min` value specified in the [`scaling`](https://developer.hashicorp.com/nomad/docs/job-specification/scaling) block, if present; otherwise, this defaults to `1`."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.NumberIntVal(1),
 			},
-			Constraint: schema.LiteralType{Type: cty.Number},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.Number},
+				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
 		},
 		"shutdown_delay": {
 			Description: lang.PlainText("Specifies the duration to wait when stopping a group's tasks. The delay occurs between Consul or Nomad service deregistration and sending each task a shutdown signal. Ideally, services would fail health checks once they receive a shutdown signal. Alternatively, shutdown_delay may be set to give in-flight requests time to complete before shutting down. A group level shutdown_delay will run regardless if there are any defined group services and only applies to these services. In addition, tasks may have their own shutdown_delay which waits between de-registering task services and stopping the task."),
-			DefaultValue: &schema.DefaultValue{
+			DefaultValue: schema.DefaultValue{
 				Value: cty.StringVal("0s"),
 			},
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
@@ -82,7 +92,6 @@ var GroupSchema = &schema.BodySchema{
 			Description: lang.PlainText("secret docs"),
 			Body:        SecretSchema,
 		},
-		// TODO: make it required
 		"task": {
 			Description: lang.PlainText("Specifies one or more tasks to run within this group. This can be specified multiple times, to add a task as part of the group."),
 			Labels: []*schema.LabelSchema{
@@ -91,6 +100,14 @@ var GroupSchema = &schema.BodySchema{
 				},
 			},
 			Body: TaskSchema,
+			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
+				attrKey("docker"):   createConfigSchema(drivers.DockerDriverSchema),
+				attrKey("exec"):     createConfigSchema(drivers.ExecDriverSchema),
+				attrKey("raw_exec"): createConfigSchema(drivers.RawExecDriverSchema),
+				attrKey("java"):     createConfigSchema(drivers.JavaDriverSchema),
+				attrKey("qemu"):     createConfigSchema(drivers.QemuDriverSchema),
+			},
+			MinItems: 1,
 		},
 		"update": {
 			Description: lang.PlainText("Specifies the task's update strategy. When omitted, a default update strategy is applied."),
@@ -110,4 +127,26 @@ var GroupSchema = &schema.BodySchema{
 			},
 		},
 	},
+}
+
+func attrKey(value string) schema.SchemaKey {
+	return schema.NewSchemaKey(schema.DependencyKeys{
+		Attributes: []schema.AttributeDependent{
+			{
+				Name: "driver",
+				Expr: schema.ExpressionValue{Static: cty.StringVal(value)},
+			},
+		},
+	})
+}
+
+func createConfigSchema(innerBody *schema.BodySchema) *schema.BodySchema {
+	return &schema.BodySchema{
+		Blocks: map[string]*schema.BlockSchema{
+			"config": {
+				Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
+				Body:        innerBody,
+			},
+		},
+	}
 }

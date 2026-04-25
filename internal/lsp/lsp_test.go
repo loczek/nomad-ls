@@ -17,20 +17,6 @@ const (
 	DOCKER_LOGGING_NOMAD_FILE_PATH    = "./testdata/docker_logging.nomad.hcl"
 )
 
-func TestByteCount(t *testing.T) {
-	hclFile := LoadSampleFile(LOKI_NOMAD_FILE_PATH)
-
-	actuallCount := len(hclFile.Bytes)
-
-	pos := protocol.Position{Line: 100, Character: 0}
-
-	predictedCount := CalculateByteOffset(pos, hclFile.Bytes)
-
-	if actuallCount != int(predictedCount) {
-		t.Errorf("expected: %d, recieved: %d", actuallCount, predictedCount)
-	}
-}
-
 func TestServiceBlockHoverInformation(t *testing.T) {
 	tests := []struct {
 		name           string
