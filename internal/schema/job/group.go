@@ -3,7 +3,7 @@ package schema
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
-	"github.com/loczek/nomad-ls/internal/schema/drivers"
+	"github.com/loczek/nomad-ls/internal/schema/job/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
