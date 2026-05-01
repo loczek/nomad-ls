@@ -1,4 +1,4 @@
-package schemaNamespace
+package namespace
 
 import (
 	"github.com/hashicorp/hcl-lang/lang"

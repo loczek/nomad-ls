@@ -3,7 +3,7 @@ package dynamic
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
-	nomadJobSchema "github.com/loczek/nomad-ls/internal/schema/job"
+	"github.com/loczek/nomad-ls/internal/schema/job"
 	"github.com/loczek/nomad-ls/internal/schema/volume"
 	"github.com/zclconf/go-cty/cty"
 )
@@ -77,7 +77,7 @@ var RootSchema = schema.BodySchema{
 		},
 		"constraint": {
 			Description: lang.Markdown("A restriction on the eligible nodes where a volume can be created. Refer to the [volume placement](https://developer.hashicorp.com/nomad/docs/other-specifications/volume/host#volume-placement) section for details. You can provide multiple `constraint` blocks to add more constraints. Optional for volume creation and ignored for volume registration."),
-			Body:        nomadJobSchema.ConstraintSchema,
+			Body:        job.ConstraintSchema,
 		},
 		"parameters": {
 			Description: lang.Markdown("An optional key-value map of strings passed directly to the plugin to configure the volume. The details of these parameters are specific to the plugin."),

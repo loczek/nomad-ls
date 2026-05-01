@@ -1,4 +1,4 @@
-package schemaVariable
+package variable
 
 import (
 	"github.com/hashicorp/hcl-lang/lang"

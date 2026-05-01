@@ -1,4 +1,4 @@
-package schema
+package job
 
 import (
 	"github.com/hashicorp/hcl-lang/lang"

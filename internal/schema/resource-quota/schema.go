@@ -1,4 +1,4 @@
-package schemaResourceQuota
+package resourceQuota
 
 import (
 	"github.com/hashicorp/hcl-lang/lang"

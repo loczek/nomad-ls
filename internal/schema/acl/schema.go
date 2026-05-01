@@ -1,4 +1,4 @@
-package schemaACL
+package acl
 
 import (
 	"github.com/hashicorp/hcl-lang/schema"

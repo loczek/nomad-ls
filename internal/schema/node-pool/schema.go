@@ -1,4 +1,4 @@
-package schemaNodePool
+package nodePool
 
 import (
 	"github.com/hashicorp/hcl-lang/lang"
