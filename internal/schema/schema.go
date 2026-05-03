@@ -14,7 +14,7 @@ import (
 
 var NomadACL = acl.RootSchema
 var NomadAgent = agent.RootSchema
-var NomadJob = job.RootBodySchema
+var NomadJob = job.RootSchema
 var NomadNamespace = namespace.RootSchema
 var NomadNodePool = nodePool.RootSchema
 var NomadResourceQuota = resourceQuota.RootSchema

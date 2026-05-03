@@ -7,7 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootBodySchema = schema.BodySchema{
+var RootSchema = schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"variable": {
 			Address: &schema.BlockAddrSchema{

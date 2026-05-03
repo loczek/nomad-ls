@@ -8,7 +8,7 @@ import (
 var schemaMap = map[LanguageID]hclSchema.BodySchema{
 	NomadACL:           schema.NomadACL,
 	NomadAgent:         schema.NomadAgent,
-	NomadJob:           schema.NomadJob, // TODO: rename this
+	NomadJob:           schema.NomadJob,
 	NomadNapespace:     schema.NomadNamespace,
 	NomadNodePool:      schema.NomadNodePool,
 	NomadResourceQuota: schema.NomadResourceQuota,
