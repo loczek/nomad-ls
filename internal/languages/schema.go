@@ -6,15 +6,15 @@ import (
 )
 
 var schemaMap = map[LanguageID]hclSchema.BodySchema{
-	NomadACL:           schema.NomadACL,
-	NomadAgent:         schema.NomadAgent,
-	NomadJob:           schema.NomadJob,
-	NomadNapespace:     schema.NomadNamespace,
-	NomadNodePool:      schema.NomadNodePool,
-	NomadResourceQuota: schema.NomadResourceQuota,
-	NomadVariable:      schema.NomadVariable,
-	NomadVolumeCSI:     schema.NomadVolumeCSI,
-	NomadVolumeDynamic: schema.NomadVolumeDynamic,
+	NomadACL:               schema.NomadACL,
+	NomadAgent:             schema.NomadAgent,
+	NomadCSIVolume:         schema.NomadVolumeCSI,
+	NomadDynamicHostVolume: schema.NomadVolumeDynamic,
+	NomadJob:               schema.NomadJob,
+	NomadNapespace:         schema.NomadNamespace,
+	NomadNodePool:          schema.NomadNodePool,
+	NomadResourceQuota:     schema.NomadResourceQuota,
+	NomadVariable:          schema.NomadVariable,
 }
 
 func ToSchema(lang LanguageID) hclSchema.BodySchema {
