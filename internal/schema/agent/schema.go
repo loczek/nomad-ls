@@ -196,10 +196,21 @@ var RootSchema = schema.BodySchema{
 			Description: lang.Markdown("This is a nested object that configures limits that are enforced by the agent"),
 			Body:        LimitsSchema,
 		},
-		// TODO: add this later
 		"plugin": {
-			// Description: lang.Markdown("This is a nested object that configures limits that are enforced by the agent"),
-			// Body:        LimitsSchema,
+			Labels: []*schema.LabelSchema{
+				{
+					Name:        "name",
+					IsDepKey:    true,
+					Completable: true,
+				},
+			},
+			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
+				labelKey("docker"):   plugin.DockerSchema,
+				labelKey("exec"):     plugin.ExecSchema,
+				labelKey("java"):     plugin.JavaSchema,
+				labelKey("qemu"):     plugin.QEMUSchema,
+				labelKey("raw_exec"): plugin.RawExecSchema,
+			},
 		},
 		"ports": {
 			Description: lang.Markdown("Specifies the network ports used for different services required by the Nomad agent."),
