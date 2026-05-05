@@ -242,6 +242,11 @@ var RootSchema = schema.BodySchema{
 			Description: lang.Markdown("Specifies configuration for TLS."),
 			Body:        TLSSchema,
 		},
+		// TODO: add description (missing from docs)
+		"ui": {
+			Description: lang.Markdown("ui docs"),
+			Body:        UISchema,
+		},
 		"vault": {
 			Description: lang.Markdown("Specifies configuration for connecting to Vault."),
 			// Body:        vault,
