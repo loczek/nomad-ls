@@ -14,6 +14,12 @@ func main() {
 	if err := schema.NomadAgent.Validate(); err != nil {
 		panic(fmt.Sprintf("Agent schema validation error: %s", err))
 	}
+	if err := schema.NomadCSIVolume.Validate(); err != nil {
+		panic(fmt.Sprintf("CSI Volume schema validation error: %s", err))
+	}
+	if err := schema.NomadDynamicHostVolume.Validate(); err != nil {
+		panic(fmt.Sprintf("Dynamic Host Volume schema validation error: %s", err))
+	}
 	if err := schema.NomadJob.Validate(); err != nil {
 		panic(fmt.Sprintf("Job schema validation failed: %s", err))
 	}
@@ -28,12 +34,6 @@ func main() {
 	}
 	if err := schema.NomadVariable.Validate(); err != nil {
 		panic(fmt.Sprintf("Variable schema validation error: %s", err))
-	}
-	if err := schema.NomadVolumeCSI.Validate(); err != nil {
-		panic(fmt.Sprintf("CSI Volume schema validation error: %s", err))
-	}
-	if err := schema.NomadVolumeDynamic.Validate(); err != nil {
-		panic(fmt.Sprintf("Dynamic Host Volume schema validation error: %s", err))
 	}
 
 	validateDrivers()

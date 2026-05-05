@@ -14,10 +14,10 @@ import (
 
 var NomadACL = acl.RootSchema
 var NomadAgent = agent.RootSchema
+var NomadCSIVolume = csi.RootSchema
+var NomadDynamicHostVolume = dynamic.RootSchema
 var NomadJob = job.RootSchema
 var NomadNamespace = namespace.RootSchema
 var NomadNodePool = nodePool.RootSchema
 var NomadResourceQuota = resourceQuota.RootSchema
 var NomadVariable = variable.RootSchema
-var NomadVolumeCSI = csi.RootSchema
-var NomadVolumeDynamic = dynamic.RootSchema
