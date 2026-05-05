@@ -7,7 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var AutopilotSchema = schema.BodySchema{
+var AutopilotSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"cleanup_dead_servers": {
 			Description:  lang.Markdown("Specifies automatic removal of dead server nodes periodically and whenever a new server is added to the cluster."),

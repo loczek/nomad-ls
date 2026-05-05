@@ -6,7 +6,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var ClientSchema = schema.BodySchema{
+var ClientSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"alloc_dir": {
 			Description:  lang.Markdown("Specifies the directory to use for allocation data. When this parameter is empty, Nomad will generate the path using the top-level data_dir suffixed with alloc, like \"/opt/nomad/alloc\". This must be an absolute path. Nomad will create the directory on the host, if it does not exist when the agent process starts."),
@@ -232,8 +232,15 @@ var ClientSchema = schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		// TODO: fix this
 		"chroot_env": {
 			Description: lang.Markdown("Specifies a key-value mapping that defines the chroot environment for jobs using the Exec and Java drivers."),
+			Body: &schema.BodySchema{
+				AnyAttribute: &schema.AttributeSchema{
+					Constraint: schema.LiteralType{Type: cty.String},
+					IsOptional: true,
+				},
+			},
 		},
 		"meta": {
 			Description: lang.Markdown("Specifies a key-value map that annotates with user-defined metadata."),
