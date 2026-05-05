@@ -6,38 +6,42 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var AWSSchema = &schema.BodySchema{
+var AzureSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
-		"region": {
-			Description:  lang.Markdown("The AWS region where the encryption key lives. If not provided, may be populated from the `AWS_REGION` or `AWS_DEFAULT_REGION` environment variables, from your `~/.aws/config` file, or from instance metadata."),
-			DefaultValue: schema.DefaultValue{Value: cty.StringVal("us-east-1")},
+		"tenant_id": {
+			Description: lang.Markdown("The tenant id for the Azure Active Directory organization. Alternately specify via the `AZURE_TENANT_ID` environment variable."),
+			Constraint:  schema.LiteralType{Type: cty.String},
+			IsRequired:  true,
+		},
+		"client_id": {
+			Description: lang.Markdown("The client id for credentials to query the Azure APIs. Alternately specify via the `AZURE_CLIENT_ID` environment variable."),
+			Constraint:  schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
+		},
+		"client_secret": {
+			Description: lang.Markdown("The client secret for credentials to query the Azure APIs. Alternately specify via the `AZURE_CLIENT_SECRET` environment variable."),
+			Constraint:  schema.LiteralType{Type: cty.String},
+			IsOptional:  true,
+		},
+		"environment": {
+			Description:  lang.Markdown("The Azure Cloud environment API endpoints to use. Alternately specify via the `AZURE_ENVIRONMENT` environment variable."),
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("AZUREPUBLICCLOUD")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
-		"access_key": {
-			Description: lang.Markdown("The AWS access key ID to use. Alternately specify via the `AWS_ACCESS_KEY_ID` environment variable or as part of the AWS profile from the AWS CLI or instance profile."),
+		"vault_name": {
+			Description: lang.Markdown("The Key Vault vault to use the encryption keys for encryption and decryption."),
 			Constraint:  schema.LiteralType{Type: cty.String},
 			IsRequired:  true,
 		},
-		"session_token": {
-			Description:  lang.Markdown("Specifies the AWS session token. Alternately specify via the environment variable `AWS_SESSION_TOKEN`."),
-			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
-			Constraint:   schema.LiteralType{Type: cty.String},
-			IsOptional:   true,
-		},
-		"secret_key": {
-			Description: lang.Markdown("The AWS secret access key to use. Alternately specify via the `AWS_SECRET_ACCESS_KEY` environment variable or as part of the AWS profile from the AWS CLI or instance profile."),
+		"key_name": {
+			Description: lang.Markdown("The Key Vault key to use for encryption and decryption."),
 			Constraint:  schema.LiteralType{Type: cty.String},
 			IsRequired:  true,
 		},
-		"kms_key_id": {
-			Description: lang.Markdown("The AWS KMS key ID or ARN to use for encryption and decryption. You can alternately use an alias in the format `alias/key-alias-name`."),
-			Constraint:  schema.LiteralType{Type: cty.String},
-			IsRequired:  true,
-		},
-		"endpoint": {
-			Description:  lang.Markdown("The KMS API endpoint for AWS KMS requests. Alternately specify via the `AWS_KMS_ENDPOINT` environment variable. This is useful, for example, when connecting to KMS over a [VPC Endpoint](https://docs.aws.amazon.com/kms/latest/developerguide/kms-vpc-endpoint.html). If not set, Nomad uses the default API endpoint for your region."),
-			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
+		"resource": {
+			Description:  lang.Markdown("The Key Vault resource's DNS Suffix to connect to. Alternately specify via the `AZURE_AD_RESOURCE` environment variable. Needs to be changed to connect to Azure's Managed HSM KeyVault instance type."),
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("vault.azure.net")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
