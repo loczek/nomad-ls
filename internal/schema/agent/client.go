@@ -271,10 +271,16 @@ var ClientSchema = &schema.BodySchema{
 		"fingerprint": {
 			Description: lang.Markdown("Provides configuration for fingerprinters used by the client and applies to \"env_aws\", \"env_azure\", \"env_digitalocean\", and \"env_gce\" fingerprinters."),
 			Body:        FingerprintSchema,
+			Labels: []*schema.LabelSchema{
+				{Name: "name"},
+			},
 		},
 		"host_volume": {
 			Description: lang.Markdown("Exposes paths from the host as volumes that can be mounted into jobs."),
 			Body:        HostVolumeSchema,
+			Labels: []*schema.LabelSchema{
+				{Name: "name"},
+			},
 		},
 		"host_network": {
 			Description: lang.Markdown("Registers additional host networks with the node that can be selected when port mapping. Although this parameter defaults to nil, Nomad creates a host network named \"default\" using the network_interface field."),
