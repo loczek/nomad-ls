@@ -11,7 +11,7 @@ var ACLSchema = &schema.BodySchema{
 		"enabled": {
 			Description:  lang.Markdown("Specifies if ACL enforcement is enabled. All other ACL configuration options depend on this value. All agents should have the same value for this parameter. For example the Nomad command line will send requests for client endpoints such as `alloc exec` directly to Nomad clients whenever they are accessible. In this scenario, the client will enforce ACLs, so both servers and clients should have ACLs enabled."),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
-			Constraint:   schema.LiteralType{Type: cty.String},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 		"token_ttl": {
