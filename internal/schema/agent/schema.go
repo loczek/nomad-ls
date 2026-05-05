@@ -3,6 +3,7 @@ package agent
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/schema/agent/keyring"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -175,6 +176,22 @@ var RootSchema = schema.BodySchema{
 				},
 			},
 		},
+		"keyring": {
+			Labels: []*schema.LabelSchema{
+				{
+					Name:        "name",
+					IsDepKey:    true,
+					Completable: true,
+				},
+			},
+			Body: keyring.KeyringSchema,
+			DependentBody: map[schema.SchemaKey]*schema.BodySchema{
+				labelKey("awskms"):        keyring.AWSSchema,
+				labelKey("azurekeyvault"): keyring.AzureSchema,
+				labelKey("gcpckms"):       keyring.GCPSchema,
+				labelKey("transit"):       keyring.VaultSchema,
+			},
+		},
 		"limits": {
 			Description: lang.Markdown("This is a nested object that configures limits that are enforced by the agent"),
 			Body:        LimitsSchema,
@@ -219,4 +236,15 @@ var RootSchema = schema.BodySchema{
 			// Body:        vault,
 		},
 	},
+}
+
+func labelKey(value string) schema.SchemaKey {
+	return schema.NewSchemaKey(schema.DependencyKeys{
+		Labels: []schema.LabelDependent{
+			{
+				Index: 0,
+				Value: value,
+			},
+		},
+	})
 }
