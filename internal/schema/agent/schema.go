@@ -4,6 +4,7 @@ import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
 	"github.com/loczek/nomad-ls/internal/schema/agent/keyring"
+	plugin "github.com/loczek/nomad-ls/internal/schema/agent/plugins"
 	"github.com/zclconf/go-cty/cty"
 )
 
