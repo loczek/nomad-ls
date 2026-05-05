@@ -1,3 +1,3 @@
 package schemautils
 
-const EnterpriseOnly = "\n\nNote: Enterprise only"
+const EnterpriseOnly = "\n\nNote: **Enterprise only**"
