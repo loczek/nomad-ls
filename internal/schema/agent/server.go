@@ -282,6 +282,7 @@ var ServerSchema = &schema.BodySchema{
 			Description: lang.Markdown("Configuration for how the Nomad server handles client introduction requests."),
 			Body:        ClientIntroductionSchema,
 		},
+		// TODO: add body
 		"default_scheduler_config": {
 			Description: lang.Markdown("Specifies the initial default scheduler config when bootstrapping cluster. The parameter is ignored once the cluster is bootstrapped or value is updated through the [API endpoint](https://developer.hashicorp.com/nomad/api-docs/operator/scheduler#update-scheduler-configuration). Refer to [the example section](https://developer.hashicorp.com/nomad/docs/configuration/server#configuring-scheduler-config) for more details."),
 		},

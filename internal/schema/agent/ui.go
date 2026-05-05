@@ -26,10 +26,10 @@ var UISchema = &schema.BodySchema{
 			Body: ContentSecurityPolicySchema,
 		},
 		"consul": {
-			Body: ConsulSchema,
+			Body: UIConsulSchema,
 		},
 		"vault": {
-			Body: VaultSchema,
+			Body: UIVaultSchema,
 		},
 		"label": {
 			Body: LabelSchema,
@@ -100,7 +100,7 @@ var ContentSecurityPolicySchema = &schema.BodySchema{
 	},
 }
 
-var ConsulSchema = &schema.BodySchema{
+var UIConsulSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"ui_url": {
 			Description:  lang.Markdown("Specifies the full base URL to a Consul web UI (for example: `https://consul.example.com:8501/ui`. This URL is used to build links from the Nomad web UI to a Consul web UI. Note that this URL will not typically be the same one used for the agent's [`consul.address`](https://developer.hashicorp.com/nomad/docs/configuration/consul#address); the `consul.address` is the URL used by the Nomad to communicate with Consul, whereas the `ui.consul.ui_url` is the URL you'll visit in your browser. If this field is omitted, this integration will be disabled."),
@@ -110,7 +110,7 @@ var ConsulSchema = &schema.BodySchema{
 		},
 	},
 }
-var VaultSchema = &schema.BodySchema{
+var UIVaultSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"ui_url": {
 			Description:  lang.Markdown("Specifies the full base URL to a Vault web UI (for example: `https://vault.example.com:8200/ui`. This URL is used to build links from the Nomad web UI to a Vault web UI. Note that this URL will not typically be the same one used for the agent's [`vault.address`](https://developer.hashicorp.com/nomad/docs/configuration/vault#address); the `vault.address` is the URL used by the Nomad to communicate with Vault, whereas the `ui.vault.ui_url` is the URL you'll visit in your browser. If this field is omitted, this integration will be disabled."),

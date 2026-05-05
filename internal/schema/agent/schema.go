@@ -250,7 +250,7 @@ var RootSchema = schema.BodySchema{
 		},
 		"vault": {
 			Description: lang.Markdown("Specifies configuration for connecting to Vault."),
-			// Body:        vault,
+			Body:        VaultSchema,
 		},
 	},
 }
