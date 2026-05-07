@@ -16,9 +16,11 @@ import (
 )
 
 var logLevel string
+var transportStdio bool
 
 func init() {
 	flag.StringVar(&logLevel, "log-level", "info", "language server log level")
+	flag.BoolVar(&transportStdio, "stdio", false, "use stdin/stdout as transport method")
 	flag.Parse()
 }
 
