@@ -34,7 +34,8 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 			CompletionProvider: &protocol.CompletionOptions{},
 			HoverProvider:      &protocol.HoverOptions{},
 			TextDocumentSync: &protocol.TextDocumentSyncOptions{
-				Change: protocol.TextDocumentSyncKindFull,
+				Change:    protocol.TextDocumentSyncKindFull,
+				OpenClose: true,
 			},
 			DocumentFormattingProvider: &protocol.DocumentFormattingOptions{},
 		},

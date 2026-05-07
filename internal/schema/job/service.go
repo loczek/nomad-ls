@@ -112,24 +112,6 @@ var ServiceSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: check if constraints are correct
-		"meta": {
-			Description: lang.Markdown("Specifies a key-value map that annotates the Consul service with user-defined metadata. Only available where `provider = \"consul\"`."),
-			Constraint: schema.OneOf{
-				schema.LiteralType{Type: cty.List(cty.Map(cty.String))},
-				schema.AnyExpression{OfType: cty.List(cty.Map(cty.String))},
-			},
-			IsOptional: true,
-		},
-		// TODO: check if constraints are correct
-		"canary_meta": {
-			Description: lang.Markdown("Specifies a key-value map that annotates the Consul service with user-defined metadata when the service is part of an allocation that is currently a canary. Once the canary is promoted, the registered meta will be updated to those specified in the `meta` parameter. If this is not supplied, the registered meta will be set to that of the `meta` parameter. Only available where `provider = \"consul\"`."),
-			Constraint: schema.OneOf{
-				schema.LiteralType{Type: cty.List(cty.Map(cty.String))},
-				schema.AnyExpression{OfType: cty.List(cty.Map(cty.String))},
-			},
-			IsOptional: true,
-		},
 		"on_update": {
 			Description:  lang.Markdown("Specifies how checks should be evaluated when determining deployment health (including a job's initial deployment). This allows job submitters to define certain checks as readiness checks, progressing a deployment even if the Service's checks are not yet healthy. Checks inherit the Service's value by default. The check status is not altered in Consul and is only used to determine the check's health during an update.\n\n- [`require_healthy`](https://developer.hashicorp.com/nomad/docs/job-specification/service#require_healthy) - In order for Nomad to consider the check healthy during an update it must report as healthy.\n[`ignore_warnings`](https://developer.hashicorp.com/nomad/docs/job-specification/service#ignore_warnings) - If a Service Check reports as warning, Nomad will treat the check as healthy. The Check will still be in a warning state in Consul.\n- [`ignore`](https://developer.hashicorp.com/nomad/docs/job-specification/service#ignore) - Any status will be treated as healthy.\n\n**Caveat:** `on_update` is only compatible with certain [`check_restart`](https://developer.hashicorp.com/nomad/docs/job-specification/check_restart) configurations. `on_update = \"ignore_warnings\"` requires that `check_restart.ignore_warnings = true`. `check_restart` can however specify `ignore_warnings = true` with `on_update = \"require_healthy\"`. If `on_update` is set to `ignore`, `check_restart` must be omitted entirely."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("require_healthy")},
@@ -155,6 +137,12 @@ var ServiceSchema = &schema.BodySchema{
 		},
 		"identity": {Description: lang.PlainText("Specifies a Workload Identity to use when obtaining Service Identity tokens from Consul to register the service. Only available where `provider = \"consul\"`. Typically this can be omitted so that Nomad will fall back to the server's [`consul.service_identity`](https://developer.hashicorp.com/nomad/docs/configuration/consul#service_identity) block."),
 			Body: IdentitySchema,
+		},
+		"meta": {Description: lang.PlainText("Specifies a key-value map that annotates the Consul service with user-defined metadata. Only available where `provider = \"consul\"`."),
+			Body: MetaSchema,
+		},
+		"canary_meta": {Description: lang.PlainText("Specifies a key-value map that annotates the Consul service with user-defined metadata when the service is part of an allocation that is currently a canary. Once the canary is promoted, the registered meta will be updated to those specified in the `meta` parameter. If this is not supplied, the registered meta will be set to that of the `meta` parameter. Only available where `provider = \"consul\"`."),
+			Body: MetaSchema,
 		},
 	},
 }
