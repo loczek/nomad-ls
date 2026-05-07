@@ -19,7 +19,7 @@ $ make
 ### Editor Extensions
 
 - [Zed](https://github.com/loczek/zed-nomad-extension)
-- VSCode (todo)
+- [VSCode](https://github.com/loczek/vscode-nomad-extension)
 
 ### Development setup with Zed
 
