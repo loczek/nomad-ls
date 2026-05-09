@@ -10,19 +10,19 @@ import (
 	"go.lsp.dev/protocol"
 
 	"github.com/loczek/nomad-ls/internal/hcl2lsp"
-	"github.com/loczek/nomad-ls/internal/parser"
+	"github.com/loczek/nomad-ls/internal/store"
 )
 
 type Service struct {
 	con    jsonrpc2.Conn
-	parser parser.Parser
+	store  store.Store
 	logger slog.Logger
 }
 
 func New(con jsonrpc2.Conn, logger slog.Logger) Service {
 	return Service{
 		con:    con,
-		parser: *parser.NewParser(),
+		store:  store.NewStore(),
 		logger: logger,
 	}
 }

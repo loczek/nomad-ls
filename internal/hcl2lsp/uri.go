@@ -9,3 +9,7 @@ func FileName(params protocol.TextDocumentIdentifier) string {
 func FileNameVersioned(params protocol.VersionedTextDocumentIdentifier) string {
 	return params.URI.Filename()
 }
+
+func FileNameItem(params protocol.TextDocumentItem) string {
+	return params.URI.Filename()
+}

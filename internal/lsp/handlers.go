@@ -16,6 +16,7 @@ import (
 
 	"github.com/loczek/nomad-ls/internal/hcl2lsp"
 	"github.com/loczek/nomad-ls/internal/languages"
+	"github.com/loczek/nomad-ls/internal/store"
 	"github.com/loczek/nomad-ls/internal/validation"
 )
 
@@ -43,14 +44,18 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 }
 
 func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.HoverParams) (*protocol.Hover, error) {
-	file := s.parser.Files()[params.TextDocument.URI.Filename()]
+	fileName := hcl2lsp.FileName(params.TextDocument)
+	file, err := s.store.GetFile(fileName)
+	if err != nil {
+		return nil, err
+	}
 
-	pos := hcl2lsp.Position(params.Position, file.Bytes)
+	pos := hcl2lsp.Position(params.Position, file.HCLFile.Bytes)
 
-	dec := decoder.NewDecoder(&s.parser)
+	dec := decoder.NewDecoder(&s.store)
 	langPath := lang.Path{
-		Path:       params.TextDocument.URI.Filename(),
-		LanguageID: languages.NomadJob.String(),
+		Path:       fileName,
+		LanguageID: string(file.Language),
 	}
 
 	pathDec, err := dec.Path(langPath)
@@ -58,7 +63,7 @@ func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.
 		panic(err)
 	}
 
-	hoverData, err := pathDec.HoverAtPos(ctx, params.TextDocument.URI.Filename(), pos)
+	hoverData, err := pathDec.HoverAtPos(ctx, fileName, pos)
 	if err != nil {
 		return nil, err
 	}
@@ -73,18 +78,18 @@ func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.
 }
 
 func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *protocol.CompletionParams) (*protocol.CompletionList, error) {
-	file := s.parser.Files()[params.TextDocument.URI.Filename()]
-
-	if file == nil {
-		return nil, errors.New("file not found")
+	fileName := hcl2lsp.FileName(params.TextDocument)
+	file, err := s.store.GetFile(fileName)
+	if err != nil {
+		return nil, err
 	}
 
-	pos := hcl2lsp.Position(params.Position, s.parser.Files()[params.TextDocument.URI.Filename()].Bytes)
+	pos := hcl2lsp.Position(params.Position, file.HCLFile.Bytes)
 
-	dec := decoder.NewDecoder(&s.parser)
+	dec := decoder.NewDecoder(&s.store)
 	langPath := lang.Path{
-		Path:       params.TextDocument.URI.Filename(),
-		LanguageID: languages.NomadJob.String(),
+		Path:       fileName,
+		LanguageID: string(file.Language),
 	}
 
 	pathDec, err := dec.Path(langPath)
@@ -92,7 +97,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 		return nil, err
 	}
 
-	cands, err := pathDec.CompletionAtPos(ctx, params.TextDocument.URI.Filename(), pos)
+	cands, err := pathDec.CompletionAtPos(ctx, fileName, pos)
 	if err != nil {
 		return nil, err
 	}
@@ -106,12 +111,20 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 }
 
 func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
-	_, diags := s.parser.ParseHCL([]byte(params.TextDocument.Text), params.TextDocument.URI.Filename())
+	fileName := hcl2lsp.FileNameItem(params.TextDocument)
+	langID, err := languages.NewFromString(string(params.TextDocument.LanguageID))
+	if err != nil {
+		return nil, err
+	}
 
-	dec := decoder.NewDecoder(&s.parser)
+	newFile := store.NewDocument(langID)
+	_, diags := newFile.ParseHCL([]byte(params.TextDocument.Text), fileName)
+	file := s.store.AddFile(fileName, newFile)
+
+	dec := decoder.NewDecoder(&s.store)
 	langPath := lang.Path{
-		Path:       params.TextDocument.URI.Filename(),
-		LanguageID: languages.NomadJob.String(),
+		Path:       fileName,
+		LanguageID: langID.String(),
 	}
 
 	dec.SetContext(decoder.NewDecoderContext())
@@ -121,12 +134,14 @@ func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protoco
 		return nil, err
 	}
 
-	diags, err = pathDec.ValidateFile(ctx, params.TextDocument.URI.Filename())
+	file.UpdateReferences(pathDec, fileName)
+
+	diagsPath, err := pathDec.ValidateFile(ctx, fileName)
 	if err != nil {
 		return nil, err
 	}
 
-	diags = diags.Extend(diags)
+	diags = diags.Extend(diagsPath)
 
 	return &diags, nil
 }
@@ -134,80 +149,86 @@ func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protoco
 func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*hcl.Diagnostics, error) {
 	changesCount := len(params.ContentChanges)
 
-	if changesCount > 0 {
-		_, diags := s.parser.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), params.TextDocument.URI.Filename())
-
-		dec := decoder.NewDecoder(&s.parser)
-		langPath := lang.Path{
-			Path:       params.TextDocument.URI.Filename(),
-			LanguageID: languages.NomadJob.String(),
-		}
-
-		dec.SetContext(decoder.NewDecoderContext())
-
-		pathDec, err := dec.Path(langPath)
-		if err != nil {
-			return nil, err
-		}
-
-		pathContext, err := s.parser.PathContext(langPath)
-		if err != nil {
-			return nil, err
-		}
-
-		diagMap := validation.UnreferencedOrigins(ctx, pathContext)
-		originsDiags := hcl.Diagnostics{}
-		for _, v := range diagMap {
-			originsDiags = originsDiags.Extend(v)
-		}
-
-		diags = diags.Extend(originsDiags)
-
-		schemaDiags, err := pathDec.ValidateFile(ctx, params.TextDocument.URI.Filename())
-		if err != nil {
-			return nil, err
-		}
-
-		diags = diags.Extend(schemaDiags)
-
-		s.logger.Info(fmt.Sprintf("diags: %+v", diags))
-
-		return &diags, nil
+	if changesCount == 0 {
+		return nil, nil
 	}
 
-	return nil, nil
+	fileName := hcl2lsp.FileNameVersioned(params.TextDocument)
+	file, err := s.store.GetFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	_, diags := file.UpdateHCL([]byte(params.ContentChanges[changesCount-1].Text), fileName)
+
+	dec := decoder.NewDecoder(&s.store)
+	langPath := lang.Path{
+		Path:       fileName,
+		LanguageID: string(file.Language),
+	}
+
+	dec.SetContext(decoder.NewDecoderContext())
+
+	pathDec, err := dec.Path(langPath)
+	if err != nil {
+		return nil, err
+	}
+
+	file.UpdateReferences(pathDec, fileName)
+
+	pathContext, err := s.store.PathContext(langPath)
+	if err != nil {
+		return nil, err
+	}
+
+	diagMap := validation.UnreferencedOrigins(ctx, pathContext)
+	originsDiags := hcl.Diagnostics{}
+	for _, v := range diagMap {
+		originsDiags = originsDiags.Extend(v)
+	}
+
+	diags = diags.Extend(originsDiags)
+
+	schemaDiags, err := pathDec.ValidateFile(ctx, fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	diags = diags.Extend(schemaDiags)
+
+	s.logger.Info(fmt.Sprintf("diags: %+v", diags))
+
+	return &diags, nil
 }
 
 func (s *Service) HandleTextDocumentDidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) error {
-	s.parser.RemoveHCL(params.TextDocument.URI.Filename())
-
-	s.logger.Info(fmt.Sprintf("%+v", s.parser.Files()))
-
-	s.logger.Info(fmt.Sprintf("%+v", params))
+	s.store.RemoveFile(hcl2lsp.FileName(params.TextDocument))
 
 	return nil
 }
 
 func (s *Service) HandleTextDocumentFormatting(ctx context.Context, params *protocol.DocumentFormattingParams) ([]protocol.TextEdit, error) {
-	filename := params.TextDocument.URI.Filename()
+	fileName := hcl2lsp.FileName(params.TextDocument)
+	file, err := s.store.GetFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	outBytes := hclwrite.Format(file.HCLFile.Bytes)
 
 	var edits []protocol.TextEdit
 
-	if file, ok := s.parser.Files()[filename]; ok {
-		outBytes := hclwrite.Format(file.Bytes)
+	if !bytes.Equal(file.HCLFile.Bytes, outBytes) {
+		startPos := protocol.Position{Line: 0, Character: 0}
+		endPos := getLastPostionFromBytes(file.HCLFile.Bytes)
 
-		if !bytes.Equal(file.Bytes, outBytes) {
-			startPos := protocol.Position{Line: 0, Character: 0}
-			endPos := getLastPostionFromBytes(file.Bytes)
-
-			edits = append(edits, protocol.TextEdit{
-				Range: protocol.Range{
-					Start: startPos,
-					End:   endPos,
-				},
-				NewText: string(outBytes),
-			})
-		}
+		edits = append(edits, protocol.TextEdit{
+			Range: protocol.Range{
+				Start: startPos,
+				End:   endPos,
+			},
+			NewText: string(outBytes),
+		})
 	}
 
 	return edits, nil
