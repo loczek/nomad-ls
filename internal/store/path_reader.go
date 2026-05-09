@@ -1,25 +1,36 @@
-package parser
+package store
 
 import (
 	"context"
+	"errors"
 
 	"github.com/hashicorp/hcl-lang/decoder"
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/validator"
+	"github.com/hashicorp/hcl/v2"
 	funcs "github.com/loczek/nomad-ls/internal/function"
 	"github.com/loczek/nomad-ls/internal/languages"
-	nomadSchema "github.com/loczek/nomad-ls/internal/schema"
 )
 
-var _ decoder.PathReader = (*Parser)(nil)
+var _ decoder.PathReader = (*Store)(nil)
 
-func (p *Parser) PathContext(path lang.Path) (*decoder.PathContext, error) {
+func (p *Store) PathContext(path lang.Path) (*decoder.PathContext, error) {
+	langID := languages.LanguageID(path.LanguageID)
+	langSchema := languages.ToSchema(langID)
+
+	file, ok := p.files[path.Path]
+	if !ok {
+		return nil, errors.New("file not found")
+	}
+
 	return &decoder.PathContext{
-		Schema:           &nomadSchema.RootBodySchema,
-		ReferenceOrigins: p.RefOrigins,
-		ReferenceTargets: p.RefTargets,
-		Files:            p.files,
-		Functions:        funcs.Functions,
+		Schema:           &langSchema,
+		ReferenceOrigins: file.RefOrigins,
+		ReferenceTargets: file.RefTargets,
+		Files: map[string]*hcl.File{
+			path.Path: file.HCLFile,
+		},
+		Functions: funcs.Functions,
 		Validators: []validator.Validator{
 			validator.BlockLabelsLength{},
 			validator.DeprecatedAttribute{},
@@ -33,13 +44,13 @@ func (p *Parser) PathContext(path lang.Path) (*decoder.PathContext, error) {
 	}, nil
 }
 
-func (p *Parser) Paths(ctx context.Context) []lang.Path {
+func (p *Store) Paths(ctx context.Context) []lang.Path {
 	var paths []lang.Path
 
-	for path := range p.files {
+	for path, val := range p.files {
 		paths = append(paths, lang.Path{
 			Path:       path,
-			LanguageID: languages.NomadJob.String(),
+			LanguageID: string(val.Language),
 		})
 	}
 
