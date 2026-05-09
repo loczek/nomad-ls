@@ -63,8 +63,8 @@ var RootSchema = schema.BodySchema{
 			IsOptional:  true,
 		},
 		"type": {
-			Description: lang.Markdown("The type of volume. Must be `\"csi\"` for CSI volumes."),
-			Constraint:  schema.LiteralValue{Value: cty.StringVal("csi")},
+			Description: lang.Markdown("The type of volume. Must be `\"host\"` for Dynamic Host volumes."),
+			Constraint:  schema.LiteralValue{Value: cty.StringVal("host")},
 			IsRequired:  true,
 			IsDepKey:    true,
 		},
