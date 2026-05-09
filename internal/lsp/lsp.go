@@ -9,7 +9,6 @@ import (
 	"go.lsp.dev/jsonrpc2"
 	"go.lsp.dev/protocol"
 
-	"github.com/loczek/nomad-ls/internal/hcl2lsp"
 	"github.com/loczek/nomad-ls/internal/store"
 )
 
@@ -63,15 +62,14 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 		if err != nil {
 			return nil, err
 		}
-		diag, err := s.HandleTextDocumentDidOpen(ctx, &params)
 
-		if diag != nil {
-			protocolDiagnostics := hcl2lsp.Diagnostics(*diag)
+		diags, err := s.HandleTextDocumentDidOpen(ctx, &params)
 
+		if diags != nil {
 			s.con.Notify(context.Background(), protocol.MethodTextDocumentPublishDiagnostics, protocol.PublishDiagnosticsParams{
 				URI:         params.TextDocument.URI,
 				Version:     uint32(params.TextDocument.Version),
-				Diagnostics: protocolDiagnostics,
+				Diagnostics: *diags,
 			})
 		}
 
@@ -83,15 +81,13 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 			return nil, err
 		}
 
-		diag, err := s.HandleTextDocumentDidChange(ctx, &params)
+		diags, err := s.HandleTextDocumentDidChange(ctx, &params)
 
-		if diag != nil {
-			protocolDiagnostics := hcl2lsp.Diagnostics(*diag)
-
+		if diags != nil {
 			s.con.Notify(context.Background(), protocol.MethodTextDocumentPublishDiagnostics, protocol.PublishDiagnosticsParams{
 				URI:         params.TextDocument.URI,
 				Version:     uint32(params.TextDocument.Version),
-				Diagnostics: protocolDiagnostics,
+				Diagnostics: *diags,
 			})
 		}
 

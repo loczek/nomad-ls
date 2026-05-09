@@ -110,7 +110,7 @@ func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *prot
 	}, nil
 }
 
-func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*hcl.Diagnostics, error) {
+func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (*[]protocol.Diagnostic, error) {
 	fileName := hcl2lsp.FileNameItem(params.TextDocument)
 	langID, err := languages.NewFromString(string(params.TextDocument.LanguageID))
 	if err != nil {
@@ -143,10 +143,12 @@ func (s *Service) HandleTextDocumentDidOpen(ctx context.Context, params *protoco
 
 	diags = diags.Extend(diagsPath)
 
-	return &diags, nil
+	lspDiags := hcl2lsp.Diagnostics(diags)
+
+	return &lspDiags, nil
 }
 
-func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*hcl.Diagnostics, error) {
+func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *protocol.DidChangeTextDocumentParams) (*[]protocol.Diagnostic, error) {
 	changesCount := len(params.ContentChanges)
 
 	if changesCount == 0 {
@@ -198,7 +200,9 @@ func (s *Service) HandleTextDocumentDidChange(ctx context.Context, params *proto
 
 	s.logger.Info(fmt.Sprintf("diags: %+v", diags))
 
-	return &diags, nil
+	lspDiags := hcl2lsp.Diagnostics(diags)
+
+	return &lspDiags, nil
 }
 
 func (s *Service) HandleTextDocumentDidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) error {
