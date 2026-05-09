@@ -116,7 +116,8 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 	case protocol.MethodShutdown:
 		ctx.Done()
 		return nil, nil
+	default:
+		return nil, fmt.Errorf("Received unimplementhed method: %s", req.Method())
 	}
 
-	return nil, nil
 }
