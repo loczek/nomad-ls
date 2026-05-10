@@ -26,8 +26,6 @@ func TestConvertProtocolPosition(t *testing.T) {
 }
 
 func LoadSampleFile(path string) *hcl.File {
-	parser := parser.NewParser()
-
 	file, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
