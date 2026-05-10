@@ -1,0 +1,13 @@
+{
+  "file_types": {
+    "Nomad ACL": ["**/*.nomad.acl"],
+    "Nomad Agent": ["**/*.nomad.agent"],
+    "Nomad CSI Volume": ["**/*.nomad.csi"],
+    "Nomad Dynamic Host Volume": ["**/*.nomad.dyn"],
+    "Nomad Job": ["**/*.nomad"],
+    "Nomad Namespace": ["**/*.nomad.ns"],
+    "Nomad Node Pool": ["**/*.nomad.np"],
+    "Nomad Resource Quota": ["**/*.nomad.rq"],
+    "Nomad Variable": ["**/*.nomad.var"],
+  },
+}
