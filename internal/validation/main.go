@@ -24,7 +24,7 @@ func UnreferencedOrigins(ctx context.Context, pathCtx *decoder.PathContext) lang
 
 		address := localOrigin.Address()
 
-		supported := []string{"var", "local", "node", "attr", "meta"}
+		supported := []string{"var", "local"}
 		firstStep := address[0].String()
 		if !slices.Contains(supported, firstStep) {
 			continue
