@@ -386,8 +386,51 @@ var DockerDriverSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: add mounts here as deprecated
-		// "mounts":{}
+		// TODO: add deprecated note from schemaUtils
+		"mounts": {
+			Description: lang.Markdown("A list of [mounts](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems) to be mounted into the container. Volume, bind, and tmpfs type mounts are supported."),
+			Constraint: schema.List{Elem: schema.Object{
+				Attributes: schema.ObjectAttributes{
+					"type":     MountSchema.Attributes["type"],
+					"source":   MountSchema.Attributes["source"],
+					"target":   MountSchema.Attributes["target"],
+					"readonly": MountSchema.Attributes["readonly"],
+					"bind_options": &schema.AttributeSchema{
+						Constraint: schema.Object{
+							Attributes: schema.ObjectAttributes{
+								"propagation": BindMountOptionsSchema.Attributes["propagation"],
+							},
+						},
+					},
+					"volume_options": &schema.AttributeSchema{
+						Constraint: schema.Object{
+							Attributes: schema.ObjectAttributes{
+								"no_copy": VolumeMountOptionsSchema.Attributes["no_copy"],
+								"labels":  VolumeMountOptionsSchema.Attributes["labels"],
+								"driver_config": &schema.AttributeSchema{
+									Constraint: schema.Object{
+										Attributes: schema.ObjectAttributes{
+											"name":    VolumeDriverConfigSchema.Attributes["name"],
+											"options": VolumeDriverConfigSchema.Attributes["options"],
+										},
+									},
+								},
+							},
+						},
+					},
+					"tmpfs_options": &schema.AttributeSchema{
+						Constraint: schema.Object{
+							Attributes: schema.ObjectAttributes{
+								"size": TmpfsMountOptionsSchema.Attributes["size"],
+								"mode": TmpfsMountOptionsSchema.Attributes["mode"],
+							},
+						},
+					},
+				},
+			}},
+			IsOptional:   true,
+			IsDeprecated: true,
+		},
 		// TODO: update body
 		"devices": {
 			Description: lang.Markdown("A list of [devices](https://docs.docker.com/engine/reference/commandline/run/#add-host-device-to-container-device) to be exposed the container. `host_path` is the only required field. By default, the container will be able to `read`, `write` and `mknod` these devices. Use the optional `cgroup_permissions` field to restrict permissions."),
