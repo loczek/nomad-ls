@@ -79,11 +79,11 @@ func main() {
 		return nil
 	})
 
-	logger.Info("starting", "build", buildInfo())
+	logger.Info("Started", "build", buildInfo())
 
 	<-con.Done()
 
-	logger.Info("exited")
+	logger.Info("Exited")
 }
 
 type rwc struct {
