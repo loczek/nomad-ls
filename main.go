@@ -65,7 +65,7 @@ func main() {
 
 	con.Go(context.Background(), func(ctx context.Context, reply jsonrpc2.Replier, req jsonrpc2.Request) error {
 		go func() {
-			logger.Info("recieved request", slog.String("method", req.Method()))
+			logger.Info("Received request", slog.String("method", req.Method()))
 
 			resp, err := service.Handle(ctx, reply, req)
 
@@ -74,7 +74,7 @@ func main() {
 			reply(ctx, resp, err)
 
 			if err != nil {
-				logger.Error("recieved error from handler", "error", err.Error())
+				logger.Error("Received error from handler", "error", err.Error())
 			}
 		}()
 		return nil

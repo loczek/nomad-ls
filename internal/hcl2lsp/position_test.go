@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/loczek/nomad-ls/internal/parser"
+	"github.com/loczek/nomad-ls/internal/languages"
+	"github.com/loczek/nomad-ls/internal/store"
 	"go.lsp.dev/protocol"
 )
 
@@ -25,16 +26,14 @@ func TestConvertProtocolPosition(t *testing.T) {
 }
 
 func LoadSampleFile(path string) *hcl.File {
-	parser := parser.NewParser()
-
 	file, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
 
-	parser.ParseHCL(file, "nomad-job")
+	doc := store.NewDocument(languages.NomadJob)
 
-	hclFile := parser.Files()["nomad-job"]
+	doc.ParseHCL(file, "name")
 
-	return hclFile
+	return doc.HCLFile
 }

@@ -1,65 +1,23 @@
 package schema
 
 import (
-	"github.com/hashicorp/hcl-lang/lang"
-	"github.com/hashicorp/hcl-lang/schema"
-	"github.com/loczek/nomad-ls/internal/scope"
-	"github.com/zclconf/go-cty/cty"
+	"github.com/loczek/nomad-ls/internal/schema/acl"
+	"github.com/loczek/nomad-ls/internal/schema/agent"
+	"github.com/loczek/nomad-ls/internal/schema/job"
+	"github.com/loczek/nomad-ls/internal/schema/namespace"
+	nodePool "github.com/loczek/nomad-ls/internal/schema/node-pool"
+	resourceQuota "github.com/loczek/nomad-ls/internal/schema/resource-quota"
+	"github.com/loczek/nomad-ls/internal/schema/variable"
+	"github.com/loczek/nomad-ls/internal/schema/volume/csi"
+	"github.com/loczek/nomad-ls/internal/schema/volume/dynamic"
 )
 
-var RootBodySchema = schema.BodySchema{
-	Blocks: map[string]*schema.BlockSchema{
-		"variable": {
-			Address: &schema.BlockAddrSchema{
-				Steps: []schema.AddrStep{
-					schema.StaticStep{Name: "var"},
-					schema.LabelStep{Index: 0},
-				},
-				FriendlyName: "variable",
-				ScopeId:      scope.VariableScope,
-				AsReference:  true,
-				AsTypeOf: &schema.BlockAsTypeOf{
-					AttributeExpr: "type",
-				},
-			},
-			Description: VariableSchema.Description,
-			Labels: []*schema.LabelSchema{
-				{Name: "name"},
-			},
-			Body: VariableSchema,
-		},
-		"variables": {
-			Description: VariablesSchema.Description,
-			Body:        VariablesSchema,
-			MaxItems:    1,
-		},
-		"locals": {
-			Description: lang.Markdown("Local values assigning names to expressions, so you can use these multiple times without repetition\n" +
-				"e.g. `service_name = \"forum\"`"),
-			Body: &schema.BodySchema{
-				AnyAttribute: &schema.AttributeSchema{
-					Address: &schema.AttributeAddrSchema{
-						Steps: []schema.AddrStep{
-							schema.StaticStep{Name: "local"},
-							schema.AttrNameStep{},
-						},
-						FriendlyName: "local",
-						ScopeId:      scope.LocalScope,
-						AsReference:  true,
-						AsExprType:   true,
-					},
-					Constraint: schema.AnyExpression{OfType: cty.DynamicPseudoType},
-				},
-			},
-		},
-		"job": {
-			Description: JobSchema.Description,
-			Labels: []*schema.LabelSchema{
-				{Name: "name"},
-			},
-			MinItems: 1,
-			MaxItems: 1,
-			Body:     JobSchema,
-		},
-	},
-}
+var NomadACL = acl.RootSchema
+var NomadAgent = agent.RootSchema
+var NomadCSIVolume = csi.RootSchema
+var NomadDynamicHostVolume = dynamic.RootSchema
+var NomadJob = job.RootSchema
+var NomadNamespace = namespace.RootSchema
+var NomadNodePool = nodePool.RootSchema
+var NomadResourceQuota = resourceQuota.RootSchema
+var NomadVariable = variable.RootSchema

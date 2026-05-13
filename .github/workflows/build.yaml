@@ -59,7 +59,7 @@ jobs:
           zip -r ${{ github.workspace }}/release/nomad-ls_${{ matrix.os }}_${{ matrix.arch }}.zip *
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ./release/*
           draft: true

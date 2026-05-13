@@ -1,0 +1,25 @@
+package languages
+
+import (
+	hclSchema "github.com/hashicorp/hcl-lang/schema"
+	"github.com/loczek/nomad-ls/internal/schema"
+)
+
+var schemaMap = map[LanguageID]hclSchema.BodySchema{
+	NomadACL:               schema.NomadACL,
+	NomadAgent:             schema.NomadAgent,
+	NomadCSIVolume:         schema.NomadCSIVolume,
+	NomadDynamicHostVolume: schema.NomadDynamicHostVolume,
+	NomadJob:               schema.NomadJob,
+	NomadNapespace:         schema.NomadNamespace,
+	NomadNodePool:          schema.NomadNodePool,
+	NomadResourceQuota:     schema.NomadResourceQuota,
+	NomadVariable:          schema.NomadVariable,
+}
+
+func ToSchema(lang LanguageID) hclSchema.BodySchema {
+	if schema, ok := schemaMap[lang]; ok {
+		return schema
+	}
+	return schema.NomadJob
+}
