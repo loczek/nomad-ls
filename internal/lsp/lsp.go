@@ -46,6 +46,16 @@ func (s *Service) Handle(ctx context.Context, reply jsonrpc2.Replier, req jsonrp
 		s.logger.Info(fmt.Sprintf("%+v", params))
 
 		return s.HandleTextDocumentHover(ctx, &params)
+	case protocol.MethodTextDocumentSignatureHelp:
+		params := protocol.SignatureHelpParams{}
+		err := json.Unmarshal(req.Params(), &params)
+		if err != nil {
+			return nil, err
+		}
+
+		s.logger.Info(fmt.Sprintf("%+v", params))
+
+		return s.HandleTextDocumentSignatureHelp(ctx, &params)
 	case protocol.MethodTextDocumentCompletion:
 		params := protocol.CompletionParams{}
 		err := json.Unmarshal(req.Params(), &params)

@@ -38,6 +38,10 @@ func (s *Service) HandleInitialize(ctx context.Context, params *protocol.Initial
 				Change:    protocol.TextDocumentSyncKindFull,
 				OpenClose: true,
 			},
+			SignatureHelpProvider: &protocol.SignatureHelpOptions{
+				TriggerCharacters:   []string{"(", ","},
+				RetriggerCharacters: []string{")"},
+			},
 			DocumentFormattingProvider: &protocol.DocumentFormattingOptions{},
 		},
 	}, nil
@@ -75,6 +79,40 @@ func (s *Service) HandleTextDocumentHover(ctx context.Context, params *protocol.
 	var hover = hcl2lsp.Hover(hoverData)
 
 	return &hover, nil
+}
+
+func (s *Service) HandleTextDocumentSignatureHelp(ctx context.Context, params *protocol.SignatureHelpParams) (*protocol.SignatureHelp, error) {
+	fileName := hcl2lsp.FileName(params.TextDocument)
+	file, err := s.store.GetFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	pos := hcl2lsp.Position(params.Position, file.HCLFile.Bytes)
+
+	dec := decoder.NewDecoder(&s.store)
+	langPath := lang.Path{
+		Path:       fileName,
+		LanguageID: string(file.Language),
+	}
+
+	pathDec, err := dec.Path(langPath)
+	if err != nil {
+		panic(err)
+	}
+
+	signature, err := pathDec.SignatureAtPos(fileName, pos)
+	if err != nil {
+		return nil, err
+	}
+
+	if signature == nil {
+		return nil, nil
+	}
+
+	var signatureHelp = hcl2lsp.Signature(signature)
+
+	return &signatureHelp, nil
 }
 
 func (s *Service) HandleTextDocumentCompletion(ctx context.Context, params *protocol.CompletionParams) (*protocol.CompletionList, error) {

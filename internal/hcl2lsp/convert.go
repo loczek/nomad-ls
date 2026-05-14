@@ -61,6 +61,32 @@ func Hover(hoverData *lang.HoverData) protocol.Hover {
 	}
 }
 
+func Signature(signatireData *lang.FunctionSignature) protocol.SignatureHelp {
+	params := make([]protocol.ParameterInformation, 0)
+
+	for _, v := range signatireData.Parameters {
+		params = append(params, protocol.ParameterInformation{
+			Label: v.Name,
+		})
+	}
+
+	return protocol.SignatureHelp{
+		Signatures: []protocol.SignatureInformation{
+			{
+				Label:      signatireData.Name,
+				Parameters: params,
+				Documentation: protocol.MarkupContent{
+					Kind:  "markdown",
+					Value: signatireData.Description.Value,
+				},
+				ActiveParameter: signatireData.ActiveParameter,
+			},
+		},
+		ActiveParameter: signatireData.ActiveParameter,
+		ActiveSignature: 0,
+	}
+}
+
 func Diagnostics(diag hcl.Diagnostics) []protocol.Diagnostic {
 	protocolDiagnostics := []protocol.Diagnostic{}
 
