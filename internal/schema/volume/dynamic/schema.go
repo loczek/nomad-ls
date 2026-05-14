@@ -8,7 +8,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"capacity": {
 			Description: lang.Markdown("The size of a volume in bytes. Either the physical size of a disk or a quota, depending on the plugin. This field must be between the `capacity_min` and `capacity_max` values unless they are omitted. Accepts human-friendly suffixes such as `\"100GiB\"`. Only supported for volume registration."),

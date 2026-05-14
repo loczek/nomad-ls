@@ -7,7 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"node_pool": {
 			Description: NodePoolSchema.Description,

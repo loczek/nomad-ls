@@ -7,7 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"name": {
 			Description: lang.Markdown("Specifies the namespace to create or update."),

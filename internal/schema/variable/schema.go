@@ -6,7 +6,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"path": {
 			Description: lang.Markdown("The path to the variable being defined. If empty it must be specified on the command line."),

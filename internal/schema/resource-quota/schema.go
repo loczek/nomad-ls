@@ -6,7 +6,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"name": {
 			Description: lang.Markdown("The name of the Quota. Nomad uses name to connect the quota a [`Namespace`](https://developer.hashicorp.com/nomad/docs/other-specifications/namespace)."),

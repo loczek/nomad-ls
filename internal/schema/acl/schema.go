@@ -4,7 +4,7 @@ import (
 	"github.com/hashicorp/hcl-lang/schema"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"namespace": {
 			Description: NamespaceSchema.Description,

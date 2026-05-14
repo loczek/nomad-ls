@@ -7,7 +7,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"capacity_min": {
 			Description: lang.Markdown("Option for requesting a minimum capacity, in bytes. The capacity of a volume may be the physical size of a disk, or a quota, depending on the storage provider. The specific size of the resulting volume is somewhere between `capacity_min` and `capacity_max`; the exact behavior is up to the storage provider. If you want to specify an exact size, you should set `capacity_min` and `capacity_max` to the same value. Accepts human-friendly suffixes such as `\"100GiB\"`. This field may not be supported by all storage providers. Increasing this value and reissuing `volume create` or `volume register` may expand the volume, if the CSI plugin supports it."),

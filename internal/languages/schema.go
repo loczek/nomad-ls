@@ -5,7 +5,7 @@ import (
 	"github.com/loczek/nomad-ls/internal/schema"
 )
 
-var schemaMap = map[LanguageID]hclSchema.BodySchema{
+var schemaMap = map[LanguageID]*hclSchema.BodySchema{
 	NomadACL:               schema.NomadACL,
 	NomadAgent:             schema.NomadAgent,
 	NomadCSIVolume:         schema.NomadCSIVolume,
@@ -19,7 +19,7 @@ var schemaMap = map[LanguageID]hclSchema.BodySchema{
 
 func ToSchema(lang LanguageID) hclSchema.BodySchema {
 	if schema, ok := schemaMap[lang]; ok {
-		return schema
+		return *schema
 	}
-	return schema.NomadJob
+	return *schema.NomadJob
 }

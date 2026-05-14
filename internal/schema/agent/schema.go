@@ -8,7 +8,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-var RootSchema = schema.BodySchema{
+var RootSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"bind_addr": {
 			Description:  lang.Markdown("Specifies which address the Nomad agent should bind to for network services, including the HTTP interface as well as the internal gossip protocol and RPC mechanism. This should be specified in IP format, and can be used to easily bind all network services to the same address. It is also possible to bind the individual services to different addresses using the [addresses](https://developer.hashicorp.com/nomad/docs/configuration#addresses) configuration option. Dev mode (`-dev`) defaults to localhost. The value supports [go-sockaddr/template format](https://pkg.go.dev/github.com/hashicorp/go-sockaddr/template)."),
