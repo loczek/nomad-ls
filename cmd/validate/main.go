@@ -3,56 +3,70 @@ package main
 import (
 	"fmt"
 
+	hclschema "github.com/hashicorp/hcl-lang/schema"
 	"github.com/loczek/nomad-ls/internal/schema"
+	"github.com/loczek/nomad-ls/internal/schema/agent/keyring"
+	plugin "github.com/loczek/nomad-ls/internal/schema/agent/plugins"
 	"github.com/loczek/nomad-ls/internal/schema/job/drivers"
 )
 
 func main() {
-	if err := schema.NomadACL.Validate(); err != nil {
-		panic(fmt.Sprintf("ACL schema validation error: %s", err))
-	}
-	if err := schema.NomadAgent.Validate(); err != nil {
-		panic(fmt.Sprintf("Agent schema validation error: %s", err))
-	}
-	if err := schema.NomadCSIVolume.Validate(); err != nil {
-		panic(fmt.Sprintf("CSI Volume schema validation error: %s", err))
-	}
-	if err := schema.NomadDynamicHostVolume.Validate(); err != nil {
-		panic(fmt.Sprintf("Dynamic Host Volume schema validation error: %s", err))
-	}
-	if err := schema.NomadJob.Validate(); err != nil {
-		panic(fmt.Sprintf("Job schema validation failed: %s", err))
-	}
-	if err := schema.NomadNamespace.Validate(); err != nil {
-		panic(fmt.Sprintf("Namespace schema validation error: %s", err))
-	}
-	if err := schema.NomadNodePool.Validate(); err != nil {
-		panic(fmt.Sprintf("Nomad Pool schema validation error: %s", err))
-	}
-	if err := schema.NomadResourceQuota.Validate(); err != nil {
-		panic(fmt.Sprintf("ResourceQuota schema validation error: %s", err))
-	}
-	if err := schema.NomadVariable.Validate(); err != nil {
-		panic(fmt.Sprintf("Variable schema validation error: %s", err))
+	keyrings := map[string]*hclschema.BodySchema{
+		"aws":   keyring.AWSSchema,
+		"azure": keyring.AzureSchema,
+		"gcp":   keyring.GCPSchema,
+		"vault": keyring.VaultSchema,
 	}
 
-	validateDrivers()
-}
+	agentPlugins := map[string]*hclschema.BodySchema{
+		"docker":  plugin.DockerSchema,
+		"exec":    plugin.ExecSchema,
+		"java":    plugin.JavaSchema,
+		"qemu":    plugin.QEMUSchema,
+		"rawexec": plugin.RawExecSchema,
+	}
 
-func validateDrivers() {
-	if err := drivers.DockerDriverSchema.Validate(); err != nil {
-		panic(fmt.Sprintf("Docker driver validation error: %s", err))
+	nomadObjects := map[string]*hclschema.BodySchema{
+		"acl":                 schema.NomadACL,
+		"agent":               schema.NomadAgent,
+		"csi_volume":          schema.NomadCSIVolume,
+		"dynamic_host_volume": schema.NomadDynamicHostVolume,
+		"job":                 schema.NomadJob,
+		"namespace":           schema.NomadNamespace,
+		"node_pool":           schema.NomadNodePool,
+		"resource_quota":      schema.NomadResourceQuota,
+		"variable":            schema.NomadVariable,
 	}
-	if err := drivers.ExecDriverSchema.Validate(); err != nil {
-		panic(fmt.Sprintf("Exec driver validation error: %s", err))
+
+	jobDrivers := map[string]*hclschema.BodySchema{
+		"docker":   drivers.DockerDriverSchema,
+		"exec":     drivers.ExecDriverSchema,
+		"java":     drivers.JavaDriverSchema,
+		"qemu":     drivers.QemuDriverSchema,
+		"raw_exec": drivers.RawExecDriverSchema,
 	}
-	if err := drivers.JavaDriverSchema.Validate(); err != nil {
-		panic(fmt.Sprintf("Java driver validation error: %s", err))
+
+	for name, v := range keyrings {
+		if err := v.Validate(); err != nil {
+			panic(fmt.Errorf("Keyring \"%s\" validation error: %w", name, err))
+		}
 	}
-	if err := drivers.QemuDriverSchema.Validate(); err != nil {
-		panic(fmt.Sprintf("Qemu driver validation error: %s", err))
+
+	for name, v := range agentPlugins {
+		if err := v.Validate(); err != nil {
+			panic(fmt.Errorf("Agent Plugin \"%s\" validation error: %w", name, err))
+		}
 	}
-	if err := drivers.RawExecDriverSchema.Validate(); err != nil {
-		panic(fmt.Sprintf("RawExec driver validation error: %s", err))
+
+	for name, v := range nomadObjects {
+		if err := v.Validate(); err != nil {
+			panic(fmt.Errorf("Nomad \"%s\" validation error: %w", name, err))
+		}
+	}
+
+	for name, v := range jobDrivers {
+		if err := v.Validate(); err != nil {
+			panic(fmt.Errorf("Job Driver \"%s\" validation error: %w", name, err))
+		}
 	}
 }
