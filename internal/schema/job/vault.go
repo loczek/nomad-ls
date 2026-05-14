@@ -3,6 +3,7 @@ package job
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -35,9 +36,8 @@ var VaultSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: mark as enterprise only
 		"cluster": {
-			Description:  lang.Markdown("Specifies the Vault cluster to use. The Nomad client will retrieve a Vault token from the cluster configured in the agent configuration with the same [`vault.name`](https://developer.hashicorp.com/nomad/docs/configuration/vault#name). In Nomad Community Edition, this field is ignored."),
+			Description:  lang.Markdown("Specifies the Vault cluster to use. The Nomad client will retrieve a Vault token from the cluster configured in the agent configuration with the same [`vault.name`](https://developer.hashicorp.com/nomad/docs/configuration/vault#name). In Nomad Community Edition, this field is ignored." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("default")},
 			Constraint: schema.OneOf{
 				schema.LiteralType{Type: cty.String},
@@ -64,9 +64,8 @@ var VaultSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: mark as enterprise only
 		"namespace": {
-			Description:  lang.Markdown("Specifies the Vault Namespace to use for the task. The Nomad client will retrieve a Vault token that is scoped to this particular namespace."),
+			Description:  lang.Markdown("Specifies the Vault Namespace to use for the task. The Nomad client will retrieve a Vault token that is scoped to this particular namespace." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint: schema.OneOf{
 				schema.LiteralType{Type: cty.String},

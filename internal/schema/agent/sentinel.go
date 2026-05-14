@@ -3,10 +3,12 @@ package agent
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var SentinelSchema = &schema.BodySchema{
+	Description: lang.Markdown("Specifies configuration for Sentinel policies." + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"additional_enabled_modules": {
 			Description:  lang.Markdown("Specifies a list of additional standard imports (modules) to allow in policies. Nomad currently enables all of Sentinel's standard imports except the \"http\" import, which has performance and security implications. Setting this field to [\"http\"] enables the \"http\" module in addition to the standard imports. In the future, if any new Sentinel imports are not automatically enabled by nomad, you can enable them in this field. Refer to Using the http import in Sentinel policies for recommendations on safe use of this import."),

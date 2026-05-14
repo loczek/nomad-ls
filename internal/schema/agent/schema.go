@@ -178,6 +178,7 @@ var RootSchema = schema.BodySchema{
 			},
 		},
 		"keyring": {
+			Description: lang.Markdown("Multiple keyring blocks are supported only in Nomad Enterprise"),
 			Labels: []*schema.LabelSchema{
 				{
 					Name:        "name",
@@ -219,16 +220,14 @@ var RootSchema = schema.BodySchema{
 		},
 		// TODO: add description (missing from docs)
 		"reporting": {
-			Description: lang.Markdown("reporting docs"),
-			Body:        ReportingSchema,
+			Body: ReportingSchema,
 		},
 		"rpc": {
 			Description: lang.Markdown("Specifies configuration which is specific to RPC. We strongly recommend that you do not configure RPC values. Use the default values, which have been production-proven on clusters of thousands of nodes. You should only configure the `rpc` block if you have a specific reason to believe it will improve your particular use case."),
 			Body:        RPCSchema,
 		},
 		"sentinel": {
-			Description: lang.Markdown("Specifies configuration for Sentinel policies."),
-			Body:        SentinelSchema,
+			Body: SentinelSchema,
 		},
 		"server": {
 			Description: lang.Markdown("Specifies configuration which is specific to the Nomad server."),

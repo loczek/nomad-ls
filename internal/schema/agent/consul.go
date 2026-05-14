@@ -52,13 +52,13 @@ var ConsulClSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"name": {
-			Description:  lang.Markdown("Specifies a name for the cluster so it can be referred to by job submitters in the job specification's [`consul.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/consul#cluster) or [`service.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/service#cluster) fields. In Nomad Community Edition, only the `\"default\"` cluster will be used, so this field should be omitted." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Specifies a name for the cluster so it can be referred to by job submitters in the job specification's [`consul.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/consul#cluster) or [`service.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/service#cluster) fields. In Nomad Community Edition, only the `\"default\"` cluster will be used, so this field should be omitted." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("default")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,
 		},
 		"namespace": {
-			Description:  lang.Markdown("Specifies the [Consul namespace](https://developer.hashicorp.com/consul/docs/enterprise/namespaces) used by the Consul integration. If non-empty, this namespace will be used on all Consul API calls and for Consul service mesh configurations, unless overridden by the job's [`consul.namespace`](https://developer.hashicorp.com/nomad/docs/job-specification/consul#namespace) field. In Nomad Community Edition, only the \"default\" namespace is used, so you should omit this field." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Specifies the [Consul namespace](https://developer.hashicorp.com/consul/docs/enterprise/namespaces) used by the Consul integration. If non-empty, this namespace will be used on all Consul API calls and for Consul service mesh configurations, unless overridden by the job's [`consul.namespace`](https://developer.hashicorp.com/nomad/docs/job-specification/consul#namespace) field. In Nomad Community Edition, only the \"default\" namespace is used, so you should omit this field." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

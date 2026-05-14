@@ -3,6 +3,7 @@ package namespace
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -19,7 +20,7 @@ var RootSchema = schema.BodySchema{
 			IsOptional:  true,
 		},
 		"quota": {
-			Description: lang.Markdown("Specifies a quota to attach to the namespace"),
+			Description: lang.Markdown("Specifies a quota to attach to the namespace" + schemautils.Divider + schemautils.EnterpriseOnly),
 			Constraint:  schema.LiteralType{Type: cty.String},
 			IsOptional:  true,
 		},
@@ -82,8 +83,8 @@ var CapabilitiesSchema = &schema.BodySchema{
 	},
 }
 
-// TODO: Enterprise only
 var NodePoolConfig = &schema.BodySchema{
+	Description: lang.Markdown("node pool config docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"default": {
 			Description:  lang.Markdown("Specifies the node pool to use for jobs or dynamic host volumes in this namespace that don't define a node pool in their specification."),
@@ -106,6 +107,7 @@ var NodePoolConfig = &schema.BodySchema{
 }
 
 var VaultConfig = &schema.BodySchema{
+	Description: lang.Markdown("vault docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"default": {
 			Description:  lang.Markdown("Specifies the Vault cluster to use for jobs in this namespace that don't define a Vault cluster in their specification."),
@@ -128,6 +130,7 @@ var VaultConfig = &schema.BodySchema{
 }
 
 var ConsulConfig = &schema.BodySchema{
+	Description: lang.Markdown("consul docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"default": {
 			Description:  lang.Markdown("Specifies the Consul cluster to use for jobs in this namespace that don't define a Consul cluster in their specification."),

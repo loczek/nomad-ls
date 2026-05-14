@@ -3,10 +3,12 @@ package job
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var MultiregionSchema = &schema.BodySchema{
+	Description: lang.Markdown("Federated Nomad clusters enable you to submit jobs targeting any region from any server even if that server resides in a different region. You may submit jobs that are deployed to multiple regions. This guide demonstrates multi-region deployments, including configurable rollout and rollback strategies." + schemautils.Divider + schemautils.EnterpriseOnly),
 	Blocks: map[string]*schema.BlockSchema{
 		"strategy": {
 			Description: lang.PlainText("Specifies a rollout strategy for the regions."),

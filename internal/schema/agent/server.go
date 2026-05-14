@@ -3,6 +3,7 @@ package agent
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -146,7 +147,7 @@ var ServerSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"non_voting_server": {
-			Description:  lang.Markdown("(Enterprise-only) Specifies whether this server will act as a non-voting member of the cluster to help provide read scalability."),
+			Description:  lang.Markdown("Specifies whether this server will act as a non-voting member of the cluster to help provide read scalability." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
@@ -199,7 +200,7 @@ var ServerSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"redundancy_zone": {
-			Description:  lang.Markdown("(Enterprise-only) Specifies the redundancy zone that this server will be a part of for Autopilot management. For more information, refer to the Autopilot Guide."),
+			Description:  lang.Markdown("Specifies the redundancy zone that this server will be a part of for Autopilot management. For more information, refer to the Autopilot Guide." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

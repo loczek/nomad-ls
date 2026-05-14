@@ -10,7 +10,7 @@ import (
 var VaultSchema = &schema.BodySchema{
 	Attributes: map[string]*schema.AttributeSchema{
 		"name": {
-			Description:  lang.Markdown("Specifies a name for the cluster so it can be referred to by job submitters in the job specification's [`vault.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/vault#cluster) field. In Nomad Community Edition, only the `\"default\"` cluster will be used, so this field should be omitted." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Specifies a name for the cluster so it can be referred to by job submitters in the job specification's [`vault.cluster`](https://developer.hashicorp.com/nomad/docs/job-specification/vault#cluster) field. In Nomad Community Edition, only the `\"default\"` cluster will be used, so this field should be omitted." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("default")},
 			Constraint:   schema.LiteralType{Type: cty.String},
 			IsOptional:   true,

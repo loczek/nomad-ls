@@ -3,10 +3,12 @@ package agent
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var AuditSchema = &schema.BodySchema{
+	Description: lang.Markdown("audit docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"enabled": {
 			Description:  lang.Markdown("Specifies if audit logging should be enabled. When enabled, audit logging will occur for every request, unless it is filtered by a filter."),

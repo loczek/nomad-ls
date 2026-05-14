@@ -3,6 +3,7 @@ package nodePool
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -41,7 +42,6 @@ var NodePoolSchema = &schema.BodySchema{
 				},
 			},
 		},
-		// TODO: mark as enterprise only
 		"scheduler_config": {
 			Description: SchedulerConfigSchema.Description,
 			Body:        SchedulerConfigSchema,
@@ -50,6 +50,7 @@ var NodePoolSchema = &schema.BodySchema{
 }
 
 var SchedulerConfigSchema = &schema.BodySchema{
+	Description: lang.Markdown("scheduler config docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"description": {
 			Description: lang.Markdown("Sets a human readable description for the node pool."),

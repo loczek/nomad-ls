@@ -3,10 +3,12 @@ package job
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var NumaSchema = &schema.BodySchema{
+	Description: lang.PlainText("The `numa` block is used to configure how Nomad will assign CPU cores for a task while taking the [NUMA hardware topology](https://en.wikipedia.org/wiki/Non-uniform_memory_access) of a node into consideration. Workloads that are sensitive to memory latency can perform significantly better when pinned to CPU cores on the same NUMA node." + schemautils.Divider + schemautils.EnterpriseOnly),
 	DocsLink: &schema.DocsLink{
 		URL: "https://developer.hashicorp.com/nomad/docs/job-specification/numa",
 	},

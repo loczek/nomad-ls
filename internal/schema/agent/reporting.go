@@ -3,10 +3,12 @@ package agent
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var ReportingSchema = &schema.BodySchema{
+	Description: lang.Markdown("reporting docs" + schemautils.Divider + schemautils.EnterpriseOnly),
 	Attributes: map[string]*schema.AttributeSchema{
 		"snapshot_retention_time": {
 			Description:  lang.Markdown("Configures the maximum amount of time that Nomad retains a utilization reporting snapshot in the Nomad state store. You can export these snapshots with the nomad operator utilization command."),

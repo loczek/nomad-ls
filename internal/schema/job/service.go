@@ -3,6 +3,7 @@ package job
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -17,9 +18,8 @@ var ServiceSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: mark as enterprise only
 		"cluster": {
-			Description:  lang.Markdown("Specifies the Consul cluster to use, when the `provider` is `consul`. The Nomad client will retrieve a Consul token from the cluster configured in the agent configuration with the same [`consul.name`](https://developer.hashicorp.com/nomad/docs/configuration/consul#name). In Nomad Community Edition, this field is ignored."),
+			Description:  lang.Markdown("Specifies the Consul cluster to use, when the `provider` is `consul`. The Nomad client will retrieve a Consul token from the cluster configured in the agent configuration with the same [`consul.name`](https://developer.hashicorp.com/nomad/docs/configuration/consul#name). In Nomad Community Edition, this field is ignored." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("")},
 			Constraint: schema.OneOf{
 				schema.LiteralType{Type: cty.String},

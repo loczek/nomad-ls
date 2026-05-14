@@ -34,19 +34,19 @@ var AutopilotSchema = &schema.BodySchema{
 			IsOptional:   true,
 		},
 		"enable_redundancy_zones": {
-			Description:  lang.Markdown("Controls whether Autopilot separates servers into zones for redundancy, in conjunction with the redundancy_zone parameter. Only one server in each zone can be a voting member at one time." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Controls whether Autopilot separates servers into zones for redundancy, in conjunction with the redundancy_zone parameter. Only one server in each zone can be a voting member at one time." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 		"disable_upgrade_migration": {
-			Description:  lang.Markdown("Disables Autopilot's upgrade migration strategy in Nomad Enterprise of waiting until enough newer-versioned servers have been added to the cluster before promoting any of them to voters." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Disables Autopilot's upgrade migration strategy in Nomad Enterprise of waiting until enough newer-versioned servers have been added to the cluster before promoting any of them to voters." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 		"enable_custom_upgrades": {
-			Description:  lang.Markdown("Specifies whether to enable using custom upgrade versions when performing migrations, in conjunction with the upgrade_version parameter." + schemautils.EnterpriseOnly),
+			Description:  lang.Markdown("Specifies whether to enable using custom upgrade versions when performing migrations, in conjunction with the upgrade_version parameter." + schemautils.Divider + schemautils.EnterpriseOnly),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,

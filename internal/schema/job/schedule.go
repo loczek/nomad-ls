@@ -3,10 +3,12 @@ package job
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
 var ScheduleSchema = &schema.BodySchema{
+	Description: lang.PlainText("Time based task execution is enabled by using the schedule block. The schedule block controls when a task is allowed to be running." + schemautils.Divider + schemautils.EnterpriseOnly),
 	Blocks: map[string]*schema.BlockSchema{
 		"cron": {
 			Description: lang.Markdown("The autoscaling policy. This is opaque to Nomad, consumed and parsed only by the external autoscaler. Therefore, its contents are specific to the autoscaler; consult the [Nomad Autoscaler documentation](https://developer.hashicorp.com/nomad/tools/autoscaling/policy) for more details."),
