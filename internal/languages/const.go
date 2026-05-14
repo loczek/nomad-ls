@@ -1,9 +1,5 @@
 package languages
 
-import (
-	"fmt"
-)
-
 type LanguageID string
 
 const (
@@ -39,5 +35,8 @@ func NewFromString(id string) (LanguageID, error) {
 		return val, nil
 	}
 
-	return "", fmt.Errorf("LanguageID: \"%s\" is not a valid language id", id)
+	// TODO: remove this in the future
+	return NomadJob, nil
+
+	// return "", fmt.Errorf("LanguageID: \"%s\" is not a valid language id", id)
 }
