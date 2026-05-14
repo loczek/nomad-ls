@@ -3,6 +3,7 @@ package acl
 import (
 	"github.com/hashicorp/hcl-lang/lang"
 	"github.com/hashicorp/hcl-lang/schema"
+	schemautils "github.com/loczek/nomad-ls/internal/schemaUtils"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -139,4 +140,78 @@ var SentinelOverrideCapability = schema.LiteralValue{
 var SubmitRecommendationCapability = schema.LiteralValue{
 	Value:       cty.StringVal("submit-recommendation"),
 	Description: lang.Markdown("Allows submitting vertical job scaling recommendations."),
+}
+
+// https://developer.hashicorp.com/nomad/docs/secure/acl/policies#finer-grained-capabilities
+var RegisterJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("register-job"),
+	Description: lang.Markdown("Allows a new job to be run or registered."),
+}
+var RevertJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("revert-job"),
+	Description: lang.Markdown("Allows a job to be reverted to a previous version."),
+}
+var DeregisterJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("deregister-job"),
+	Description: lang.Markdown("Allows a job to be stopped, but does not allow manual purging. The job will still be purged during of garbage collection."),
+}
+var PurgeJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("purge-job"),
+	Description: lang.Markdown("Allows a job to be stopped and purged."),
+}
+var EvaluateJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("evaluate-job"),
+	Description: lang.Markdown("Allows an evaluation to be made for a job."),
+}
+var PlanJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("plan-job"),
+	Description: lang.Markdown("Allows a job to be planned."),
+}
+var TagJobVersionCapability = schema.LiteralValue{
+	Value:       cty.StringVal("tag-job-version"),
+	Description: lang.Markdown("Allows a job version to be tagged."),
+}
+var StableJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("stable-job"),
+	Description: lang.Markdown("Allows a job version to be marked stable."),
+}
+var FailDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("fail-deployment"),
+	Description: lang.Markdown("Allows a deployment to be failed."),
+}
+var PauseDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("pause-deployment"),
+	Description: lang.Markdown("Allows a deployment to be paused."),
+}
+var PromoteDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("promote-deployment"),
+	Description: lang.Markdown("Allows a deployment to be promoted."),
+}
+var UnblockDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("unblock-deployment"),
+	Description: lang.Markdown("Allows a deployment to be unblocked."),
+}
+var CancelDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("cancel-deployment"),
+	Description: lang.Markdown("Allows a deployment to be cancelled."),
+}
+var SetAllocHealthDeploymentCapability = schema.LiteralValue{
+	Value:       cty.StringVal("set-alloc-health-deployment"),
+	Description: lang.Markdown("Allows the health of an allocation in a deployment to be set manually."),
+}
+var ForcePeriodicJobCapability = schema.LiteralValue{
+	Value:       cty.StringVal("force-periodic-job"),
+	Description: lang.Markdown("Allows a periodic job to be manually paused." + schemautils.Divider + schemautils.EnterpriseOnly),
+}
+var PauseAllocationCapability = schema.LiteralValue{
+	Value:       cty.StringVal("pause-allocation"),
+	Description: lang.Markdown("Allows an allocation to be paused." + schemautils.Divider + schemautils.EnterpriseOnly),
+}
+var GcAllocationCapability = schema.LiteralValue{
+	Value:       cty.StringVal("gc-allocation"),
+	Description: lang.Markdown("Allows an allocation to be manually garbage collected, usually used by operators."),
+}
+var DeleteServiceRegistrationCapability = schema.LiteralValue{
+	Value:       cty.StringVal("delete-service-registration"),
+	Description: lang.Markdown("Allows an individual service registration to be deleted, usually used by operators."),
 }
