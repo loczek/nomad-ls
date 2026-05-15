@@ -3,6 +3,7 @@ module github.com/loczek/nomad-ls
 go 1.26.2
 
 require (
+	github.com/Ne0nd0g/npipe v1.1.0
 	github.com/hashicorp/hcl-lang v0.0.0-20260119114541-59e53641aaba
 	github.com/hashicorp/hcl/v2 v2.24.0
 	github.com/hashicorp/nomad/api v0.0.0-20260119133310-d0d6640fc36a

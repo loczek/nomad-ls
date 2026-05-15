@@ -3,23 +3,42 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"os"
 	"runtime/debug"
 	"strings"
 
 	"github.com/lmittmann/tint"
 	"github.com/loczek/nomad-ls/internal/lsp"
+	"github.com/loczek/nomad-ls/internal/pipe"
 	"go.lsp.dev/jsonrpc2"
 )
 
-var logLevel string
-var transportStdio bool
+type Flags struct {
+	logLevel string
+	stdio    bool   // stdin/stdout
+	pipe     string // named pipe (Windows) or unix socket (Linux, Mac)
+	socket   string // tcp socket port
+}
+
+var flags = Flags{}
 
 func init() {
-	flag.StringVar(&logLevel, "log-level", "info", "language server log level")
-	flag.BoolVar(&transportStdio, "stdio", false, "use stdin/stdout as transport method")
+	flag.StringVar(&flags.logLevel, "log-level", "info", "language server log level")
+	flag.BoolVar(&flags.stdio, "stdio", false, "stdin/stdout as the transport method")
+	flag.StringVar(&flags.pipe, "pipe", "", "named pipe (Windows) or unix socket (Linux, Mac) as the transport method")
+	flag.StringVar(&flags.socket, "socket", "", "port of the tcp socket as the transport method")
+
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: nomad-ls [options]\n\n")
+		fmt.Fprintf(os.Stderr, "Note: \"--stdio\", \"--pipe=...\" or \"--port=...\" must be defined\n\n")
+		fmt.Fprintf(os.Stderr, "Options:\n")
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 }
 
@@ -31,7 +50,7 @@ func main() {
 		Level: slog.LevelError,
 	}
 
-	switch logLevel {
+	switch flags.logLevel {
 	case "debug":
 		handlerOpts.Level = slog.LevelDebug
 	case "info":
@@ -57,7 +76,25 @@ func main() {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	stream := jsonrpc2.NewStream(&rwc{os.Stdin, os.Stdout})
+	var transport *rwc
+
+	if isFlagPassed("pipe") {
+		slog.Info("transport pipe", slog.String("pipe", flags.pipe))
+		conn := pipe.GetTransport(flags.pipe)
+		transport = &rwc{conn, conn}
+	} else if isFlagPassed("socket") {
+		slog.Info("transport socket", slog.String("socket", fmt.Sprintf(":%s", flags.socket)))
+		conn, err := net.Dial("tcp", fmt.Sprintf(":%s", flags.socket))
+		if err != nil {
+			panic(err)
+		}
+		transport = &rwc{conn, conn}
+	} else {
+		slog.Info("transport stdio")
+		transport = &rwc{os.Stdin, os.Stdout}
+	}
+
+	stream := jsonrpc2.NewStream(transport)
 	con := jsonrpc2.NewConn(stream)
 
 	service := lsp.New(con, *logger)
@@ -120,4 +157,16 @@ func buildInfo() string {
 	}
 
 	return info.Main.Version
+}
+
+func isFlagPassed(name string) bool {
+	found := false
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+
+	return found
 }
