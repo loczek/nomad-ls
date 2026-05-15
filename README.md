@@ -1,4 +1,4 @@
-# Nomad Language Server
+<img src="banner.png" alt="Nomad Language Server">
 
 A simple language server for [nomad](https://developer.hashicorp.com/nomad).
 
