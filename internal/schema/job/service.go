@@ -127,9 +127,9 @@ var ServiceSchema = &schema.BodySchema{
 			Description: lang.PlainText("Specifies a health check associated with the service. This can be specified multiple times to define multiple checks for the service. At this time, a check using the Nomad provider supports `tcp` and `http` checks. The Consul integration supports the `grpc`, `http`, `script`1, and `tcp` checks."),
 			Body:        CheckSchema,
 		},
-		// TODO: add body
 		"weights": {
 			Description: lang.PlainText("Specifies how a service instance is weighted in a DNS SRV request based on the service's health status, as described in the Consul [weights](https://developer.hashicorp.com/consul/docs/services/configuration/services-configuration-reference#weights) documentation. Only available where `provider = \"consul\"` The `weight` block supports the following fields:\n\n- `passing`: 1 - The weight of services in passing state.\n- `warning`: 1 - The weight of services in warning state."),
+			Body:        WeightsSchema,
 		},
 		"connect": {
 			Description: lang.PlainText("Configures the [Consul service mesh](https://developer.hashicorp.com/nomad/docs/job-specification/connect) integration. Only available on group services and where `provider = \"consul\"`."),
