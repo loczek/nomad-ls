@@ -1,4 +1,5 @@
 {
+  "soft_wrap": "editor_width",
   "file_types": {
     "Nomad ACL": ["**/*.nomad.acl"],
     "Nomad Agent": ["**/*.nomad.agent"],
