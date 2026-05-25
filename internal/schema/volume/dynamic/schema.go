@@ -89,11 +89,6 @@ var RootSchema = &schema.BodySchema{
 			},
 		},
 
-		"mount_options": {
-			Description: lang.PlainText("Options for mounting file-system volumes that don't already have a pre-formatted file system."),
-			Body:        volume.MountOptionsSchema,
-			MinItems:    1,
-		},
 		"secrets": {
 			Description: lang.Markdown("An optional key-value map of strings used as credentials for publishing and unpublishing volumes."),
 			Body: &schema.BodySchema{
