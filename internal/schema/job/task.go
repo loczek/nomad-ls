@@ -126,7 +126,7 @@ var TaskSchema = &schema.BodySchema{
 		// TODO: update type to a body?
 		"env": {
 			Description: lang.PlainText("Specifies environment variables that will be passed to the running process."),
-			Type:        schema.BlockTypeMap,
+			Body:        EnvSchema,
 		},
 		"identity": {
 			Description: lang.PlainText("Expose [Workload Identity](https://developer.hashicorp.com/nomad/docs/concepts/workload-identity) to the task."),
