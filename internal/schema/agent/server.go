@@ -292,7 +292,7 @@ var ServerSchema = &schema.BodySchema{
 			Body:        PlanRejectionTrackerSchema,
 		},
 		"raft_boltdb": {
-			Description: lang.Markdown("This is a nested object that allows configuring options for Raft's BoltDB based log store."),
+			Description:  lang.Markdown("This is a nested object that allows configuring options for Raft's BoltDB based log store."),
 			Body:         RaftBoltDBSchema,
 			IsDeprecated: true,
 		},
