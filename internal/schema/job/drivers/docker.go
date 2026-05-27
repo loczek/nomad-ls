@@ -34,15 +34,6 @@ var DockerDriverSchema = &schema.BodySchema{
 			},
 			IsOptional: true,
 		},
-		// TODO: update with docs
-		"auth": {
-			Description: lang.Markdown("A list of arguments to the optional `command`. If no `command` is specified, the arguments are passed directly to the container. References to environment variables or any [interpretable Nomad variables](https://developer.hashicorp.com/nomad/docs/reference/runtime-variable-interpolation) will be interpreted before launching the task. For example:"),
-			Constraint: schema.OneOf{
-				schema.LiteralType{Type: cty.List(cty.String)},
-				schema.AnyExpression{OfType: cty.List(cty.String)},
-			},
-			IsOptional: true,
-		},
 		"auth_soft_fail": {
 			Description:  lang.Markdown("Don't fail the task on an auth failure. Attempt to continue without auth. If the Nomad client configuration has an [`auth.helper`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#helper) block, the helper will be tried for all images, including public images. If you mix private and public images, you will need to include `auth_soft_fail=true` in every job using a public image."),
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
@@ -513,6 +504,10 @@ var DockerDriverSchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		"auth": {
+			Description: lang.Markdown("Provide authentication for a private registry"),
+			Body:        AuthSchema,
+		},
 		"logging": {
 			Description: lang.Markdown("Configure logging for the container. Defaults to `json-file` with log rotation (`max-file=2` and `max-size=2m`)."),
 			Body:        LoggingSchema,
@@ -695,6 +690,35 @@ var TmpfsMountOptionsSchema = &schema.BodySchema{
 			Constraint: schema.OneOf{
 				schema.LiteralType{Type: cty.Number},
 				schema.AnyExpression{OfType: cty.Number},
+			},
+			IsOptional: true,
+		},
+	},
+}
+
+var AuthSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"username": {
+			Description: lang.Markdown("The account username."),
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
+		},
+		"password": {
+			Description: lang.Markdown("The account password."),
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
+			},
+			IsOptional: true,
+		},
+		"server_address": {
+			Description: lang.Markdown("The server domain/IP without the protocol. Docker Hub is used by default."),
+			Constraint: schema.OneOf{
+				schema.LiteralType{Type: cty.String},
+				schema.AnyExpression{OfType: cty.String},
 			},
 			IsOptional: true,
 		},
