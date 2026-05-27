@@ -283,9 +283,9 @@ var ServerSchema = &schema.BodySchema{
 			Description: lang.Markdown("Configuration for how the Nomad server handles client introduction requests."),
 			Body:        ClientIntroductionSchema,
 		},
-		// TODO: add body
 		"default_scheduler_config": {
 			Description: lang.Markdown("Specifies the initial default scheduler config when bootstrapping cluster. The parameter is ignored once the cluster is bootstrapped or value is updated through the [API endpoint](https://developer.hashicorp.com/nomad/api-docs/operator/scheduler#update-scheduler-configuration). Refer to [the example section](https://developer.hashicorp.com/nomad/docs/configuration/server#configuring-scheduler-config) for more details."),
+			Body:        DefaultSchedulerConfigSchema,
 		},
 		"plan_rejection_tracker": {
 			Description: lang.Markdown("Configuration for the plan rejection tracker that the Nomad leader uses to track the history of plan rejections."),
@@ -436,6 +436,73 @@ var RaftBoltDBSchema = &schema.BodySchema{
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 			IsDeprecated: true,
+		},
+	},
+}
+
+var DefaultSchedulerConfigSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"scheduler_algorithm": {
+			Description:  lang.Markdown("Specifies whether scheduler binpacks or spreads allocations on available nodes. Possible values are `\"binpack\"` and `\"spread\"`. This value may also be set per [node pool](https://developer.hashicorp.com/nomad/docs/other-specifications/node-pool#scheduler_algorithm)."),
+			DefaultValue: schema.DefaultValue{Value: cty.StringVal("binpack")},
+			Constraint: schema.OneOf{
+				schema.LiteralValue{Value: cty.StringVal("binpack")},
+				schema.LiteralValue{Value: cty.StringVal("spread")},
+			},
+			IsOptional: true,
+		},
+		"memory_oversubscription_enabled": {
+			Description:  lang.Markdown("When `true`, tasks may exceed their reserved memory limit, if the client has excess memory capacity. Tasks must specify [`memory_max`](https://developer.hashicorp.com/nomad/docs/job-specification/resources#memory_max) to take advantage of memory oversubscription. This value may also be set per [node pool](https://developer.hashicorp.com/nomad/docs/other-specifications/node-pool#memory_oversubscription_enabled)."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"reject_job_registration": {
+			Description:  lang.Markdown("When `true`, the server will return permission denied errors for job registration, job dispatch, and job scale APIs, unless the ACL token for the request is a management token. If ACLs are disabled, no user will be able to register jobs. This allows operators to shed load from automated processes during incident response."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"pause_eval_broker": {
+			Description:  lang.Markdown("When set to `true`, the eval broker which usually runs on the leader will be disabled. This will prevent the scheduler workers from receiving new work."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+	},
+	Blocks: map[string]*schema.BlockSchema{
+		"preemption_config": {
+			Description: lang.Markdown("Options to enable preemption for various schedulers."),
+			Body:        PreemptionConfigSchema,
+		},
+	},
+}
+
+var PreemptionConfigSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"system_scheduler_enabled": {
+			Description:  lang.Markdown("Specifies whether preemption for system jobs is enabled. Note that if this is set to true, then system jobs can preempt any other jobs."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(true)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"sys_batch_scheduler_enabled": {
+			Description:  lang.Markdown("Specifies whether preemption for system batch jobs is enabled. Note that if this is set to true, then system batch jobs can preempt any other jobs."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"batch_scheduler_enabled": {
+			Description:  lang.Markdown("Specifies whether preemption for batch jobs is enabled. Note that if this is set to true, then batch jobs can preempt any other jobs."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
+		},
+		"service_scheduler_enabled": {
+			Description:  lang.Markdown("Specifies whether preemption for service jobs is enabled. Note that if this is set to true, then service jobs can preempt any other jobs."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
+			IsOptional:   true,
 		},
 	},
 }
