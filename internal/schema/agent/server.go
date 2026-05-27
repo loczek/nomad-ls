@@ -435,6 +435,7 @@ var RaftBoltDBSchema = &schema.BodySchema{
 			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
 			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
+			IsDeprecated: true,
 		},
 	},
 }
