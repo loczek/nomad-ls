@@ -141,12 +141,14 @@ func attrKey(value string) schema.SchemaKey {
 }
 
 func createConfigSchema(innerBody *schema.BodySchema) *schema.BodySchema {
-	return &schema.BodySchema{
-		Blocks: map[string]*schema.BlockSchema{
-			"config": {
-				Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
-				Body:        innerBody,
-			},
-		},
+	var innerTask = TaskSchema.Copy()
+
+	var driverConfig = &schema.BlockSchema{
+		Description: lang.PlainText("Specifies the driver configuration, which is passed directly to the driver to start the task. The details of configurations are specific to each driver, so please see specific driver documentation for more information."),
+		Body:        innerBody,
 	}
+
+	innerTask.Blocks["config"] = driverConfig
+
+	return innerTask
 }
