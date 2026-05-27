@@ -38,7 +38,6 @@ var SecretSchema = &schema.BodySchema{
 	Blocks: map[string]*schema.BlockSchema{
 		"config": {
 			Description: lang.Markdown("Specifies any custom attributes used by built-in providers order to fetch the secret. Only available for built-in `vault` and `nomad` providers."),
-			Type:        schema.BlockTypeMap,
 		},
 	},
 }

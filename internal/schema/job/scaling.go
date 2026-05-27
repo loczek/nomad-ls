@@ -35,9 +35,9 @@ var ScalingSchema = &schema.BodySchema{
 		},
 	},
 	Blocks: map[string]*schema.BlockSchema{
+		// Note: Opaque to nomad
 		"policy": {
 			Description: lang.Markdown("The autoscaling policy. This is opaque to Nomad, consumed and parsed only by the external autoscaler. Therefore, its contents are specific to the autoscaler; consult the [Nomad Autoscaler documentation](https://developer.hashicorp.com/nomad/tools/autoscaling/policy) for more details."),
-			Type:        schema.BlockTypeMap,
 		},
 	},
 }
