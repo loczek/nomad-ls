@@ -292,7 +292,8 @@ var ServerSchema = &schema.BodySchema{
 			Body:        PlanRejectionTrackerSchema,
 		},
 		"raft_boltdb": {
-			Description:  lang.Markdown("This is a nested object that allows configuring options for Raft's BoltDB based log store."),
+			Description: lang.Markdown("This is a nested object that allows configuring options for Raft's BoltDB based log store."),
+			Body:         RaftBoltDBSchema,
 			IsDeprecated: true,
 		},
 		"raft_logstore": {
@@ -422,6 +423,17 @@ var PlanRejectionTrackerSchema = &schema.BodySchema{
 			Description:  lang.Markdown("The time window for when plan rejections for a node should be considered."),
 			DefaultValue: schema.DefaultValue{Value: cty.StringVal("5m")},
 			Constraint:   schema.LiteralType{Type: cty.String},
+			IsOptional:   true,
+		},
+	},
+}
+
+var RaftBoltDBSchema = &schema.BodySchema{
+	Attributes: map[string]*schema.AttributeSchema{
+		"no_freelist_sync": {
+			Description:  lang.Markdown("Setting this to true will disable syncing the BoltDB freelist to disk within the raft.db file. Not syncing the freelist to disk will reduce disk IO required for write operations at the expense of longer server startup times."),
+			DefaultValue: schema.DefaultValue{Value: cty.BoolVal(false)},
+			Constraint:   schema.LiteralType{Type: cty.Bool},
 			IsOptional:   true,
 		},
 	},
