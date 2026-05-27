@@ -14,6 +14,7 @@ import (
 
 var _ decoder.PathReader = (*Store)(nil)
 
+// PathContext implements [decoder.PathReader].
 func (p *Store) PathContext(path lang.Path) (*decoder.PathContext, error) {
 	langID := languages.LanguageID(path.LanguageID)
 	langSchema := languages.ToSchema(langID)
@@ -44,6 +45,7 @@ func (p *Store) PathContext(path lang.Path) (*decoder.PathContext, error) {
 	}, nil
 }
 
+// Paths implements [decoder.PathReader].
 func (p *Store) Paths(ctx context.Context) []lang.Path {
 	var paths []lang.Path
 
