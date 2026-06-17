@@ -97,6 +97,11 @@ var TaskSchema = &schema.BodySchema{
 		// TODO: add docs in the future
 		"action": {
 			Description: lang.PlainText("action docs"),
+			Labels: []*schema.LabelSchema{
+				{
+					Name: "name",
+				},
+			},
 			Body:        ActionSchema,
 		},
 		"artifact": {
